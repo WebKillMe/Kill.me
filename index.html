@@ -385,7 +385,9 @@ function dollWithDraw(color,death,strokes,dead,poseName,px){
 
 // ── Data ──────────────────────────────────────────────
 async function loadProfile(){
-  const {data}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+  const timeout=new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),8000));
+  const query=sb.from('profiles').select('*').eq('id',user.id).maybeSingle().then(r=>r);
+  const {data}=await Promise.race([query,timeout]);
   profile=data;
 }
 async function loadTodayPost(){
@@ -474,8 +476,9 @@ async function doSignUp(email,pass,uname,color){
   }
   return null;
 }
-async function doSignIn(email,pass){
-  const {error}=await sb.auth.signInWithPassword({email,password:pass});
+async function doSignIn(emailOrUser,pass){
+  if(!emailOrUser.includes('@')) return 'Introduce tu email, no tu nombre de usuario';
+  const {error}=await sb.auth.signInWithPassword({email:emailOrUser,password:pass});
   if(error)return error.message;return null;
 }
 
@@ -525,7 +528,7 @@ function renderAuth(){
         <button class="auth-tab ${!login?'on':''}" id="tReg">Registrarse</button>
       </div>
       ${!login?`<div class="field"><label>Nombre de usuario</label><input type="text" id="aUser" placeholder="como quieres que te vean" maxlength="20"/></div>`:''}
-      <div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="tu@email.com" autocomplete="email"/></div>
+      <div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="tu@email.com (no el nombre de usuario)" autocomplete="email"/></div>
       <div class="field">
         <label>Contraseña</label>
         <input type="password" id="aPass" placeholder="mínimo 6 caracteres" autocomplete="${login?'current-password':'new-password'}"/>
