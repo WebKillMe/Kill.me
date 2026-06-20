@@ -1,326 +1,449 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
 <title>VudúReal</title>
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#140A17" />
-<link rel="apple-touch-icon" href="icons/icon-180.png" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0D0611"/>
+<link rel="apple-touch-icon" href="icons/icon-180.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet"/>
 <style>
-  :root{
-    --bg:#140A17; --panel:#1F1322; --panel2:#2A1B2E;
-    --wax:#E8C468; --blood:#9C2B3A; --bone:#EDE6D8;
-    --smoke:#4A3A50; --smokeLight:#6B5670;
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;background:var(--bg);height:100%;}
-  body{
-    font-family:-apple-system,system-ui,sans-serif;
-    background:radial-gradient(ellipse at 50% 0%,var(--panel2),var(--bg) 70%);
-    color:var(--bone);min-height:100vh;max-width:480px;margin:0 auto;
-  }
-  .topbar{display:flex;justify-content:space-between;align-items:center;padding:env(safe-area-inset-top,16px) 20px 0;}
-  .logo{font-weight:800;letter-spacing:1px;font-size:16px;}
-  .logo span{color:var(--blood);}
-  .gear{background:none;border:none;font-size:18px;cursor:pointer;}
-  h1.title{color:var(--wax);font-family:Georgia,serif;font-size:22px;margin:0;text-align:center;letter-spacing:.5px;}
-  p.sub{color:var(--smokeLight);font-size:12px;margin:4px 0 0;text-align:center;}
-  .screen{padding:20px;padding-bottom:100px;}
-  textarea,input[type=text],input[type=email],input[type=password]{
-    width:100%;background:var(--panel);border:1px solid var(--smoke);border-radius:14px;
-    color:var(--bone);padding:12px;font-size:15px;box-sizing:border-box;font-family:inherit;
-  }
-  textarea{min-height:70px;resize:none;}
-  .charcount{text-align:right;font-size:11px;color:var(--smokeLight);}
-  .btn-main{
-    width:100%;margin-top:14px;background:var(--blood);color:var(--bone);border:none;
-    border-radius:14px;padding:14px 0;font-weight:700;font-size:15px;cursor:pointer;letter-spacing:.5px;
-  }
-  .btn-main:disabled{background:var(--smoke);cursor:default;}
-  .btn-ghost{
-    width:100%;margin-top:10px;background:transparent;color:var(--smokeLight);border:1px solid var(--smoke);
-    border-radius:14px;padding:13px 0;font-weight:700;font-size:14px;cursor:pointer;
-  }
-  .btn-wax{
-    background:var(--wax);color:var(--bg);border:none;border-radius:14px;
-    padding:12px 26px;font-weight:700;font-size:14px;cursor:pointer;
-  }
-  .btn-wax:disabled{background:var(--smoke);color:var(--bone);}
-  .center{display:flex;justify-content:center;}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
-  .death-card{
-    background:var(--panel);border:1px solid var(--smoke);border-radius:16px;padding:16px 8px;
-    display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
-  }
-  .death-card.unlocked{border-color:var(--wax);}
-  .death-card.locked{opacity:.45;cursor:default;}
-  .death-card span.label{color:var(--bone);font-size:13px;font-weight:600;}
-  .death-card span.streak-req{color:var(--smokeLight);font-size:10px;}
-  .draw-card{
-    grid-column:span 2;background:var(--panel2);border:1px dashed var(--wax);border-radius:16px;
-    padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
-  }
-  .draw-card .lbl{color:var(--wax);font-size:13px;font-weight:700;}
-  canvas{background:var(--panel2);border-radius:16px;border:1px solid var(--smoke);touch-action:none;display:block;margin:0 auto;}
-  .swatches{display:flex;justify-content:center;gap:8px;margin-top:10px;}
-  .swatch{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;}
-  .swatch.active{border-color:var(--bone);}
-  .widths{display:flex;justify-content:center;gap:10px;margin-top:10px;align-items:center;}
-  .width-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--smoke);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .width-btn.active{border-color:var(--wax);background:var(--panel2);}
-  .width-dot{border-radius:50%;background:var(--bone);}
-  .clearbtn{background:none;border:1px solid var(--smoke);border-radius:8px;color:var(--smokeLight);font-size:11px;padding:6px 10px;cursor:pointer;}
-  .feed-card{background:var(--panel);border-radius:18px;padding:16px;margin-bottom:14px;border:1px solid var(--smoke);}
-  .feed-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-  .avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;}
-  .feed-name{color:var(--bone);font-weight:700;font-size:14px;}
-  .feed-time{color:var(--smokeLight);font-size:11px;}
-  .feed-razon{color:var(--bone);font-size:14px;margin:4px 0 2px;}
-  .feed-castigo{color:var(--wax);font-size:12px;font-weight:700;margin:0 0 10px;}
-  .dep-btn{
-    width:100%;border-radius:12px;padding:10px 0;color:var(--bone);font-weight:700;font-size:13px;
-    border:1px solid var(--blood);background:var(--panel2);cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:6px;
-  }
-  .dep-btn.given{background:var(--blood);}
-  .dep-count{color:var(--wax);}
-  .doll-wrap{position:relative;display:flex;justify-content:center;}
-  .bottomnav{
-    position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
-    background:var(--panel);border-top:1px solid var(--smoke);display:flex;justify-content:space-around;
-    padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));
-  }
-  .navbtn{background:none;border:none;font-size:13px;font-weight:700;cursor:pointer;color:var(--bone);}
-  .navbtn.active{color:var(--wax);}
-  .backlink{display:block;margin:14px auto 0;background:none;border:none;color:var(--smokeLight);font-size:13px;cursor:pointer;text-align:center;width:100%;}
-  .colorpick{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:20px;}
-  .colorcircle{width:36px;height:36px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0;}
-  .colorcircle.active{border-color:var(--wax);}
-  /* Auth */
-  .auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;}
-  .auth-logo{font-weight:800;font-size:32px;letter-spacing:2px;margin-bottom:6px;}
-  .auth-logo span{color:var(--blood);}
-  .auth-sub{color:var(--smokeLight);font-size:13px;margin-bottom:32px;text-align:center;line-height:1.6;}
-  .auth-tabs{display:flex;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--smoke);margin-bottom:20px;}
-  .auth-tab{flex:1;padding:12px;background:transparent;border:none;color:var(--smokeLight);font-weight:700;font-size:14px;cursor:pointer;}
-  .auth-tab.active{background:var(--panel2);color:var(--bone);}
-  .auth-field{margin-bottom:12px;}
-  .auth-field label{display:block;font-size:11px;color:var(--smokeLight);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-  .auth-err{color:#E8602C;font-size:13px;margin-bottom:10px;text-align:center;min-height:18px;}
-  /* Loading */
-  .loading-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;}
-  .spinner{width:32px;height:32px;border:3px solid var(--smoke);border-top-color:var(--wax);border-radius:50%;animation:spin .8s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg)}}
+:root{
+  --bg:#0D0611;--bg2:#140A17;--panel:#1A0F1F;--panel2:#221430;--panel3:#2C1B36;
+  --wax:#E8C468;--wax2:#F0D080;--blood:#9C2B3A;--blood2:#C23348;
+  --bone:#EDE6D8;--smoke:#3D2E47;--smokeL:#6B5670;--smokeLL:#9A8AA0;
+  --glow:rgba(232,196,104,.15);--glowB:rgba(156,43,58,.2);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);}
+body{
+  font-family:-apple-system,system-ui,sans-serif;
+  background:radial-gradient(ellipse 120% 60% at 50% -10%,#2C1B36,var(--bg) 65%);
+  color:var(--bone);min-height:100vh;max-width:480px;margin:0 auto;
+}
+.cinzel{font-family:'Cinzel',Georgia,serif;}
+
+/* ── Loading ── */
+.page-load{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+.load-logo{font-family:'Cinzel',serif;font-size:28px;font-weight:900;letter-spacing:3px;color:var(--wax);opacity:0;animation:fadeIn .6s .3s forwards;}
+.load-logo span{color:var(--blood);}
+.spinner{width:28px;height:28px;border:2px solid var(--smoke);border-top-color:var(--wax);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.015) translateY(-3px)}}
+@keyframes floatGhost{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+@keyframes flamePulse{0%,100%{opacity:.85;transform:scaleY(1) scaleX(1)}50%{opacity:1;transform:scaleY(1.12) scaleX(.95)}}
+@keyframes shockFlash{0%,100%{opacity:.9}40%,60%{opacity:1;filter:brightness(1.4)}}
+@keyframes ripple{0%{r:0;opacity:.6}100%{r:60;opacity:0}}
+@keyframes needleShake{0%,100%{transform:rotate(0deg)}30%{transform:rotate(-2deg)}70%{transform:rotate(2deg)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 20px 6px var(--glow)}}
+
+/* ── Auth ── */
+.auth-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;animation:slideUp .4s ease;}
+.auth-brand{text-align:center;margin-bottom:32px;}
+.auth-brand h1{font-family:'Cinzel',serif;font-size:34px;font-weight:900;letter-spacing:3px;color:var(--wax);line-height:1;}
+.auth-brand h1 span{color:var(--blood2);}
+.auth-brand p{color:var(--smokeL);font-size:13px;margin-top:8px;letter-spacing:.5px;}
+.auth-doll{display:flex;justify-content:center;margin-bottom:24px;}
+.auth-card{width:100%;background:var(--panel);border:1px solid var(--smoke);border-radius:20px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,.4);}
+.auth-tabs{display:flex;border-radius:12px;overflow:hidden;background:var(--bg2);margin-bottom:20px;border:1px solid var(--smoke);}
+.auth-tab{flex:1;padding:11px;background:transparent;border:none;color:var(--smokeL);font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;letter-spacing:.3px;}
+.auth-tab.on{background:var(--panel3);color:var(--bone);}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:10px;color:var(--smokeL);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.field input{width:100%;background:var(--bg2);border:1px solid var(--smoke);border-radius:12px;color:var(--bone);padding:12px 14px;font-size:15px;font-family:inherit;transition:border-color .2s;outline:none;}
+.field input:focus{border-color:var(--wax);}
+.auth-err{color:#E8602C;font-size:12px;min-height:16px;margin-bottom:8px;text-align:center;}
+
+/* ── Buttons ── */
+.btn{width:100%;border:none;border-radius:14px;padding:14px;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.5px;transition:all .18s;font-family:inherit;}
+.btn-blood{background:linear-gradient(135deg,var(--blood),var(--blood2));color:var(--bone);}
+.btn-blood:hover{filter:brightness(1.1);}
+.btn-blood:disabled{background:var(--smoke);cursor:default;filter:none;}
+.btn-wax{background:linear-gradient(135deg,var(--wax),var(--wax2));color:var(--bg);border-radius:14px;border:none;padding:13px 28px;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:.3px;transition:all .18s;}
+.btn-wax:hover{filter:brightness(1.08);}
+.btn-ghost{background:transparent;border:1px solid var(--smoke);color:var(--smokeL);border-radius:14px;padding:12px;font-weight:700;font-size:13px;cursor:pointer;width:100%;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--smokeL);}
+
+/* ── Layout ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:env(safe-area-inset-top,18px) 20px 0;}
+.logo{font-family:'Cinzel',serif;font-weight:900;letter-spacing:2px;font-size:15px;color:var(--bone);}
+.logo span{color:var(--blood2);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.streak-badge{background:var(--panel2);border:1px solid #3D2E47;border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--wax);display:flex;align-items:center;gap:4px;}
+.gear-btn{background:none;border:none;font-size:20px;cursor:pointer;opacity:.7;transition:opacity .2s;}
+.gear-btn:hover{opacity:1;}
+.screen{padding:20px;padding-bottom:100px;animation:slideUp .3s ease;}
+.bottomnav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;
+  background:rgba(26,15,31,.95);backdrop-filter:blur(12px);border-top:1px solid var(--smoke);
+  display:flex;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));
+}
+.navbtn{flex:1;background:none;border:none;color:var(--smokeL);font-weight:700;font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;letter-spacing:.3px;}
+.navbtn .nicon{font-size:20px;transition:transform .2s;}
+.navbtn.on{color:var(--wax);}
+.navbtn.on .nicon{transform:scale(1.15);}
+
+/* ── Titles ── */
+.page-title{font-family:'Cinzel',serif;color:var(--wax);font-size:20px;font-weight:700;text-align:center;letter-spacing:.5px;line-height:1.3;}
+.page-sub{color:var(--smokeL);font-size:12px;text-align:center;margin-top:5px;letter-spacing:.2px;}
+.divider{width:40px;height:1px;background:var(--smoke);margin:14px auto;}
+
+/* ── Doll ── */
+.doll-wrap{position:relative;display:flex;justify-content:center;}
+.doll-anim-breathe{animation:breathe 3s ease-in-out infinite;}
+.doll-anim-ghost{animation:floatGhost 3s ease-in-out infinite;}
+.doll-anim-flame svg ellipse{animation:flamePulse 1.2s ease-in-out infinite;}
+.doll-anim-shock{animation:shockFlash 1.5s ease-in-out infinite;}
+.doll-anim-shake{animation:needleShake 2s ease-in-out infinite;}
+
+/* ── Death cards ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.death-card{
+  background:var(--panel);border:1px solid var(--smoke);border-radius:18px;padding:16px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.death-card::before{content:'';position:absolute;inset:0;background:var(--glow);opacity:0;transition:opacity .2s;}
+.death-card.on:hover::before{opacity:1;}
+.death-card.on{border-color:var(--wax);box-shadow:0 0 12px var(--glow);}
+.death-card.off{opacity:.38;cursor:default;}
+.death-card .dlabel{color:var(--bone);font-size:12px;font-weight:700;letter-spacing:.3px;}
+.death-card .dreq{color:var(--smokeL);font-size:10px;}
+.draw-card{
+  grid-column:span 2;background:var(--panel);border:1px dashed var(--wax);border-radius:18px;
+  padding:16px;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all .2s;
+}
+.draw-card:hover{background:var(--panel2);}
+.draw-card .dlabel{color:var(--wax);font-size:14px;font-weight:700;}
+
+/* ── Feed ── */
+.feed-card{background:var(--panel);border-radius:20px;padding:16px;margin-bottom:12px;border:1px solid var(--smoke);animation:slideUp .3s ease;}
+.feed-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:rgba(0,0,0,.6);}
+.feed-name{color:var(--bone);font-weight:700;font-size:14px;}
+.feed-time{color:var(--smokeL);font-size:11px;}
+.feed-razon{color:var(--bone);font-size:14px;margin:4px 0 6px;line-height:1.5;font-style:italic;}
+.feed-razon::before{content:'"';color:var(--wax);font-size:18px;font-family:'Cinzel',serif;vertical-align:-2px;}
+.feed-razon::after{content:'"';color:var(--wax);font-size:18px;font-family:'Cinzel',serif;vertical-align:-2px;}
+.feed-castigo{display:inline-block;background:var(--panel2);border-radius:8px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--wax);margin-bottom:12px;letter-spacing:.3px;}
+.dep-btn{
+  width:100%;border-radius:12px;padding:11px;color:var(--bone);font-weight:700;font-size:13px;
+  border:1px solid var(--blood);background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;letter-spacing:.3px;
+}
+.dep-btn.given{background:var(--blood);border-color:var(--blood2);}
+.dep-btn:not(.given):hover{background:var(--glowB);}
+.dep-count{color:var(--wax);font-weight:900;}
+.own-dep{text-align:center;color:var(--smokeL);font-size:12px;padding:8px;}
+
+/* ── Canvas ── */
+canvas{background:var(--panel2);border-radius:18px;border:1px solid var(--smoke);touch-action:none;display:block;margin:0 auto;}
+.swatches{display:flex;justify-content:center;gap:10px;margin-top:12px;}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:transform .15s;}
+.swatch.on{border-color:var(--bone);transform:scale(1.2);}
+.widths{display:flex;justify-content:center;gap:10px;margin-top:10px;align-items:center;}
+.wbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--smoke);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.wbtn.on{border-color:var(--wax);background:var(--panel2);}
+.wdot{border-radius:50%;background:var(--bone);}
+.clearbtn{background:none;border:1px solid var(--smoke);border-radius:8px;color:var(--smokeL);font-size:11px;padding:6px 12px;cursor:pointer;transition:all .2s;}
+.clearbtn:hover{border-color:var(--smokeL);}
+
+/* ── Settings ── */
+.colorpick{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:20px;}
+.ccircle{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0;transition:all .2s;}
+.ccircle.on{border-color:var(--wax);transform:scale(1.15);}
+.backlink{display:block;margin:16px auto 0;background:none;border:none;color:var(--smokeL);font-size:13px;cursor:pointer;text-align:center;width:100%;transition:color .2s;}
+.backlink:hover{color:var(--bone);}
+
+/* ── Posted / Home done ── */
+.card-done{background:var(--panel);border:1px solid var(--smoke);border-radius:20px;padding:20px;text-align:center;margin-top:16px;}
+.charcount{text-align:right;font-size:11px;color:var(--smokeL);margin-top:4px;}
+textarea,input[type=text],input[type=email],input[type=password]{
+  width:100%;background:var(--panel);border:1px solid var(--smoke);border-radius:14px;
+  color:var(--bone);padding:12px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .2s;
+}
+textarea{min-height:80px;resize:none;}
+textarea:focus,input:focus{border-color:var(--wax);}
 </style>
 </head>
 <body>
-<div id="root"><div class="loading-wrap"><div class="spinner"></div></div></div>
-
+<div id="root"><div class="page-load"><div class="load-logo">VUDÚ<span>REAL</span></div><div class="spinner"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-const { createClient } = supabase;
+// ── Supabase ──────────────────────────────────────────
+const {createClient} = supabase;
 const sb = createClient(
   'https://vknwuevlvnavkgvtguku.supabase.co',
   'sb_publishable_f7q0PeemTaEwN9XFotSSEA_kA_rqtz7'
 );
 
+// ── Constants ─────────────────────────────────────────
 const DOLL_COLORS = ["#C24545","#4577C2","#45C27A","#C2A445","#9C45C2","#E8E8E8"];
-const LINE_COLORS = ["#E8C468","#C24545","#45C27A","#4577C2","#EDE6D8"];
-const LINE_WIDTHS = [2,4,7];
+const LINE_COLORS = ["#E8C468","#C24545","#45C27A","#4577C2","#EDE6D8","#ffffff"];
+const LINE_WIDTHS = [2,4,8];
 const DEATHS = [
-  {id:"fuego",label:"Quemado",emoji:"🔥",min:0},
-  {id:"agujas",label:"Acribillado",emoji:"📌",min:0},
-  {id:"ahogo",label:"Ahogado",emoji:"💧",min:3},
-  {id:"rayo",label:"Electrocutado",emoji:"⚡",min:7},
-  {id:"aplastado",label:"Aplastado",emoji:"🪨",min:14},
-  {id:"fantasma",label:"Exorcizado",emoji:"👻",min:21},
+  {id:"fuego",   label:"Quemado",      emoji:"🔥", min:0,  pose:"scared"},
+  {id:"agujas",  label:"Acribillado",  emoji:"📌", min:0,  pose:"cowering"},
+  {id:"ahogo",   label:"Ahogado",      emoji:"💧", min:3,  pose:"begging"},
+  {id:"rayo",    label:"Electrocutado",emoji:"⚡", min:7,  pose:"dramatic"},
+  {id:"aplastado",label:"Aplastado",   emoji:"🪨", min:14, pose:"squish"},
+  {id:"fantasma",label:"Exorcizado",   emoji:"👻", min:21, pose:"ghost"},
 ];
-const DEATH_LABELS = {
+const DEATH_LABELS={
   fuego:"Quemado 🔥",agujas:"Acribillado 📌",ahogo:"Ahogado 💧",
   rayo:"Electrocutado ⚡",aplastado:"Aplastado 🪨",fantasma:"Exorcizado 👻",
 };
 
-let currentUser = null;
-let currentProfile = null;
-let view = "loading";
-let todayPost = null;
-let feedData = [];
-let myDeps = new Set();
-let authTab = "login";
-let draftRazon = "";
+// ── State ─────────────────────────────────────────────
+let user=null, profile=null, view="loading", todayPost=null;
+let feedData=[], myDeps=new Set(), authTab="login", draftRazon="";
 
-const todayStr = () => new Date().toISOString().split('T')[0];
-const yesterdayStr = () => new Date(Date.now()-86400000).toISOString().split('T')[0];
-const ge = id => document.getElementById(id);
+const today=()=>new Date().toISOString().split('T')[0];
+const yesterday=()=>new Date(Date.now()-86400000).toISOString().split('T')[0];
+const ge=id=>document.getElementById(id);
+const timeAgo=ts=>{
+  const m=Math.floor((Date.now()-new Date(ts))/60000);
+  if(m<1)return'ahora';if(m<60)return`hace ${m}m`;
+  const h=Math.floor(m/60);if(h<24)return`hace ${h}h`;return`hace ${Math.floor(h/24)}d`;
+};
+const initials=name=>(name||'?').slice(0,2).toUpperCase();
 
-function timeAgo(ts){
-  const m = Math.floor((Date.now()-new Date(ts))/60000);
-  if(m<1) return 'ahora';
-  if(m<60) return `hace ${m}m`;
-  const h = Math.floor(m/60);
-  if(h<24) return `hace ${h}h`;
-  return `hace ${Math.floor(h/24)}d`;
+// ── Doll Poses ────────────────────────────────────────
+function getPose(poseName,w,h){
+  const poses={
+    idle:{
+      body:`M ${w/2} ${h*.3} Q ${w*.46} ${h*.46} ${w/2} ${h*.62}`,
+      aL:`M ${w/2} ${h*.38} Q ${w*.3} ${h*.4} ${w*.24} ${h*.52}`,
+      aR:`M ${w/2} ${h*.38} Q ${w*.7} ${h*.4} ${w*.76} ${h*.52}`,
+      lL:`M ${w/2} ${h*.62} Q ${w*.34} ${h*.78} ${w*.28} ${h*.95}`,
+      lR:`M ${w/2} ${h*.62} Q ${w*.66} ${h*.78} ${w*.72} ${h*.95}`,
+    },
+    scared:{
+      body:`M ${w/2} ${h*.3} Q ${w*.46} ${h*.46} ${w/2} ${h*.62}`,
+      aL:`M ${w/2} ${h*.38} Q ${w*.26} ${h*.24} ${w*.18} ${h*.1}`,
+      aR:`M ${w/2} ${h*.38} Q ${w*.74} ${h*.24} ${w*.82} ${h*.1}`,
+      lL:`M ${w/2} ${h*.62} Q ${w*.36} ${h*.76} ${w*.28} ${h*.95}`,
+      lR:`M ${w/2} ${h*.62} Q ${w*.64} ${h*.76} ${w*.72} ${h*.95}`,
+    },
+    cowering:{
+      body:`M ${w/2} ${h*.3} Q ${w*.48} ${h*.43} ${w*.5} ${h*.57}`,
+      aL:`M ${w/2} ${h*.36} Q ${w*.34} ${h*.28} ${w*.28} ${h*.18}`,
+      aR:`M ${w/2} ${h*.36} Q ${w*.66} ${h*.28} ${w*.72} ${h*.18}`,
+      lL:`M ${w*.5} ${h*.57} Q ${w*.38} ${h*.7} ${w*.32} ${h*.88}`,
+      lR:`M ${w*.5} ${h*.57} Q ${w*.62} ${h*.7} ${w*.68} ${h*.88}`,
+    },
+    begging:{
+      body:`M ${w/2} ${h*.3} Q ${w*.46} ${h*.46} ${w/2} ${h*.62}`,
+      aL:`M ${w/2} ${h*.38} Q ${w*.3} ${h*.48} ${w*.16} ${h*.55}`,
+      aR:`M ${w/2} ${h*.38} Q ${w*.7} ${h*.48} ${w*.84} ${h*.55}`,
+      lL:`M ${w/2} ${h*.62} Q ${w*.34} ${h*.78} ${w*.28} ${h*.95}`,
+      lR:`M ${w/2} ${h*.62} Q ${w*.66} ${h*.78} ${w*.72} ${h*.95}`,
+    },
+    dramatic:{
+      body:`M ${w/2} ${h*.3} Q ${w*.46} ${h*.46} ${w/2} ${h*.62}`,
+      aL:`M ${w/2} ${h*.38} Q ${w*.65} ${h*.34} ${w*.84} ${h*.3}`,
+      aR:`M ${w/2} ${h*.38} Q ${w*.26} ${h*.5} ${w*.1} ${h*.6}`,
+      lL:`M ${w/2} ${h*.62} Q ${w*.38} ${h*.76} ${w*.3} ${h*.95}`,
+      lR:`M ${w/2} ${h*.62} Q ${w*.64} ${h*.8} ${w*.68} ${h*.95}`,
+    },
+    squish:{
+      body:`M ${w/2} ${h*.3} Q ${w*.46} ${h*.42} ${w/2} ${h*.55}`,
+      aL:`M ${w/2} ${h*.36} Q ${w*.22} ${h*.38} ${w*.06} ${h*.42}`,
+      aR:`M ${w/2} ${h*.36} Q ${w*.78} ${h*.38} ${w*.94} ${h*.42}`,
+      lL:`M ${w*.5} ${h*.55} Q ${w*.32} ${h*.65} ${w*.18} ${h*.72}`,
+      lR:`M ${w*.5} ${h*.55} Q ${w*.68} ${h*.65} ${w*.82} ${h*.72}`,
+    },
+    ghost:{
+      body:`M ${w/2} ${h*.3} Q ${w*.44} ${h*.48} ${w/2} ${h*.65}`,
+      aL:`M ${w/2} ${h*.38} Q ${w*.28} ${h*.32} ${w*.16} ${h*.22}`,
+      aR:`M ${w/2} ${h*.38} Q ${w*.72} ${h*.32} ${w*.84} ${h*.22}`,
+      lL:`M ${w/2} ${h*.65} Q ${w*.38} ${h*.8} ${w*.34} ${h*.97}`,
+      lR:`M ${w/2} ${h*.65} Q ${w*.62} ${h*.8} ${w*.66} ${h*.97}`,
+    },
+  };
+  return poses[poseName]||poses.idle;
 }
 
-// ---- SVG ----
-function dollSVG(color, death, dead){
-  const w=220,h=280,sw=16;
-  let eyes = dead ? `
-    <line x1="${w*.42}" y1="${h*.135}" x2="${w*.48}" y2="${h*.165}" stroke="${color==="#E8E8E8"?"#222":"#1A1A1A"}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="${w*.48}" y1="${h*.135}" x2="${w*.42}" y2="${h*.165}" stroke="${color==="#E8E8E8"?"#222":"#1A1A1A"}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="${w*.52}" y1="${h*.135}" x2="${w*.58}" y2="${h*.165}" stroke="${color==="#E8E8E8"?"#222":"#1A1A1A"}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="${w*.58}" y1="${h*.135}" x2="${w*.52}" y2="${h*.165}" stroke="${color==="#E8E8E8"?"#222":"#1A1A1A"}" stroke-width="3" stroke-linecap="round"/>
-    <path d="M ${w*.45} ${h*.205} Q ${w/2} ${h*.185} ${w*.55} ${h*.205}" stroke="#1A0F1F" stroke-width="3" fill="none" stroke-linecap="round"/>
-  ` : `
-    <circle cx="${w*.45}" cy="${h*.145}" r="3" fill="#140A17"/>
-    <circle cx="${w*.55}" cy="${h*.145}" r="3" fill="#140A17"/>
-    <path d="M ${w*.45} ${h*.19} Q ${w/2} ${h*.215} ${w*.55} ${h*.19}" stroke="#140A17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+function dollSVG(color,death,dead,poseName,sizePx){
+  const w=220,h=280,sw=15;
+  const pose=getPose(poseName||'idle',w,h);
+  const eyeC=color==="#E8E8E8"?"#222":"#140A17";
+
+  const eyes=dead?`
+    <line x1="${w*.42}" y1="${h*.135}" x2="${w*.48}" y2="${h*.165}" stroke="${eyeC}" stroke-width="3" stroke-linecap="round"/>
+    <line x1="${w*.48}" y1="${h*.135}" x2="${w*.42}" y2="${h*.165}" stroke="${eyeC}" stroke-width="3" stroke-linecap="round"/>
+    <line x1="${w*.52}" y1="${h*.135}" x2="${w*.58}" y2="${h*.165}" stroke="${eyeC}" stroke-width="3" stroke-linecap="round"/>
+    <line x1="${w*.58}" y1="${h*.135}" x2="${w*.52}" y2="${h*.165}" stroke="${eyeC}" stroke-width="3" stroke-linecap="round"/>
+    <path d="M ${w*.44} ${h*.205} Q ${w/2} ${h*.185} ${w*.56} ${h*.205}" stroke="${eyeC}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  `:`
+    <circle cx="${w*.45}" cy="${h*.148}" r="3" fill="${eyeC}"/>
+    <circle cx="${w*.55}" cy="${h*.148}" r="3" fill="${eyeC}"/>
+    <path d="M ${w*.44} ${h*.192} Q ${w/2} ${h*.218} ${w*.56} ${h*.192}" stroke="${eyeC}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
   `;
+
   let fx="";
-  if(death==="fuego"){fx+=`<defs><radialGradient id="flame" cx="50%" cy="100%" r="80%"><stop offset="0%" stop-color="#FFD86B"/><stop offset="60%" stop-color="#E8602C"/><stop offset="100%" stop-color="#7A1F2B"/></radialGradient></defs>`;[.3,.5,.7].forEach(x=>{fx+=`<ellipse cx="${w*x}" cy="${h*.85}" rx="18" ry="38" fill="url(#flame)" opacity="0.85"/>`;});}
-  if(death==="agujas"){[[.35,.2],[.62,.28],[.45,.45],[.7,.55],[.3,.65]].forEach(([x,y])=>{fx+=`<line x1="${w*x}" y1="${h*y}" x2="${w*x+22}" y2="${h*y-12}" stroke="#EDE6D8" stroke-width="2.5"/>`;});}
-  if(death==="ahogo"){fx+=`<rect x="0" y="${h*.4}" width="${w}" height="${h*.6}" fill="#3A6FA8" opacity="0.35"/>`;}
-  if(death==="rayo"){fx+=`<polyline points="${w*.5},0 ${w*.4},${h*.3} ${w*.58},${h*.32} ${w*.42},${h*.62}" stroke="#FCEE6B" stroke-width="9" fill="none" stroke-linejoin="round"/>`;}
-  if(death==="aplastado"){fx+=`<ellipse cx="${w/2}" cy="${h*.1}" rx="76" ry="38" fill="#5C5C5C"/>`;}
-  if(death==="fantasma"){fx+=`<text x="${w*.55}" y="${h*.1}" font-size="40">👻</text>`;}
-  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+  if(death==="fuego"){
+    fx+=`<defs><radialGradient id="fl" cx="50%" cy="100%" r="80%"><stop offset="0%" stop-color="#FFD86B"/><stop offset="55%" stop-color="#E8602C"/><stop offset="100%" stop-color="#7A1F2B"/></radialGradient></defs>`;
+    [[.28,.88,20,42],[.5,.84,16,46],[.72,.88,20,42]].forEach(([x,y,rx,ry])=>{
+      fx+=`<ellipse class="fl" cx="${w*x}" cy="${h*y}" rx="${rx}" ry="${ry}" fill="url(#fl)" opacity="0.9"/>`;
+    });
+  }
+  if(death==="agujas"){
+    [[.33,.22],[.6,.3],[.43,.47],[.72,.57],[.28,.67],[.55,.78]].forEach(([x,y])=>{
+      fx+=`<g class="needle"><line x1="${w*x}" y1="${h*y}" x2="${w*x+24}" y2="${h*y-14}" stroke="#EDE6D8" stroke-width="2.5"/>
+      <circle cx="${w*x+24}" cy="${h*y-14}" r="2" fill="#EDE6D8"/></g>`;
+    });
+  }
+  if(death==="ahogo"){
+    fx+=`<defs><linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3A6FA8" stop-opacity=".5"/><stop offset="100%" stop-color="#1A3F6A" stop-opacity=".7"/></linearGradient></defs>`;
+    fx+=`<rect x="0" y="${h*.42}" width="${w}" height="${h*.58}" fill="url(#water)"/>`;
+    fx+=`<ellipse cx="${w/2}" cy="${h*.42}" rx="${w*.55}" ry="10" fill="none" stroke="#6AAFE0" stroke-width="2" opacity=".5"/>`;
+  }
+  if(death==="rayo"){
+    fx+=`<defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+    fx+=`<polyline filter="url(#glow)" points="${w*.52},${h*.02} ${w*.38},${h*.3} ${w*.58},${h*.32} ${w*.4},${h*.65}" stroke="#FCEE6B" stroke-width="10" fill="none" stroke-linejoin="round" opacity=".95"/>`;
+    fx+=`<polyline points="${w*.52},${h*.02} ${w*.38},${h*.3} ${w*.58},${h*.32} ${w*.4},${h*.65}" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round" opacity=".6"/>`;
+  }
+  if(death==="aplastado"){
+    fx+=`<defs><linearGradient id="rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7A7A7A"/><stop offset="100%" stop-color="#3A3A3A"/></linearGradient></defs>`;
+    fx+=`<ellipse cx="${w/2}" cy="${h*.09}" rx="80" ry="42" fill="url(#rock)"/>`;
+    fx+=`<ellipse cx="${w/2}" cy="${h*.09}" rx="80" ry="42" fill="none" stroke="#555" stroke-width="1.5"/>`;
+    [[-.3,-.1],[.2,.05],[-.1,.15]].forEach(([dx,dy])=>{
+      fx+=`<line x1="${w/2+dx*w}" y1="${h*.12+dy*h}" x2="${w/2+dx*w+20}" y2="${h*.18+dy*h}" stroke="#555" stroke-width="1" opacity=".5"/>`;
+    });
+  }
+  if(death==="fantasma"){
+    fx+=`<text x="${w*.55}" y="${h*.08}" font-size="44" opacity=".85">👻</text>`;
+    fx+=`<ellipse cx="${w*.62}" cy="${h*.2}" rx="18" ry="8" fill="white" opacity=".06"/>`;
+  }
+
+  const anim = poseName==='ghost' ? 'class="doll-anim-ghost"' : '';
+  const px=sizePx||120;
+  const wh=`width="${px}" height="${Math.round(px*280/220)}"`;
+  return `<div class="doll-wrap" ${anim} style="width:${px}px;height:${Math.round(px*280/220)}px;position:relative;">
+  <svg viewBox="0 0 ${w} ${h}" ${wh} xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
     ${fx}
     <g stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <circle cx="${w/2}" cy="${h*.16}" r="${w*.16}" fill="${color}" stroke="none"/>
-      <path d="M ${w/2} ${h*.3} Q ${w*.46} ${h*.46} ${w/2} ${h*.62}"/>
-      <path d="M ${w/2} ${h*.38} Q ${w*.3} ${h*.4} ${w*.24} ${h*.52}"/>
-      <path d="M ${w/2} ${h*.38} Q ${w*.7} ${h*.4} ${w*.76} ${h*.52}"/>
-      <path d="M ${w/2} ${h*.62} Q ${w*.34} ${h*.78} ${w*.28} ${h*.95}"/>
-      <path d="M ${w/2} ${h*.62} Q ${w*.66} ${h*.78} ${w*.72} ${h*.95}"/>
-    </g>${eyes}</svg>`;
-}
-
-function strokesSVG(strokes){
-  if(!strokes||!strokes.length) return "";
-  return `<svg viewBox="0 0 220 280" width="100%" height="100%" style="position:absolute;top:0;left:0;">${
-    strokes.map(s=>`<polyline points="${s.puntos.map(p=>`${p.x},${p.y}`).join(" ")}" stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join("")
-  }</svg>`;
-}
-
-function doll(color, death, strokes, dead, sizePx){
-  return `<div class="doll-wrap" style="width:${sizePx}px;height:${sizePx*280/220}px;position:relative;">
-    ${dollSVG(color, death==="dibujo"?null:death, dead)}
-    ${death==="dibujo"?strokesSVG(strokes):""}
+      <circle cx="${w/2}" cy="${h*.16}" r="${w*.155}" fill="${color}" stroke="none"/>
+      <path d="${pose.body}"/>
+      <path d="${pose.aL}"/>
+      <path d="${pose.aR}"/>
+      <path d="${pose.lL}"/>
+      <path d="${pose.lR}"/>
+    </g>
+    ${eyes}
+  </svg>
   </div>`;
 }
 
-// ---- Data ----
+function dollWithDrawing(color,death,strokes,dead,poseName,sizePx){
+  if(death!=="dibujo") return dollSVG(color,death,dead,poseName,sizePx);
+  const px=sizePx||120;
+  const ht=Math.round(px*280/220);
+  const polys=(strokes||[]).map(s=>{
+    const pts=s.puntos.map(p=>`${p.x},${p.y}`).join(" ");
+    return `<polyline points="${pts}" stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`;
+  }).join("");
+  return `<div class="doll-wrap" style="width:${px}px;height:${ht}px;position:relative;">
+    ${dollSVG(color,null,dead,'idle',px)}
+    <svg viewBox="0 0 220 280" width="${px}" height="${ht}" style="position:absolute;top:0;left:0;">${polys}</svg>
+  </div>`;
+}
+
+// ── Data ─────────────────────────────────────────────
 async function loadProfile(){
-  const {data} = await sb.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
-  currentProfile = data;
+  const {data}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+  profile=data;
 }
-
 async function loadTodayPost(){
-  const {data} = await sb.from('posts').select('*').eq('user_id',currentUser.id).eq('post_date',todayStr()).maybeSingle();
-  todayPost = data;
+  const {data}=await sb.from('posts').select('*').eq('user_id',user.id).eq('post_date',today()).maybeSingle();
+  todayPost=data;
 }
-
 async function loadFeed(){
-  const {data:posts} = await sb.from('posts').select('*').eq('post_date',todayStr()).order('created_at',{ascending:false});
-  feedData = posts||[];
-  const {data:deps} = await sb.from('deps').select('post_id').eq('user_id',currentUser.id);
-  myDeps = new Set((deps||[]).map(d=>d.post_id));
+  const {data:posts}=await sb.from('posts').select('*').eq('post_date',today()).order('created_at',{ascending:false});
+  feedData=posts||[];
+  const {data:deps}=await sb.from('deps').select('post_id').eq('user_id',user.id);
+  myDeps=new Set((deps||[]).map(d=>d.post_id));
 }
-
-async function submitPost(postData){
-  const today = todayStr();
-  let newStreak = 1;
-  if(currentProfile.last_post_date === yesterdayStr()) newStreak = (currentProfile.streak||0)+1;
-
-  const {data,error} = await sb.from('posts').insert({
-    user_id: currentUser.id,
-    username: currentProfile.username,
-    razon: postData.razon,
-    castigo: postData.castigo,
-    dibujo_trazos: postData.dibujo ? postData.dibujo.trazos : null,
-    dibujo_descripcion: postData.dibujo ? postData.dibujo.descripcion : null,
-    doll_color: currentProfile.doll_color,
-    post_date: today,
+async function submitPost(pd){
+  const t=today(),y=yesterday();
+  const newStreak=(profile.last_post_date===y)?(profile.streak||0)+1:1;
+  const {data,error}=await sb.from('posts').insert({
+    user_id:user.id,username:profile.username,razon:pd.razon,castigo:pd.castigo,
+    dibujo_trazos:pd.dibujo?.trazos||null,dibujo_descripcion:pd.dibujo?.descripcion||null,
+    doll_color:profile.doll_color,post_date:t,
   }).select().single();
-
-  if(error){ alert('Error: '+error.message); return; }
-
-  await sb.from('profiles').update({streak:newStreak,last_post_date:today}).eq('id',currentUser.id);
-  currentProfile.streak = newStreak;
-  currentProfile.last_post_date = today;
-  todayPost = data;
-  view = "posted";
-  renderApp();
+  if(error){alert('Error: '+error.message);return;}
+  await sb.from('profiles').update({streak:newStreak,last_post_date:t}).eq('id',user.id);
+  profile.streak=newStreak;profile.last_post_date=t;
+  todayPost=data;view='posted';paint();
 }
-
-async function toggleDep(postId){
-  if(myDeps.has(postId)){
-    await sb.from('deps').delete().eq('post_id',postId).eq('user_id',currentUser.id);
-    myDeps.delete(postId);
-    const p = feedData.find(x=>x.id===postId);
-    if(p) p.dep_count = Math.max(0,(p.dep_count||0)-1);
-  } else {
-    await sb.from('deps').insert({post_id:postId,user_id:currentUser.id});
-    myDeps.add(postId);
-    const p = feedData.find(x=>x.id===postId);
-    if(p) p.dep_count = (p.dep_count||0)+1;
+async function toggleDep(pid){
+  if(myDeps.has(pid)){
+    await sb.from('deps').delete().eq('post_id',pid).eq('user_id',user.id);
+    myDeps.delete(pid);
+    const p=feedData.find(x=>x.id===pid);if(p)p.dep_count=Math.max(0,(p.dep_count||0)-1);
+  }else{
+    await sb.from('deps').insert({post_id:pid,user_id:user.id});
+    myDeps.add(pid);
+    const p=feedData.find(x=>x.id===pid);if(p)p.dep_count=(p.dep_count||0)+1;
   }
-  renderApp();
+  paint();
 }
 
-// ---- Auth ----
-async function doSignUp(email,pass,username){
-  const {data:ex} = await sb.from('profiles').select('id').eq('username',username).maybeSingle();
-  if(ex) return 'Ese nombre ya está en uso';
-  const {error} = await sb.auth.signUp({email,password:pass,options:{data:{username}}});
-  if(error) return error.message;
+// ── Auth ──────────────────────────────────────────────
+async function doSignUp(email,pass,uname){
+  const {data:ex}=await sb.from('profiles').select('id').eq('username',uname).maybeSingle();
+  if(ex)return'Ese nombre ya está en uso';
+  const {error}=await sb.auth.signUp({email,password:pass,options:{data:{username:uname}}});
+  if(error)return error.message;
   return null;
 }
-
 async function doSignIn(email,pass){
-  const {error} = await sb.auth.signInWithPassword({email,password:pass});
-  if(error) return error.message;
+  const {error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error)return error.message;
   return null;
 }
 
-// ---- Renders ----
-function hdr(t,s){return `<h1 class="title">${t}</h1><p class="sub">${s}</p>`;}
-
-function renderLoading(){
-  ge('root').innerHTML=`<div class="loading-wrap"><div class="spinner"></div></div>`;
-}
+// ── Renders ───────────────────────────────────────────
+function hdr(t,s){return `<div class="page-title cinzel">${t}</div>${s?`<div class="page-sub">${s}</div>`:''}${s?'<div class="divider"></div>':''}`;}
 
 function renderAuth(){
-  const login = authTab==="login";
+  const login=authTab==='login';
   ge('root').innerHTML=`
-  <div class="auth-wrap">
-    <div class="auth-logo">VUDÚ<span>REAL</span></div>
-    <p class="auth-sub">Una desgracia al día,<br>un castigo para tu muñeco</p>
-    <div class="auth-tabs">
-      <button class="auth-tab ${login?'active':''}" id="tabLogin">Entrar</button>
-      <button class="auth-tab ${!login?'active':''}" id="tabReg">Registrarse</button>
+  <div class="auth-page">
+    <div class="auth-brand">
+      <h1 class="cinzel">VUDÚ<span>REAL</span></h1>
+      <p>Una desgracia al día · Un castigo para tu muñeco</p>
     </div>
-    ${!login?`<div class="auth-field"><label>Nombre de usuario</label><input type="text" id="aUser" placeholder="como quieres que te vean" maxlength="20"/></div>`:''}
-    <div class="auth-field"><label>Email</label><input type="email" id="aEmail" placeholder="tu@email.com"/></div>
-    <div class="auth-field"><label>Contraseña</label><input type="password" id="aPass" placeholder="mínimo 6 caracteres"/></div>
-    <div class="auth-err" id="aErr"></div>
-    <button class="btn-main" id="btnAuth">${login?'Entrar →':'Crear cuenta →'}</button>
+    <div class="auth-doll">${dollSVG(DOLL_COLORS[0],null,false,'idle',100)}</div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab ${login?'on':''}" id="tLogin">Entrar</button>
+        <button class="auth-tab ${!login?'on':''}" id="tReg">Registrarse</button>
+      </div>
+      ${!login?`<div class="field"><label>Nombre de usuario</label><input type="text" id="aUser" placeholder="como quieres que te vean" maxlength="20"/></div>`:''}
+      <div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="tu@email.com"/></div>
+      <div class="field"><label>Contraseña</label><input type="password" id="aPass" placeholder="mínimo 6 caracteres"/></div>
+      <div class="auth-err" id="aErr"></div>
+      <button class="btn btn-blood" id="btnAuth">${login?'Entrar →':'Crear cuenta →'}</button>
+    </div>
   </div>`;
-
-  ge('tabLogin').onclick=()=>{authTab='login';renderAuth();};
-  ge('tabReg').onclick=()=>{authTab='register';renderAuth();};
+  ge('tLogin').onclick=()=>{authTab='login';renderAuth();};
+  ge('tReg').onclick=()=>{authTab='register';renderAuth();};
   ge('btnAuth').onclick=async()=>{
-    const btn=ge('btnAuth'), err=ge('aErr');
-    const email=(ge('aEmail').value||'').trim();
-    const pass=ge('aPass').value||'';
-    btn.disabled=true; btn.textContent='...'; err.textContent='';
+    const btn=ge('btnAuth'),err=ge('aErr');
+    const email=(ge('aEmail').value||'').trim(),pass=ge('aPass').value||'';
+    btn.disabled=true;btn.textContent='...';err.textContent='';
     let e;
-    if(authTab==='login'){
-      e=await doSignIn(email,pass);
-    } else {
+    if(authTab==='login'){e=await doSignIn(email,pass);}
+    else{
       const u=(ge('aUser').value||'').trim();
       if(!u){err.textContent='Pon un nombre de usuario';btn.disabled=false;btn.textContent='Crear cuenta →';return;}
       e=await doSignUp(email,pass,u);
@@ -329,73 +452,93 @@ function renderAuth(){
   };
 }
 
-function renderApp(){
-  const streak = currentProfile?.streak||0;
-  let content='';
-  if(view==='home') content=renderHome();
-  else if(view==='muerte') content=renderMuerte();
-  else if(view==='dibujo') content=renderDibujo();
-  else if(view==='posted') content=renderPosted();
-  else if(view==='feed') content=renderFeed();
-  else if(view==='ajustes') content=renderAjustes();
-
+function shell(content){
+  const streak=profile?.streak||0;
+  const inMain=['home','muerte','dibujo','posted'].includes(view);
   ge('root').innerHTML=`
   <div class="topbar">
-    <span class="logo">VUDÚ<span>REAL</span></span>
-    <div style="display:flex;align-items:center;gap:10px;">
-      ${streak>0?`<span style="color:var(--wax);font-size:13px;font-weight:700;">🔥 ${streak}</span>`:''}
-      <button class="gear" id="btnAjustes">⚙️</button>
+    <span class="logo cinzel">VUDÚ<span>REAL</span></span>
+    <div class="topbar-right">
+      ${streak>0?`<div class="streak-badge">🔥 ${streak} días</div>`:''}
+      <button class="gear-btn" id="btnGear">⚙️</button>
     </div>
   </div>
   <div id="app">${content}</div>
   <div class="bottomnav">
-    <button class="navbtn ${['home','muerte','dibujo','posted'].includes(view)?'active':''}" id="navHoy">🪦 Hoy</button>
-    <button class="navbtn ${view==='feed'?'active':''}" id="navFeed">🕯️ Feed</button>
+    <button class="navbtn ${inMain?'on':''}" id="navHoy">
+      <span class="nicon">🪦</span><span>Hoy</span>
+    </button>
+    <button class="navbtn ${view==='feed'?'on':''}" id="navFeed">
+      <span class="nicon">🕯️</span><span>Feed</span>
+    </button>
   </div>`;
-
-  ge('btnAjustes').onclick=()=>{view='ajustes';renderApp();};
-  ge('navHoy').onclick=()=>{view='home';renderApp();};
-  ge('navFeed').onclick=async()=>{await loadFeed();view='feed';renderApp();};
+  ge('btnGear').onclick=()=>{view='ajustes';paint();};
+  ge('navHoy').onclick=()=>{view='home';paint();};
+  ge('navFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
   attachListeners();
-  if(view==='dibujo') setupCanvas();
+  if(view==='dibujo')setupCanvas();
+}
+
+function paint(){
+  if(view==='loading'){ge('root').innerHTML='<div class="page-load"><div class="load-logo cinzel">VUDÚ<span>REAL</span></div><div class="spinner"></div></div>';return;}
+  if(view==='auth'){renderAuth();return;}
+  let c='';
+  if(view==='home')c=renderHome();
+  else if(view==='muerte')c=renderMuerte();
+  else if(view==='dibujo')c=renderDibujo();
+  else if(view==='posted')c=renderPosted();
+  else if(view==='feed')c=renderFeed();
+  else if(view==='ajustes')c=renderAjustes();
+  shell(c);
 }
 
 function renderHome(){
+  const dc=profile.doll_color;
   if(todayPost){
     const p=todayPost;
     const lbl=p.castigo==='dibujo'?`✏️ ${p.dibujo_descripcion}`:DEATH_LABELS[p.castigo];
+    const death=DEATHS.find(d=>d.id===p.castigo);
+    const pose=death?.pose||'idle';
     return `<div class="screen" style="text-align:center;">
-      ${hdr("Hoy ya está hecho",`"${p.razon}"`)}
-      <div class="center" style="margin:24px 0;">${doll(currentProfile.doll_color,p.castigo,p.dibujo_trazos,true,150)}</div>
-      <p style="color:var(--wax);font-size:13px;font-weight:700;">${lbl}</p>
-      <p style="color:var(--smokeLight);font-size:13px;">Tus amigos ya pueden darle DEP 🕯️</p>
-      <button class="btn-wax" id="goFeed">Ver el feed</button>
+      ${hdr("Hoy ya está hecho",`${p.razon}`)}
+      <div style="display:flex;justify-content:center;margin:28px 0;">
+        ${dollWithDrawing(dc,p.castigo,p.dibujo_trazos,true,pose,160)}
+      </div>
+      <div class="card-done">
+        <div style="color:var(--wax);font-weight:800;font-size:14px;letter-spacing:.3px;margin-bottom:4px;">${lbl}</div>
+        <div style="color:var(--smokeL);font-size:12px;">Tus amigos ya pueden darle DEP 🕯️</div>
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:20px;">
+        <button class="btn-wax" id="goFeed">Ver el feed</button>
+      </div>
     </div>`;
   }
-  return `<div class="screen">
+  return `<div class="screen" style="text-align:center;">
     ${hdr("¿Qué te ha pasado hoy?","Solo puedes contar 1 desgracia al día")}
-    <div class="center" style="margin:18px 0;">${doll(currentProfile.doll_color,null,null,false,100)}</div>
-    <button class="btn-main" id="empezar">Empezar →</button>
+    <div class="doll-anim-breathe" style="display:flex;justify-content:center;margin:32px 0;">
+      ${dollSVG(dc,null,false,'idle',130)}
+    </div>
+    <button class="btn btn-blood" id="empezar">Empezar →</button>
   </div>`;
 }
 
 function renderMuerte(){
-  const streak=currentProfile?.streak||0;
+  const streak=profile?.streak||0;
   const cards=DEATHS.map(d=>{
     const ok=streak>=d.min;
-    return `<div class="${ok?'death-card unlocked':'death-card locked'}" data-death="${ok?d.id:''}">
-      ${doll(currentProfile.doll_color,ok?d.id:null,null,false,56)}
-      <span class="label">${d.emoji} ${d.label}</span>
-      ${!ok?`<span class="streak-req">racha de ${d.min} días</span>`:''}
+    return `<div class="death-card ${ok?'on':'off'}" data-death="${ok?d.id:''}">
+      ${dollSVG(profile.doll_color,ok?d.id:null,ok,ok?d.pose:'idle',68)}
+      <span class="dlabel">${d.emoji} ${d.label}</span>
+      ${!ok?`<span class="dreq">racha ${d.min} días</span>`:''}
     </div>`;
   }).join('');
   return `<div class="screen">
-    ${hdr("Elige su castigo","Vas desbloqueando formas con tu racha")}
-    <div class="grid2" id="deathGrid">
+    ${hdr("Elige su castigo","Los castigos se desbloquean con tu racha diaria")}
+    <div class="grid2">
       ${cards}
       <div class="draw-card" id="drawCard">
-        <span style="font-size:22px;">✏️</span>
-        <span class="lbl">Dibujar el castigo</span>
+        <span style="font-size:28px;">✏️</span>
+        <div><div class="dlabel">Modo libre</div><div style="color:var(--smokeL);font-size:11px;margin-top:2px;">Dibuja el castigo tú mismo</div></div>
       </div>
     </div>
   </div>`;
@@ -403,17 +546,17 @@ function renderMuerte(){
 
 function renderDibujo(){
   return `<div class="screen">
-    ${hdr("Modo libre","Cuéntanos qué pasó y dibuja qué le haces")}
+    ${hdr("Modo libre","Escribe qué pasó y dibuja qué le haces")}
     <textarea id="razonDibujo" placeholder="¿qué te ha pasado hoy?" maxlength="120">${draftRazon}</textarea>
     <div class="charcount" id="razonCount">${draftRazon.length}/120</div>
-    <div class="center" style="margin-top:14px;"><canvas id="drawCanvas" width="220" height="280"></canvas></div>
-    <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'active':''}" data-color="${c}" style="background:${c};"></button>`).join('')}</div>
+    <div style="display:flex;justify-content:center;margin-top:14px;"><canvas id="drawCanvas" width="220" height="280"></canvas></div>
+    <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}</div>
     <div class="widths">
-      ${LINE_WIDTHS.map((w,i)=>`<button class="width-btn ${i===1?'active':''}" data-width="${w}"><span class="width-dot" style="width:${w+4}px;height:${w+4}px;"></span></button>`).join('')}
+      ${LINE_WIDTHS.map((w,i)=>`<button class="wbtn ${i===1?'on':''}" data-width="${w}"><span class="wdot" style="width:${w+4}px;height:${w+4}px;"></span></button>`).join('')}
       <button class="clearbtn" id="clearCanvas">limpiar</button>
     </div>
-    <input type="text" id="descDibujo" placeholder="¿qué le has hecho?" maxlength="80" style="margin-top:12px;"/>
-    <div class="center" style="margin-top:14px;"><button class="btn-wax" id="guardarDibujo" disabled>Publicar</button></div>
+    <div style="margin-top:14px;"><input type="text" id="descDibujo" placeholder="¿qué le has hecho? ej: le he dibujado un coche encima" maxlength="80"/></div>
+    <div style="display:flex;justify-content:center;margin-top:16px;"><button class="btn-wax" id="guardarDibujo" disabled>Publicar</button></div>
     <button class="backlink" id="volverFormas">← volver a las formas</button>
   </div>`;
 }
@@ -421,32 +564,42 @@ function renderDibujo(){
 function renderPosted(){
   const p=todayPost;
   const lbl=p.castigo==='dibujo'?`✏️ ${p.dibujo_descripcion}`:DEATH_LABELS[p.castigo];
+  const death=DEATHS.find(d=>d.id===p.castigo);
   return `<div class="screen" style="text-align:center;">
-    ${hdr("Publicado",`Hoy le tocó: ${p.razon}`)}
-    <div class="center" style="margin:24px 0;">${doll(currentProfile.doll_color,p.castigo,p.dibujo_trazos,true,150)}</div>
-    <p style="color:var(--wax);font-size:13px;font-weight:700;">${lbl}</p>
-    <p style="color:var(--smokeLight);font-size:13px;">Tus amigos ya pueden darle DEP 🕯️</p>
-    <button class="btn-wax" id="irAlFeed">Ver el feed</button>
+    ${hdr("Publicado 🕯️",null)}
+    <div style="display:flex;justify-content:center;margin:28px 0;">
+      ${dollWithDrawing(profile.doll_color,p.castigo,p.dibujo_trazos,true,death?.pose||'idle',160)}
+    </div>
+    <div class="card-done">
+      <div style="color:var(--smokeL);font-style:italic;font-size:13px;margin-bottom:6px;">"${p.razon}"</div>
+      <div style="color:var(--wax);font-weight:800;font-size:14px;">${lbl}</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-top:20px;">
+      <button class="btn-wax" id="irAlFeed">Ver el feed</button>
+    </div>
   </div>`;
 }
 
 function renderFeed(){
-  if(!feedData.length) return `<div class="screen">${hdr("Feed","Lo de hoy, de tu gente")}<p style="color:var(--smokeLight);text-align:center;margin-top:40px;">Nadie ha publicado hoy todavía 🕯️</p></div>`;
+  if(!feedData.length)return`<div class="screen">${hdr("Feed","Lo de hoy, de tu gente")}<div style="text-align:center;color:var(--smokeL);margin-top:50px;font-size:14px;">Nadie ha publicado hoy todavía 🕯️<br><span style="font-size:12px;opacity:.6;">¡Sé el primero!</span></div></div>`;
   const cards=feedData.map(item=>{
     const lbl=item.castigo==='dibujo'?`✏️ ${item.dibujo_descripcion}`:DEATH_LABELS[item.castigo];
-    const given=myDeps.has(item.id);
-    const own=item.user_id===currentUser.id;
+    const given=myDeps.has(item.id),own=item.user_id===user.id;
+    const death=DEATHS.find(d=>d.id===item.castigo);
+    const pose=death?.pose||'idle';
     return `<div class="feed-card">
       <div class="feed-head">
-        <div class="avatar" style="background:${item.doll_color};"></div>
+        <div class="avatar" style="background:${item.doll_color};">${initials(item.username)}</div>
         <div><div class="feed-name">${item.username}</div><div class="feed-time">${timeAgo(item.created_at)}</div></div>
       </div>
-      <p class="feed-razon">"${item.razon}"</p>
-      <p class="feed-castigo">${lbl}</p>
-      <div class="center" style="margin:10px 0;">${doll(item.doll_color,item.castigo,item.dibujo_trazos,true,80)}</div>
+      <p class="feed-razon">${item.razon}</p>
+      <span class="feed-castigo">${lbl}</span>
+      <div style="display:flex;justify-content:center;margin:12px 0;">
+        ${dollWithDrawing(item.doll_color,item.castigo,item.dibujo_trazos,true,pose,90)}
+      </div>
       ${own
-        ? `<div style="text-align:center;color:var(--smokeLight);font-size:12px;">🕯️ ${item.dep_count||0} DEPs</div>`
-        : `<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">🕯️ DEP <span class="dep-count">${item.dep_count||0}</span></button>`}
+        ?`<div class="own-dep">🕯️ ${item.dep_count||0} ${item.dep_count===1?'DEP':'DEPs'}</div>`
+        :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">🕯️ DEP <span class="dep-count">${item.dep_count||0}</span></button>`}
     </div>`;
   }).join('');
   return `<div class="screen">${hdr("Feed","Lo de hoy, de tu gente")}<div style="margin-top:16px;">${cards}</div></div>`;
@@ -454,11 +607,16 @@ function renderFeed(){
 
 function renderAjustes(){
   return `<div class="screen">
-    ${hdr("Ajustes",`@${currentProfile.username} · Racha: ${currentProfile.streak||0} días 🔥`)}
-    <div class="center" style="margin:20px 0;">${doll(currentProfile.doll_color,null,null,false,110)}</div>
-    <div class="colorpick">
-      ${DOLL_COLORS.map(c=>`<button class="colorcircle ${c===currentProfile.doll_color?'active':''}" data-color="${c}" style="background:${c};"></button>`).join('')}
+    ${hdr("Ajustes",`@${profile.username}`)}
+    <div style="display:flex;justify-content:center;margin:24px 0;">
+      ${dollSVG(profile.doll_color,null,false,'idle',120)}
     </div>
+    <div style="text-align:center;margin-bottom:6px;color:var(--smokeL);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Color del muñeco</div>
+    <div class="colorpick">${DOLL_COLORS.map(c=>`<button class="ccircle ${c===profile.doll_color?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}</div>
+    <div style="height:1px;background:var(--smoke);margin:28px 0;"></div>
+    <div style="color:var(--smokeL);font-size:13px;text-align:center;margin-bottom:6px;">Racha actual</div>
+    <div style="text-align:center;font-size:28px;font-weight:900;color:var(--wax);font-family:'Cinzel',serif;">${profile.streak||0} 🔥</div>
+    <div style="height:1px;background:var(--smoke);margin:28px 0;"></div>
     <button class="btn-ghost" id="btnLogout">Cerrar sesión</button>
     <button class="backlink" id="volverAjustes">← volver</button>
   </div>`;
@@ -466,22 +624,22 @@ function renderAjustes(){
 
 function attachListeners(){
   if(view==='home'){
-    if(ge('empezar')) ge('empezar').onclick=()=>{view='muerte';renderApp();};
-    if(ge('goFeed')) ge('goFeed').onclick=async()=>{await loadFeed();view='feed';renderApp();};
+    if(ge('empezar'))ge('empezar').onclick=()=>{view='muerte';paint();};
+    if(ge('goFeed'))ge('goFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
   }
   if(view==='muerte'){
-    document.querySelectorAll('.death-card.unlocked').forEach(c=>{
+    document.querySelectorAll('.death-card.on').forEach(c=>{
       c.onclick=()=>promptRazon(c.getAttribute('data-death'));
     });
-    if(ge('drawCard')) ge('drawCard').onclick=()=>{view='dibujo';renderApp();};
+    if(ge('drawCard'))ge('drawCard').onclick=()=>{view='dibujo';paint();};
   }
   if(view==='dibujo'){
     ge('razonDibujo').oninput=e=>{draftRazon=e.target.value;ge('razonCount').textContent=`${draftRazon.length}/120`;checkDraw();};
     ge('descDibujo').oninput=checkDraw;
-    ge('volverFormas').onclick=()=>{view='muerte';renderApp();};
+    ge('volverFormas').onclick=()=>{view='muerte';paint();};
   }
   if(view==='posted'){
-    if(ge('irAlFeed')) ge('irAlFeed').onclick=async()=>{await loadFeed();view='feed';renderApp();};
+    if(ge('irAlFeed'))ge('irAlFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
   }
   if(view==='feed'){
     document.querySelectorAll('.dep-btn').forEach(b=>{
@@ -489,29 +647,32 @@ function attachListeners(){
     });
   }
   if(view==='ajustes'){
-    document.querySelectorAll('.colorcircle').forEach(c=>{
+    document.querySelectorAll('.ccircle').forEach(c=>{
       c.onclick=async()=>{
-        currentProfile.doll_color=c.getAttribute('data-color');
-        await sb.from('profiles').update({doll_color:currentProfile.doll_color}).eq('id',currentUser.id);
-        renderApp();
+        profile.doll_color=c.getAttribute('data-color');
+        await sb.from('profiles').update({doll_color:profile.doll_color}).eq('id',user.id);
+        paint();
       };
     });
-    if(ge('volverAjustes')) ge('volverAjustes').onclick=()=>{view=todayPost?'feed':'home';renderApp();};
-    if(ge('btnLogout')) ge('btnLogout').onclick=async()=>{
+    if(ge('volverAjustes'))ge('volverAjustes').onclick=()=>{view=todayPost?'feed':'home';paint();};
+    if(ge('btnLogout'))ge('btnLogout').onclick=async()=>{
       await sb.auth.signOut();
-      currentUser=null;currentProfile=null;todayPost=null;feedData=[];myDeps=new Set();
-      view='auth';renderAuth();
+      user=null;profile=null;todayPost=null;feedData=[];myDeps=new Set();
+      view='auth';paint();
     };
   }
 }
 
 function promptRazon(death){
-  ge('app').innerHTML=`<div class="screen">
+  const d=DEATHS.find(x=>x.id===death);
+  ge('app').innerHTML=`<div class="screen" style="text-align:center;">
     ${hdr("¿Qué te ha pasado hoy?","Para acompañar el castigo elegido")}
-    <div class="center" style="margin:18px 0;">${doll(currentProfile.doll_color,death,null,false,90)}</div>
-    <textarea id="razonFinal" placeholder="ej: se me ha caído el café al suelo..." maxlength="120"></textarea>
+    <div style="display:flex;justify-content:center;margin:24px 0;">
+      ${dollSVG(profile.doll_color,death,true,d?.pose||'idle',110)}
+    </div>
+    <textarea id="razonFinal" placeholder="ej: se me ha caído el café al suelo..." maxlength="120" style="text-align:left;"></textarea>
     <div class="charcount" id="razonFinalCount">0/120</div>
-    <button class="btn-main" id="publicarFinal" disabled>Publicar →</button>
+    <button class="btn btn-blood" id="publicarFinal" disabled style="margin-top:14px;">Publicar →</button>
   </div>`;
   const ta=ge('razonFinal'),btn=ge('publicarFinal'),cnt=ge('razonFinalCount');
   ta.oninput=()=>{cnt.textContent=`${ta.value.length}/120`;btn.disabled=!ta.value.trim();};
@@ -519,32 +680,29 @@ function promptRazon(death){
 }
 
 function checkDraw(){
-  const r=ge('razonDibujo')?.value.trim();
-  const d=ge('descDibujo')?.value.trim();
+  const r=ge('razonDibujo')?.value.trim(),d=ge('descDibujo')?.value.trim();
   const has=window.__strokes&&window.__strokes.length>0;
-  const b=ge('guardarDibujo');
-  if(b) b.disabled=!(r&&d&&has);
+  const b=ge('guardarDibujo');if(b)b.disabled=!(r&&d&&has);
 }
 
 function setupCanvas(){
-  const canvas=ge('drawCanvas');
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  let drawing=false,curColor=LINE_COLORS[0],curWidth=LINE_WIDTHS[1],current=null;
+  const cv=ge('drawCanvas');if(!cv)return;
+  const ctx=cv.getContext('2d');
+  let drawing=false,curC=LINE_COLORS[0],curW=LINE_WIDTHS[1],cur=null;
   window.__strokes=[];
 
   function guide(){
     ctx.clearRect(0,0,220,280);
-    ctx.save();ctx.globalAlpha=.45;ctx.strokeStyle=currentProfile.doll_color;ctx.fillStyle=currentProfile.doll_color;
-    ctx.lineWidth=14;ctx.lineCap='round';ctx.lineJoin='round';
-    const w=220,h=280;
-    ctx.beginPath();ctx.arc(w/2,h*.16,w*.16,0,Math.PI*2);ctx.fill();
+    ctx.save();ctx.globalAlpha=.35;ctx.strokeStyle=profile.doll_color;ctx.fillStyle=profile.doll_color;
+    ctx.lineWidth=13;ctx.lineCap='round';ctx.lineJoin='round';
+    const w=220,h=280,pose=getPose('idle',w,h);
+    ctx.beginPath();ctx.arc(w/2,h*.16,w*.155,0,Math.PI*2);ctx.fill();
     ctx.beginPath();
-    ctx.moveTo(w/2,h*.3);ctx.quadraticCurveTo(w*.46,h*.46,w/2,h*.62);
-    ctx.moveTo(w/2,h*.38);ctx.quadraticCurveTo(w*.3,h*.4,w*.24,h*.52);
-    ctx.moveTo(w/2,h*.38);ctx.quadraticCurveTo(w*.7,h*.4,w*.76,h*.52);
-    ctx.moveTo(w/2,h*.62);ctx.quadraticCurveTo(w*.34,h*.78,w*.28,h*.95);
-    ctx.moveTo(w/2,h*.62);ctx.quadraticCurveTo(w*.66,h*.78,w*.72,h*.95);
+    [pose.body,pose.aL,pose.aR,pose.lL,pose.lR].forEach(p=>{
+      const m=p.match(/M ([0-9.]+) ([0-9.]+)/);
+      const q=p.match(/Q ([0-9.]+) ([0-9.]+) ([0-9.]+) ([0-9.]+)/);
+      if(m&&q){ctx.moveTo(+m[1],+m[2]);ctx.quadraticCurveTo(+q[1],+q[2],+q[3],+q[4]);}
+    });
     ctx.stroke();ctx.restore();
   }
 
@@ -557,35 +715,33 @@ function setupCanvas(){
   }
 
   function pos(e){
-    const r=canvas.getBoundingClientRect(),t=e.touches?e.touches[0]:e;
-    return{x:(t.clientX-r.left)*(canvas.width/r.width),y:(t.clientY-r.top)*(canvas.height/r.height)};
+    const r=cv.getBoundingClientRect(),t=e.touches?e.touches[0]:e;
+    return{x:(t.clientX-r.left)*(cv.width/r.width),y:(t.clientY-r.top)*(cv.height/r.height)};
   }
 
-  canvas.addEventListener('mousedown',e=>{e.preventDefault();drawing=true;current={puntos:[pos(e)],color:curColor,grosor:curWidth};});
-  canvas.addEventListener('mousemove',e=>{
+  cv.addEventListener('mousedown',e=>{e.preventDefault();drawing=true;cur={puntos:[pos(e)],color:curC,grosor:curW};});
+  cv.addEventListener('mousemove',e=>{
     if(!drawing)return;e.preventDefault();
-    const p=pos(e);current.puntos.push(p);
-    const pts=current.puntos;
-    ctx.strokeStyle=curColor;ctx.lineWidth=curWidth;ctx.lineCap='round';ctx.lineJoin='round';
+    const p=pos(e);cur.puntos.push(p);const pts=cur.puntos;
+    ctx.strokeStyle=curC;ctx.lineWidth=curW;ctx.lineCap='round';ctx.lineJoin='round';
     ctx.beginPath();ctx.moveTo(pts[pts.length-2].x,pts[pts.length-2].y);ctx.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);ctx.stroke();
   });
-  const endDraw=()=>{if(drawing&&current){window.__strokes.push(current);current=null;checkDraw();}drawing=false;};
-  canvas.addEventListener('mouseup',endDraw);canvas.addEventListener('mouseleave',endDraw);
-  canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;current={puntos:[pos(e)],color:curColor,grosor:curWidth};},{passive:false});
-  canvas.addEventListener('touchmove',e=>{
+  const end=()=>{if(drawing&&cur){window.__strokes.push(cur);cur=null;checkDraw();}drawing=false;};
+  cv.addEventListener('mouseup',end);cv.addEventListener('mouseleave',end);
+  cv.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;cur={puntos:[pos(e)],color:curC,grosor:curW};},{passive:false});
+  cv.addEventListener('touchmove',e=>{
     if(!drawing)return;e.preventDefault();
-    const p=pos(e);current.puntos.push(p);
-    const pts=current.puntos;
-    ctx.strokeStyle=curColor;ctx.lineWidth=curWidth;ctx.lineCap='round';ctx.lineJoin='round';
+    const p=pos(e);cur.puntos.push(p);const pts=cur.puntos;
+    ctx.strokeStyle=curC;ctx.lineWidth=curW;ctx.lineCap='round';ctx.lineJoin='round';
     ctx.beginPath();ctx.moveTo(pts[pts.length-2].x,pts[pts.length-2].y);ctx.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);ctx.stroke();
   },{passive:false});
-  canvas.addEventListener('touchend',endDraw);
+  cv.addEventListener('touchend',end);
 
   document.querySelectorAll('.swatch').forEach(s=>{
-    s.onclick=()=>{curColor=s.getAttribute('data-color');document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));s.classList.add('active');};
+    s.onclick=()=>{curC=s.getAttribute('data-color');document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('on'));s.classList.add('on');};
   });
-  document.querySelectorAll('.width-btn').forEach(b=>{
-    b.onclick=()=>{curWidth=parseInt(b.getAttribute('data-width'));document.querySelectorAll('.width-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');};
+  document.querySelectorAll('.wbtn').forEach(b=>{
+    b.onclick=()=>{curW=parseInt(b.getAttribute('data-width'));document.querySelectorAll('.wbtn').forEach(x=>x.classList.remove('on'));b.classList.add('on');};
   });
   ge('clearCanvas').onclick=()=>{window.__strokes=[];redraw();checkDraw();};
   ge('guardarDibujo').onclick=async()=>{
@@ -596,43 +752,42 @@ function setupCanvas(){
   guide();
 }
 
-// ---- Init ----
+// ── Init ──────────────────────────────────────────────
 async function init(){
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(event==='SIGNED_IN'&&session?.user){
-      currentUser=session.user;
+      user=session.user;
       await loadProfile();
-      if(!currentProfile){
-        const u=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
-        await sb.from('profiles').upsert({id:currentUser.id,username:u});
+      if(!profile){
+        const uname=user.user_metadata?.username||user.email.split('@')[0];
+        await sb.from('profiles').upsert({id:user.id,username:uname});
         await loadProfile();
       }
       await loadTodayPost();
-      view='home';renderApp();
-    } else if(event==='SIGNED_OUT'){
-      currentUser=null;currentProfile=null;todayPost=null;
-      view='auth';renderAuth();
+      view='home';paint();
+    }else if(event==='SIGNED_OUT'){
+      user=null;profile=null;todayPost=null;view='auth';paint();
     }
   });
 
-  const {data:{session}} = await sb.auth.getSession();
+  const {data:{session}}=await sb.auth.getSession();
   if(session?.user){
-    currentUser=session.user;
+    user=session.user;
     await loadProfile();
-    if(!currentProfile){
-      const u=currentUser.user_metadata?.username||currentUser.email.split('@')[0];
-      await sb.from('profiles').upsert({id:currentUser.id,username:u});
+    if(!profile){
+      const uname=user.user_metadata?.username||user.email.split('@')[0];
+      await sb.from('profiles').upsert({id:user.id,username:uname});
       await loadProfile();
     }
     await loadTodayPost();
-    view='home';renderApp();
-  } else {
-    view='auth';renderAuth();
+    view='home';
+  }else{
+    view='auth';
   }
+  paint();
 }
 
-if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 init();
 </script>
 </body>
