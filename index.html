@@ -434,11 +434,12 @@ function dollSVG(color,death,dead,poseName,px){
   const dark=color==="#C0B898"||color==="#D0C8B8"||color==="#E8E8E8";
   const ec=dark?"#2A1E38":"#080808";
   const ec2=dark?"rgba(0,0,0,.5)":"rgba(255,255,255,.55)";
+  const lx=w*.44,rx=w*.56,ey=h*.157,ex=w*.026,eo=h*.021;
   const face=dead?`
-    <line x1="${w*.41}" y1="${h*.15}" x2="${w*.47}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
-    <line x1="${w*.47}" y1="${h*.15}" x2="${w*.41}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
-    <line x1="${w*.53}" y1="${h*.15}" x2="${w*.59}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
-    <line x1="${w*.59}" y1="${h*.15}" x2="${w*.53}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
+    <line x1="${lx-ex}" y1="${ey-eo}" x2="${lx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
+    <line x1="${lx+ex}" y1="${ey-eo}" x2="${lx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
+    <line x1="${rx-ex}" y1="${ey-eo}" x2="${rx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
+    <line x1="${rx+ex}" y1="${ey-eo}" x2="${rx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
     <path d="M ${w*.42} ${h*.21} Q ${w/2} ${h*.195} ${w*.58} ${h*.21}" stroke="${ec}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
   `:`
     <circle cx="${w*.44}" cy="${h*.157}" r="2.4" fill="${ec}"/>
