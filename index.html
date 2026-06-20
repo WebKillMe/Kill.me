@@ -379,7 +379,7 @@ const ICO={
 let user=null,profile=null,view="loading",todayPost=null;
 let feedData=[],myDeps=new Set(),myFollowing=new Set();
 let todayPrevPost=null,expandedPrev=new Set();
-let authTab="login",authStep="form",pendingVerifyEmail="";
+let authTab="login",authStep="form",pendingVerifyEmail="",recoverySession=false;
 let pendingSignup={username:"",email:"",pass:"",color:DOLL_COLORS[0]};
 let draftRazon="",totalDeps=0,navigating=false;
 
@@ -694,8 +694,7 @@ async function doSignUp(email,pass,uname,color){
     options:{data:{username:uname},emailRedirectTo:'https://webkillme.github.io/Kill.me/'},
   });
   if(error)return sbErr(error.message);
-  if(data.user&&!data.user.confirmed_at){
-    // email needs confirmation — pre-create profile so username is reserved
+  if(data.user){
     await sb.from('profiles').upsert({id:data.user.id,username:uname,doll_color:color,email:email}).catch(()=>{});
   }
   return null;
@@ -757,7 +756,7 @@ function renderVerify(){
   ge('btnResend').onclick=async()=>{
     const btn=ge('btnResend'),err=ge('vErr');
     btn.disabled=true;btn.textContent='...';err.style.color='';err.textContent='';
-    const {error}=await sb.auth.resend({type:'signup',email:pendingVerifyEmail,options:{emailRedirectTo:'https://guyfroms.github.io/vudu-real/'}}).catch(e=>({error:e}));
+    const {error}=await sb.auth.resend({type:'signup',email:pendingVerifyEmail,options:{emailRedirectTo:'https://webkillme.github.io/Kill.me/'}}).catch(e=>({error:e}));
     if(error){err.textContent=sbErr(error.message);btn.disabled=false;btn.textContent='Reenviar email';}
     else{err.style.color='#4CAF82';err.textContent='Enviado';btn.disabled=false;btn.textContent='Reenviar email';}
   };
@@ -891,10 +890,39 @@ function shell(content){
   if(view==='dibujo')setupCanvas();
 }
 
+function renderRecovery(){
+  ge('root').innerHTML=`
+  <div class="auth-page">
+    <div class="auth-brand"><h1 class="cinzel">kill<em>.me</em></h1><p>Elige una nueva contraseña</p></div>
+    <div class="auth-card">
+      <div class="field">
+        <label>Nueva contraseña</label>
+        <input type="password" id="rPass" placeholder="mín. 8 · mayúscula · número · especial" autocomplete="new-password"/>
+        <div id="rReqs" style="margin-top:6px;"></div>
+      </div>
+      <div class="auth-err" id="rErr"></div>
+      <button class="btn btn-red" id="btnSetPass">Guardar contraseña</button>
+    </div>
+  </div>`;
+  if(ge('rPass'))ge('rPass').oninput=()=>{const r=ge('rReqs');if(r)r.innerHTML=passReqsHTML(ge('rPass').value);};
+  ge('btnSetPass').onclick=async()=>{
+    const btn=ge('btnSetPass'),err=ge('rErr');
+    const pass=ge('rPass').value||'';
+    const errs=validatePass(pass);
+    if(errs.length){err.textContent='Contraseña débil: falta '+errs.join(', ');return;}
+    btn.disabled=true;btn.textContent='Guardando...';err.textContent='';
+    const {error}=await sb.auth.updateUser({password:pass});
+    if(error){err.textContent=sbErr(error.message);btn.disabled=false;btn.textContent='Guardar contraseña';return;}
+    navigating=true;view='loading';paint();
+    await navToHome(err,btn,'Guardar contraseña');
+  };
+}
+
 function paint(){
   if(view==='loading'){ge('root').innerHTML='<div class="pg-load"><div class="brand cinzel">kill<em>.me</em></div><div class="spin"></div></div>';return;}
   if(view==='auth'){renderAuth();return;}
   if(view==='verify'){renderVerify();return;}
+  if(view==='recovery'){renderRecovery();return;}
   let c='';
   if(view==='home')c=renderHome();
   else if(view==='muerte')c=renderMuerte();
@@ -1301,8 +1329,9 @@ async function init(){
     if(event==='SIGNED_OUT'){
       user=null;profile=null;todayPost=null;navigating=false;
       authStep='form';view='auth';paint();
+    } else if(event==='PASSWORD_RECOVERY'){
+      view='recovery';paint();
     } else if((event==='SIGNED_IN'||event==='USER_UPDATED')&&session?.user&&!navigating){
-      // Only auto-navigate when coming from email verification link (view is loading/verify/auth)
       if(view==='loading'||view==='verify'||view==='auth'){
         navigating=true;user=session.user;
         await navToHome();
