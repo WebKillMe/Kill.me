@@ -253,7 +253,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 .feed-card{padding:clamp(20px,5vw,28px) 0;border-color:var(--border);}
 .feed-card.fc-friend{border-left:2px solid rgba(176,120,48,.28);padding-left:14px;margin-left:-14px;}
 .feed-head{gap:12px;margin-bottom:12px;}
-.avatar{width:clamp(30px,7.5vw,36px);height:clamp(30px,7.5vw,36px);position:relative;}
+.avatar{width:clamp(30px,7.5vw,36px);height:clamp(30px,7.5vw,36px);position:relative;overflow:visible;}
 .friend-dot{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;
   background:var(--warm);border:2px solid var(--bg);}
 .feed-name{font-size:clamp(14px,3.5vw,15px);font-weight:700;}
@@ -441,10 +441,10 @@ function dollSVG(color,death,dead,poseName,px){
     <line x1="${w*.59}" y1="${h*.15}" x2="${w*.53}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
     <path d="M ${w*.42} ${h*.21} Q ${w/2} ${h*.195} ${w*.58} ${h*.21}" stroke="${ec}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
   `:`
-    <circle cx="${w*.44}" cy="${h*.157}" r="3.6" fill="${ec}"/>
-    <circle cx="${w*.56}" cy="${h*.157}" r="3.6" fill="${ec}"/>
-    <circle cx="${w*.452}" cy="${h*.151}" r="1.1" fill="${ec2}"/>
-    <circle cx="${w*.572}" cy="${h*.151}" r="1.1" fill="${ec2}"/>
+    <circle cx="${w*.44}" cy="${h*.157}" r="2.4" fill="${ec}"/>
+    <circle cx="${w*.56}" cy="${h*.157}" r="2.4" fill="${ec}"/>
+    <circle cx="${w*.448}" cy="${h*.153}" r="0.7" fill="${ec2}"/>
+    <circle cx="${w*.568}" cy="${h*.153}" r="0.7" fill="${ec2}"/>
     <path d="M ${w*.41} ${h*.199} Q ${w/2} ${h*.224} ${w*.59} ${h*.199}" stroke="${ec}" stroke-width="2.3" fill="none" stroke-linecap="round"/>
   `;
   // Unified visual language: monochromatic, line-based, no saturated colors.
