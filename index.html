@@ -215,40 +215,100 @@ textarea:focus,input:focus{border-color:var(--red);}
 @media(min-width:560px){.auth-page{padding-top:60px;padding-bottom:60px;}}
 @media(min-width:768px){.screen{padding-left:clamp(22px,5vw,32px);padding-right:clamp(22px,5vw,32px);}}
 
-/* ── Design polish ───────────────────────────────────────── */
-/* Grain overlay — makes the flat dark bg feel tactile */
-body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.032;
+/* ══════════════════════════════════════════════════════════
+   REDISEÑO COMPLETO
+   ══════════════════════════════════════════════════════════ */
+
+/* Grain — da tacto al fondo plano */
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.03;
   background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='256' height='256' filter='url(%23n)'/></svg>");
   background-size:180px;}
-/* Top-edge highlight on all surfaces — gives depth */
-.auth-card,.done-card,.stat-block,.dhs-pill,.death-row,.dcell,.next-unlock{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
-/* Auth card — subtle branded border */
-.auth-card{border-color:rgba(192,57,43,.2);background:var(--surface);}
-/* Auth brand — bigger, more presence */
-.auth-brand h1{font-size:clamp(42px,11vw,58px);letter-spacing:2px;}
-.auth-brand p{font-size:clamp(12px,3vw,14px);color:var(--bone2);margin-top:12px;letter-spacing:.3px;}
-/* Topbar logo — slightly bigger */
-.logo{font-size:clamp(15px,4vw,18px);letter-spacing:4px;}
-/* Friend avatar dot indicator */
-.avatar{position:relative;}
-.friend-dot{position:absolute;bottom:0;right:0;width:8px;height:8px;border-radius:50%;background:var(--warm);border:1.5px solid var(--bg);}
-/* Dep button — given state more dramatic */
-.dep-btn.given{background:rgba(192,57,43,.07);border-color:rgba(192,57,43,.42);color:var(--text);}
-/* Dep button base — slightly warmer */
-.dep-btn{border-color:rgba(255,255,255,.07);color:var(--bone2);}
-/* Unlocked death row — barely-visible warm border */
-.death-row.dr-unlocked{border-color:rgba(255,255,255,.055);}
-/* Death cell — more padding, hover glow */
-.dcell{padding:clamp(12px,3vw,16px) 8px;gap:7px;}
-.dcell.on:hover{border-color:rgba(192,57,43,.45);background:var(--surface2);}
-/* Rule — gradient fade instead of solid */
-.rule{width:36px;height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:14px auto;}
-/* ptitle — slightly wider tracking */
-.ptitle{letter-spacing:.8px;}
-/* Feed card — slightly more padding */
-.feed-card{padding:clamp(16px,4vw,22px) 0;}
-/* Screen — slightly more top padding for breathing room */
-.screen{padding-top:clamp(16px,4vw,24px);}
+
+/* Highlight de 1px en todos los bordes superiores de superficies */
+.auth-card,.done-card,.stat-block,.dhs-pill,.death-row,.dcell,.next-unlock{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);}
+
+/* ── Topbar ── */
+.topbar{border-bottom:1px solid var(--border);padding-bottom:14px;}
+.logo{font-size:clamp(16px,4.2vw,19px);letter-spacing:4px;}
+.streak-pill{background:transparent;border-color:rgba(176,120,48,.3);padding:3px 10px;}
+
+/* ── Auth ── */
+.auth-brand h1{font-size:clamp(46px,12vw,64px);letter-spacing:1px;line-height:.95;}
+.auth-brand p{font-size:clamp(12px,3vw,14px);color:var(--bone2);margin-top:16px;line-height:1.7;letter-spacing:.2px;}
+.auth-brand{margin-bottom:20px;}
+.auth-card{border-color:rgba(192,57,43,.16);background:#0e0e0e;}
+.auth-doll-preview{margin-bottom:16px;}
+
+/* ── Screen ── */
+.screen{padding-top:clamp(20px,5vw,32px);padding-bottom:clamp(92px,20vw,108px);}
+
+/* ── hdr rule ── */
+.rule{width:44px;height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:16px auto;}
+.ptitle{font-size:clamp(18px,4.8vw,24px);letter-spacing:.5px;}
+.psub{font-size:clamp(12px,3vw,14px);color:var(--muted);}
+
+/* ── Feed ── */
+.feed-list{margin-top:4px;}
+.feed-card{padding:clamp(20px,5vw,28px) 0;border-color:var(--border);}
+.feed-card.fc-friend{border-left:2px solid rgba(176,120,48,.28);padding-left:14px;margin-left:-14px;}
+.feed-head{gap:12px;margin-bottom:12px;}
+.avatar{width:clamp(30px,7.5vw,36px);height:clamp(30px,7.5vw,36px);position:relative;}
+.friend-dot{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;
+  background:var(--warm);border:2px solid var(--bg);}
+.feed-name{font-size:clamp(14px,3.5vw,15px);font-weight:700;}
+.feed-time{font-size:clamp(10px,2.5vw,11px);color:var(--muted);}
+.follow-btn{padding:5px 11px;font-size:clamp(10px,2.5vw,11px);border-color:var(--border2);}
+.follow-btn.following{border-color:rgba(176,120,48,.25);color:var(--warm);background:transparent;}
+.feed-razon{font-size:clamp(14px,3.5vw,15px);color:var(--text2);font-style:italic;
+  line-height:1.65;margin:4px 0 12px;}
+.feed-castigo{display:inline-flex;align-items:center;gap:4px;
+  background:rgba(176,120,48,.07);border:1px solid rgba(176,120,48,.2);
+  border-radius:5px;padding:4px 10px;margin-bottom:14px;
+  font-size:clamp(9px,2.5vw,10px);font-weight:700;color:var(--warm);
+  letter-spacing:1px;text-transform:uppercase;}
+.dep-btn{border-radius:8px;padding:clamp(11px,2.8vw,13px);
+  border-color:rgba(255,255,255,.06);color:var(--muted2);letter-spacing:.2px;}
+.dep-btn:not(.given):hover{border-color:rgba(192,57,43,.3);background:rgba(192,57,43,.04);color:var(--text2);}
+.dep-btn.given{background:rgba(192,57,43,.06);border-color:rgba(192,57,43,.38);color:var(--text);}
+.dep-count{color:var(--warm);font-weight:700;font-size:clamp(13px,3.5vw,14px);}
+.own-dep{color:var(--muted);font-size:clamp(11px,3vw,12px);padding:9px;}
+
+/* ── Home/Posted done-card ── */
+.done-card{padding:clamp(18px,4.5vw,24px);border-color:var(--border2);}
+.done-razon{font-style:italic;font-size:clamp(14px,3.5vw,15px);color:var(--text2);line-height:1.65;margin-bottom:10px;}
+.done-castigo{font-size:clamp(13px,3.5vw,15px);letter-spacing:.8px;}
+.peor-btn{border-color:var(--border);color:var(--muted);font-size:clamp(12px,3vw,13px);margin-top:14px;}
+.peor-btn:hover{border-color:var(--muted);color:var(--text2);}
+
+/* ── Death grid (selección castigo) ── */
+.grid2{gap:clamp(8px,2.2vw,12px);margin-top:16px;}
+.dcell{padding:clamp(14px,3.5vw,20px) 8px;gap:8px;border-radius:12px;}
+.dcell.on{border-color:rgba(176,120,48,.28);}
+.dcell.on:hover{border-color:rgba(192,57,43,.5);background:var(--surface2);}
+.dcell .dlabel{font-size:clamp(12px,3vw,13px);font-weight:700;}
+.draw-cell{border-radius:12px;padding:clamp(16px,4vw,20px);}
+.draw-cell .dlabel{font-size:clamp(14px,3.5vw,15px);}
+
+/* ── Muertes collection ── */
+.dhs-pill{padding:12px 8px;border-radius:10px;}
+.dhs-num{font-size:clamp(20px,5.5vw,28px);}
+.dhs-lbl{font-size:clamp(8px,2vw,9px);margin-top:4px;}
+.deaths-section{margin-top:22px;}
+.death-row{padding:clamp(12px,3vw,16px) clamp(12px,3.5vw,16px);border-radius:10px;margin-bottom:8px;}
+.death-row.dr-unlocked{border-color:rgba(255,255,255,.045);}
+.dr-doll{width:clamp(58px,15vw,74px);}
+.dr-lock{width:clamp(58px,15vw,74px);}
+.dr-name{font-size:clamp(14px,3.5vw,15px);font-weight:700;}
+.dr-status{font-size:clamp(10px,2.5vw,11px);margin-top:4px;}
+
+/* ── Settings ── */
+.stat-block{padding:clamp(16px,4vw,22px);}
+.stat-num{font-size:clamp(30px,8vw,42px);}
+
+/* ── Bottom nav ── */
+.navbtn{font-size:clamp(9px,2.5vw,11px);gap:5px;}
+.bottomnav{padding:clamp(12px,3vw,16px) 0 max(calc(12px + env(safe-area-inset-bottom)),14px);}
 </style>
 </head>
 <body>
@@ -865,15 +925,15 @@ function renderHome(){
     const p=todayPost,d=DEATHS.find(x=>x.id===p.castigo);
     const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):DEATH_LABELS[p.castigo]||p.castigo;
     const hasPrev=!!todayPrevPost,isOpen=expandedPrev.has('home');
-    // Use post's stored color, not current profile color
     return `<div class="screen" style="text-align:center;">
-      ${hdr("Hoy ya está hecho",`"${esc(p.razon)}"`)}
-      <div style="display:flex;justify-content:center;margin:26px 0;">
-        ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',150)}
+      <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:8px;">Hoy ya está hecho</div>
+      <div style="font-size:clamp(13px,3.5vw,15px);color:var(--muted2);font-style:italic;margin:0 clamp(12px,4vw,24px);">"${esc(p.razon)}"</div>
+      <div style="display:flex;justify-content:center;margin:clamp(20px,5vw,32px) 0;">
+        ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',clamp(140,170))}
       </div>
       <div class="done-card">
         <div class="done-castigo">${lbl}</div>
-        <div style="color:var(--muted2);font-size:clamp(11px,3vw,12px);margin-top:5px;">${ICO.candle} ${totalDeps} DEPs totales recibidos</div>
+        <div style="color:var(--muted);font-size:clamp(11px,2.8vw,12px);margin-top:8px;letter-spacing:.3px;">${ICO.candle} ${totalDeps} DEPs totales recibidos</div>
         ${hasPrev?`
           <button class="prev-toggle ${isOpen?'open':''}" id="btnTogglePrev">
             <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -883,18 +943,17 @@ function renderHome(){
         `:''}
       </div>
       <button class="peor-btn" id="btnPeor">Ha ido a peor — contar algo nuevo</button>
-      <div style="display:flex;justify-content:center;margin-top:14px;">
+      <div style="display:flex;justify-content:center;margin-top:16px;">
         <button class="btn-warm-sm" id="goFeed">Ver el feed</button>
       </div>
     </div>`;
   }
-  // No post yet — use current profile color for the idle doll preview
   return `<div class="screen" style="text-align:center;">
-    ${hdr("¿Qué te ha pasado hoy?","Una desgracia al día")}
-    <div class="doll-wrap" style="display:flex;justify-content:center;margin:28px 0;animation:breathe 3.5s ease-in-out infinite;">
-      ${dollSVG(profile.doll_color,null,false,'idle',140)}
+    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:clamp(20px,5vw,28px);">Una desgracia al día</div>
+    <div style="display:flex;justify-content:center;margin-bottom:clamp(24px,6vw,36px);animation:breathe 3.5s ease-in-out infinite;">
+      ${dollSVG(profile.doll_color,null,false,'idle',clamp(150,180))}
     </div>
-    <button class="btn btn-red" id="empezar">Empezar</button>
+    <button class="btn btn-red" id="empezar" style="max-width:240px;margin:0 auto;font-size:clamp(14px,3.5vw,16px);letter-spacing:.4px;">¿Qué te ha pasado hoy?</button>
   </div>`;
 }
 
@@ -954,11 +1013,11 @@ function renderDibujo(){
 function renderPosted(){
   const p=todayPost,d=DEATHS.find(x=>x.id===p.castigo);
   const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):DEATH_LABELS[p.castigo]||p.castigo;
-  // Use the color that was stored with the post
   return `<div class="screen" style="text-align:center;">
-    ${hdr("Publicado")}
-    <div style="display:flex;justify-content:center;margin:26px 0;">
-      ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',150)}
+    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:8px;">Publicado</div>
+    <div style="font-size:clamp(13px,3.5vw,15px);color:var(--muted2);font-style:italic;margin:0 clamp(12px,4vw,24px) 0;">"${esc(p.razon)}"</div>
+    <div style="display:flex;justify-content:center;margin:clamp(20px,5vw,30px) 0;">
+      ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',clamp(140,170))}
     </div>
     <div class="done-card">
       <div class="done-razon">"${esc(p.razon)}"</div>
@@ -1066,19 +1125,19 @@ function renderFeed(){
     const d=DEATHS.find(x=>x.id===item.castigo);
     const hasPrev=!!item.previous_post_id&&!!item._prev,isOpen=expandedPrev.has(item.id);
     // Each feed card uses its own stored doll_color
-    return `<div class="feed-card">
+    return `<div class="feed-card${friend&&!own?' fc-friend':''}">
       <div class="feed-head">
-        <div class="avatar">${avatarDoll(item.doll_color,clamp(26,32))}${friend&&!own?'<span class="friend-dot"></span>':''}</div>
+        <div class="avatar">${avatarDoll(item.doll_color,clamp(30,36))}${friend&&!own?'<span class="friend-dot"></span>':''}</div>
         <div class="feed-meta">
           <div class="feed-name">${esc(item.username)}</div>
           <div class="feed-time">${timeAgo(item.created_at)}</div>
         </div>
         ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+' siguiendo':ICO.plus+' seguir'}</button>`:''}
       </div>
-      <p class="feed-razon">${esc(item.razon)}</p>
+      <p class="feed-razon">"${esc(item.razon)}"</p>
       <span class="feed-castigo">${lbl}</span>
-      <div style="display:flex;justify-content:center;margin:8px 0 10px;">
-        ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',80)}
+      <div style="display:flex;justify-content:center;margin:4px 0 14px;">
+        ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',clamp(90,110))}
       </div>
       ${own
         ?`<div class="own-dep">${ICO.candle} <span>${item.dep_count||0} ${item.dep_count===1?'DEP':'DEPs'}</span></div>`
