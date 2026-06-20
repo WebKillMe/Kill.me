@@ -398,21 +398,12 @@ const timeAgo=ts=>{
   const h=Math.floor(m/60);if(h<24)return`hace ${h}h`;return`hace ${Math.floor(h/24)}d`;
 };
 function validatePass(p){
-  const errs=[];
-  if(p.length<8)errs.push('8 caracteres');
-  if(!/[A-Z]/.test(p))errs.push('mayúscula');
-  if(!/[0-9]/.test(p))errs.push('número');
-  if(!/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/.test(p))errs.push('carácter especial');
-  return errs;
+  if(p.length<6)return['mínimo 6 caracteres'];
+  return[];
 }
 function passReqsHTML(pass){
-  const reqs=[
-    {label:'8+ caracteres',ok:pass.length>=8},
-    {label:'Mayúscula',ok:/[A-Z]/.test(pass)},
-    {label:'Número',ok:/[0-9]/.test(pass)},
-    {label:'Especial (!@#…)',ok:/[!@#$%^&*()\-_=+\[\]{}|;:,.<>?]/.test(pass)},
-  ];
-  return `<div class="pass-reqs">${reqs.map(r=>`<span class="req${r.ok?' ok':''}">${r.ok?'✓':''} ${r.label}</span>`).join('')}</div>`;
+  const ok=pass.length>=6;
+  return `<div class="pass-reqs"><span class="req${ok?' ok':''}">${ok?'✓':''} 6+ caracteres</span></div>`;
 }
 
 // ── Poses ──────────────────────────────────────────────
@@ -822,8 +813,8 @@ function renderAuth(){
       <div class="field"><label>${login?'Email o usuario':'Email'}</label><input type="${login?'text':'email'}" id="aEmail" placeholder="${login?'email o nombre de usuario':'tu@email.com'}" autocomplete="${login?'username':'email'}"/></div>
       <div class="field">
         <label>Contraseña</label>
-        <input type="password" id="aPass" placeholder="${login?'tu contraseña':'mín. 8 · mayúscula · número · especial'}" autocomplete="${login?'current-password':'new-password'}"/>
-        ${!login?`<div id="passReqs" style="margin-top:6px;"></div><div class="pass-warning" style="margin-top:8px;"><strong>Usa una contraseña única.</strong> Si alguien accede a este servicio, no queremos que afecte al resto de tus cuentas.</div>`:''}
+        <input type="password" id="aPass" placeholder="${login?'tu contraseña':'mínimo 6 caracteres'}" autocomplete="${login?'current-password':'new-password'}"/>
+        ${!login?`<div id="passReqs" style="margin-top:6px;"></div>`:''}
       </div>
       <div class="auth-err" id="aErr"></div>
       <button class="btn btn-red" id="btnAuth">${login?'Entrar':'Siguiente →'}</button>
@@ -857,11 +848,15 @@ function renderAuth(){
     }else{
       const uname=(ge('aUser').value||'').trim(),email=emailOrUser;
       if(!uname){err.textContent='Pon un nombre de usuario';return;}
-      if(uname.length<2){err.textContent='Mínimo 2 caracteres';return;}
-      if(!/^[a-zA-Z0-9_.-]+$/.test(uname)){err.textContent='Solo letras, números, puntos y guiones';return;}
+      if(uname.length<2){err.textContent='El nombre debe tener mínimo 2 caracteres';return;}
+      if(!/^[a-zA-Z0-9_.-]+$/.test(uname)){err.textContent='El nombre solo puede tener letras, números, puntos y guiones';return;}
       if(!email||!email.includes('@')){err.textContent='Introduce un email válido';return;}
       const passErrs=validatePass(pass);
-      if(passErrs.length){err.textContent='Contraseña débil: falta '+passErrs.join(', ');return;}
+      if(passErrs.length){err.textContent='Contraseña demasiado corta — '+passErrs.join(', ');return;}
+      btn.disabled=true;btn.textContent='Comprobando...';
+      const {data:ex}=await sb.from('profiles').select('id').eq('username',uname).maybeSingle();
+      if(ex){err.textContent='Ese nombre de usuario ya está en uso';btn.disabled=false;btn.textContent='Siguiente →';return;}
+      btn.disabled=false;btn.textContent='Siguiente →';
       pendingSignup={username:uname,email,pass,color:DOLL_COLORS[0]};
       authStep='color';renderAuth();
     }
