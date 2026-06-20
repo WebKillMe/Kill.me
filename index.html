@@ -301,7 +301,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 .death-row.dr-unlocked{border-color:rgba(255,255,255,.045);}
 .dr-doll{width:clamp(58px,15vw,74px);}
 .dr-lock{width:clamp(58px,15vw,74px);}
-.dr-name{font-family:'Playfair Display',serif;font-size:clamp(14px,3.5vw,15px);font-weight:700;letter-spacing:.2px;}
+.dr-name{font-size:clamp(14px,3.5vw,15px);font-weight:700;letter-spacing:.1px;}
 .dr-status{font-size:clamp(10px,2.5vw,11px);margin-top:4px;}
 .dr-prog-num{font-family:system-ui,-apple-system,sans-serif;font-variant-numeric:lining-nums tabular-nums;}
 
@@ -993,26 +993,11 @@ function clamp(a,b){return Math.min(b,Math.max(a,Math.round(window.innerWidth/48
 
 function renderMuerte(){
   const streak=profile?.streak||0;
-  const cells=DEATHS.map(d=>{
-    const streakOk=streak>=d.min,depsOk=totalDeps>=d.deps,ok=streakOk&&depsOk;
-    let cls='dcell '+(ok?'on':'off');
-    let reqHtml='';
-    if(!ok){
-      if(!streakOk) reqHtml=`<span class="dreq dreq-streak">${ICO.flame} ${d.min}d racha</span>`;
-      else if(!depsOk){
-        cls='dcell deps-lock';
-        const pct=Math.min(100,Math.round(totalDeps/d.deps*100));
-        reqHtml=`<span class="dreq dreq-deps">${ICO.candle} ${d.deps} DEPs</span>
-                 <div class="unlock-bar" style="width:${pct}%"></div>`;
-      }
-    }
-    // Preview death uses current profile color (this is the NEW post being created)
-    return `<div class="${cls}" data-death="${ok?d.id:''}">
-      ${ok?dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64)):`<div style="opacity:.4;padding:4px 0;">${ICO.lock}</div>`}
-      <span class="dlabel">${d.label}</span>
-      ${reqHtml}
-    </div>`;
-  }).join('');
+  const unlocked=DEATHS.filter(d=>streak>=d.min&&totalDeps>=d.deps);
+  const cells=unlocked.map(d=>`<div class="dcell on" data-death="${d.id}">
+    ${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}
+    <span class="dlabel">${d.label}</span>
+  </div>`).join('');
   return `<div class="screen">
     ${hdr("Elige su castigo","Desbloquea más con racha y DEPs")}
     <div class="grid2">
@@ -1126,9 +1111,9 @@ function renderMuertes(){
   return `<div class="screen">
     ${hdr("Muertes")}
     <div class="deaths-header-stats">
-      <div class="dhs-pill"><div class="dhs-num" style="color:var(--warm)">${unlockedCount}/${DEATHS.length}</div><div class="dhs-lbl">desbloqueadas</div></div>
-      <div class="dhs-pill"><div class="dhs-num">${streak}</div><div class="dhs-lbl">${ICO.flame} racha</div></div>
-      <div class="dhs-pill"><div class="dhs-num" style="color:#5A8FD4">${totalDeps}</div><div class="dhs-lbl">${ICO.candle} DEPs</div></div>
+      <div class="dhs-pill"><div class="dhs-num" style="color:var(--warm)">${unlockedCount}<span style="color:var(--muted);font-size:.6em;font-weight:400">/${DEATHS.length}</span></div><div class="dhs-lbl">desbloqueadas</div></div>
+      <div class="dhs-pill"><div class="dhs-num">${streak}</div><div class="dhs-lbl">racha ${ICO.flame}</div></div>
+      <div class="dhs-pill"><div class="dhs-num" style="color:#5A8FD4">${totalDeps}</div><div class="dhs-lbl">DEPs ${ICO.candle}</div></div>
     </div>
 
     <div class="deaths-section">
