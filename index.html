@@ -511,7 +511,7 @@ async function doSignUp(email,pass,uname,color){
   if(ex)return'Ese nombre ya está en uso';
   const {data,error}=await sb.auth.signUp({
     email,password:pass,
-    options:{data:{username:uname},emailRedirectTo:'https://guyfroms.github.io/vudu-real/'},
+    options:{data:{username:uname},emailRedirectTo:'https://webkillme.github.io/Kill.me/'},
   });
   if(error)return sbErr(error.message);
   if(data.user&&!data.user.confirmed_at){
@@ -532,7 +532,7 @@ async function doSignIn(emailOrUser,pass){
 }
 async function doResetPassword(email){
   if(!email||!email.includes('@'))return'Introduce tu email primero';
-  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://guyfroms.github.io/vudu-real/'});
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://webkillme.github.io/Kill.me/'});
   if(error)return sbErr(error.message);return null;
 }
 
