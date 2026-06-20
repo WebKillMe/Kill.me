@@ -738,13 +738,15 @@ function renderAuth(){
     ge('btnBackForm').onclick=()=>{authStep='form';renderAuth();};
     ge('btnCreate').onclick=async()=>{
       const btn=ge('btnCreate'),err=ge('aErr');
-      btn.disabled=true;btn.textContent='...';err.textContent='';
+      btn.disabled=true;btn.textContent='Creando...';err.textContent='';
       const e=await doSignUp(pendingSignup.email,pendingSignup.pass,pendingSignup.username,pendingSignup.color);
       if(e){err.textContent=e;btn.disabled=false;btn.textContent='Crear cuenta';}
       else{
-        // show verify screen — don't auto login, wait for email confirmation
-        pendingVerifyEmail=pendingSignup.email;
-        authStep='form';view='verify';renderVerify();
+        // autoconfirm enabled — sign in immediately after signup
+        btn.textContent='Entrando...';
+        const signInErr=await doSignIn(pendingSignup.email,pendingSignup.pass);
+        if(signInErr){err.textContent=signInErr||'Cuenta creada — inicia sesión';btn.disabled=false;btn.textContent='Crear cuenta';}
+        else{authStep='form';navigating=true;await navToHome(err,btn,'Crear cuenta');}
       }
     };
     return;
