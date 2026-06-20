@@ -717,7 +717,9 @@ async function navToHome(errEl,btn,btnLabel){
     if(s?.user){
       user=s.user;await loadProfile();
       if(!profile){const u=user.user_metadata?.username||user.email.split('@')[0];await sb.from('profiles').upsert({id:user.id,username:u,doll_color:DOLL_COLORS[0],email:user.email}).catch(()=>{});await loadProfile();}
-      await loadTodayPost();view='home';paint();
+      await loadTodayPost();
+      if(todayPost){await loadFeed();view='feed';}else{view='home';}
+      paint();
     }else{
       if(errEl)errEl.textContent='No se pudo iniciar sesión. Inténtalo de nuevo.';
       if(btn){btn.disabled=false;btn.textContent=btnLabel||'Entrar';}
@@ -1332,7 +1334,8 @@ async function init(){
         await sb.from('profiles').upsert({id:user.id,username:u,doll_color:DOLL_COLORS[0],email:user.email}).catch(()=>{});
         await loadProfile();
       }
-      await loadTodayPost();view='home';
+      await loadTodayPost();
+      if(todayPost){await loadFeed();view='feed';}else{view='home';}
     }else{view='auth';}
   }catch(e){console.error('init error',e);view='auth';}
   paint();
