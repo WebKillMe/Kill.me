@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"/>
-<title>VudúReal</title>
+<title>kill.me</title>
 <link rel="manifest" href="manifest.json"/>
-<meta name="theme-color" content="#0B0910"/>
+<meta name="theme-color" content="#080808"/>
 <link rel="apple-touch-icon" href="icons/icon-180.png"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -13,211 +13,210 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#0B0910; --bg2:#120D18; --panel:#1C1226; --panel2:#261834; --panel3:#32204A;
-  --amber:#C8893A; --amber2:#E0A050;
-  --coral:#9C3048; --coral2:#B83858;
-  --bone:#EDE5D5; --bone2:#BFB5A2;
-  --border:#2A1E38; --border2:#3D2E50;
-  --muted:#5A4870; --muted2:#8A7898;
-  --glow:rgba(200,137,58,.12); --glowC:rgba(156,48,72,.18);
+  --bg:#080808; --bg2:#0D0D0D; --surface:#131313; --surface2:#191919; --surface3:#202020;
+  --red:#C0392B; --red2:#D84E40;
+  --warm:#B07830; --warm2:#C89040;
+  --bone:#C4BDB2; --bone2:#8A8480;
+  --border:#1C1C1C; --border2:#282828;
+  --text:#DEDEDE; --text2:#A0A0A0;
+  --muted:#3C3C3C; --muted2:#686868;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
 html{height:100%;background:var(--bg);}
 body{
   font-family:-apple-system,system-ui,'Segoe UI',sans-serif;
-  background:radial-gradient(ellipse 140% 50% at 50% -5%, var(--panel3), var(--bg) 60%);
-  color:var(--bone);min-height:100vh;
-  max-width:520px;margin:0 auto;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;max-width:520px;margin:0 auto;
   font-size:clamp(14px,3.5vw,16px);
 }
 .cinzel{font-family:'Cinzel',Georgia,serif;}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 
-/* ── Animations ── */
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.015)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes floatSlow{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes flicker{0%,100%{opacity:.9;transform:scaleY(1)}45%{opacity:1;transform:scaleY(1.1) scaleX(.95)}70%{opacity:.85;transform:scaleY(.95)}}
 @keyframes shockPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5) saturate(1.3)}}
-@keyframes dropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── Loading ── */
-.pg-load{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
-.pg-load .brand{font-family:'Cinzel',serif;font-size:clamp(22px,6vw,28px);font-weight:900;letter-spacing:3px;color:var(--amber);opacity:0;animation:fadeUp .5s .2s forwards;}
-.pg-load .brand em{color:var(--coral2);font-style:normal;}
-.spin{width:26px;height:26px;border:2px solid var(--border2);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;}
+.pg-load{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+.pg-load .brand{font-family:'Cinzel',serif;font-size:clamp(20px,6vw,28px);font-weight:900;letter-spacing:4px;color:var(--text);opacity:0;animation:fadeUp .4s .15s forwards;}
+.pg-load .brand em{color:var(--red);font-style:normal;}
+.spin{width:20px;height:20px;border:1.5px solid var(--border2);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
 
 /* ── Auth ── */
-.auth-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(20px,5vw,40px) clamp(16px,4vw,28px);animation:fadeUp .35s ease;}
+.auth-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(20px,5vw,40px) clamp(16px,4vw,24px);animation:fadeUp .3s ease;}
 .auth-brand{text-align:center;margin-bottom:28px;}
-.auth-brand h1{font-family:'Cinzel',serif;font-size:clamp(28px,7vw,36px);font-weight:900;letter-spacing:3px;color:var(--amber);line-height:1;}
-.auth-brand h1 em{color:var(--coral2);font-style:normal;}
-.auth-brand p{color:var(--muted2);font-size:clamp(11px,2.5vw,13px);margin-top:8px;letter-spacing:.5px;}
-.auth-doll-preview{display:flex;justify-content:center;margin-bottom:20px;}
-.auth-card{width:100%;max-width:400px;background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:clamp(18px,4vw,28px);box-shadow:0 16px 60px rgba(0,0,0,.5);}
-.auth-tabs{display:flex;background:var(--bg2);border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;}
-.auth-tab{flex:1;padding:11px;background:transparent;border:none;color:var(--muted2);font-weight:700;font-size:clamp(12px,3vw,13px);cursor:pointer;transition:all .2s;letter-spacing:.3px;}
-.auth-tab.on{background:var(--panel2);color:var(--bone);}
-.field{margin-bottom:13px;}
-.field label{display:block;font-size:clamp(9px,2vw,10px);color:var(--muted2);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
-.field input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--bone);padding:clamp(10px,2.5vw,13px) 14px;font-size:clamp(14px,3.5vw,15px);font-family:inherit;transition:border-color .2s;outline:none;-webkit-appearance:none;}
-.field input:focus{border-color:var(--amber);}
-.pass-hint{font-size:clamp(10px,2.5vw,11px);color:var(--muted);margin-top:5px;line-height:1.5;}
-.auth-err{color:#D05540;font-size:clamp(11px,2.5vw,12px);min-height:16px;margin-bottom:8px;text-align:center;}
-.step-label{font-size:clamp(10px,2.5vw,11px);color:var(--muted2);text-align:center;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;}
-.onb-colors{display:flex;justify-content:center;gap:clamp(10px,3vw,16px);flex-wrap:wrap;margin:20px 0;}
-.onb-circle{width:clamp(36px,9vw,44px);height:clamp(36px,9vw,44px);border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0;transition:all .2s;}
-.onb-circle.on{border-color:var(--bone);transform:scale(1.18);}
+.auth-brand h1{font-family:'Cinzel',serif;font-size:clamp(32px,8vw,44px);font-weight:900;letter-spacing:2px;color:var(--text);line-height:1;}
+.auth-brand h1 em{color:var(--red);font-style:normal;}
+.auth-brand p{color:var(--muted2);font-size:clamp(11px,2.5vw,13px);margin-top:10px;}
+.auth-doll-preview{display:flex;justify-content:center;margin-bottom:22px;}
+.auth-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:clamp(18px,4.5vw,26px);}
+.auth-tabs{display:flex;background:var(--bg2);border-radius:7px;overflow:hidden;border:1px solid var(--border);margin-bottom:18px;}
+.auth-tab{flex:1;padding:10px;background:transparent;border:none;color:var(--muted2);font-weight:600;font-size:clamp(12px,3vw,13px);cursor:pointer;transition:all .18s;}
+.auth-tab.on{background:var(--surface2);color:var(--text);}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:clamp(9px,2vw,10px);color:var(--muted2);margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;}
+.field input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:clamp(10px,2.5vw,12px) 12px;font-size:clamp(14px,3.5vw,15px);font-family:inherit;transition:border-color .16s;outline:none;-webkit-appearance:none;}
+.field input:focus{border-color:var(--red);}
+.pass-hint{font-size:clamp(10px,2.5vw,11px);color:var(--text2);margin-top:8px;line-height:1.55;padding:8px 10px;background:rgba(192,57,43,.07);border-radius:6px;border-left:2px solid var(--red);}
+.pass-hint strong{color:var(--red);}
+.auth-err{color:#E05040;font-size:clamp(11px,2.5vw,12px);min-height:16px;margin-bottom:8px;text-align:center;}
+.step-label{font-size:clamp(10px,2.5vw,11px);color:var(--muted2);text-align:center;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.onb-colors{display:flex;justify-content:center;gap:clamp(10px,3vw,14px);flex-wrap:wrap;margin:16px 0;}
+.onb-circle{width:clamp(36px,9vw,42px);height:clamp(36px,9vw,42px);border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:all .16s;}
+.onb-circle.on{border-color:var(--text);transform:scale(1.15);}
 
 /* ── Buttons ── */
-.btn{width:100%;border:none;border-radius:14px;padding:clamp(12px,3vw,15px);font-weight:800;font-size:clamp(13px,3.5vw,15px);cursor:pointer;letter-spacing:.4px;transition:all .18s;font-family:inherit;}
-.btn-coral{background:linear-gradient(135deg,var(--coral),var(--coral2));color:var(--bone);}
-.btn-coral:hover{filter:brightness(1.1);}
-.btn-coral:disabled{background:var(--muted);cursor:default;filter:none;color:var(--muted2);}
-.btn-amber{background:linear-gradient(135deg,var(--amber),var(--amber2));color:#1a0e0a;font-weight:900;}
-.btn-amber:hover{filter:brightness(1.08);}
-.btn-amber-sm{display:inline-block;background:linear-gradient(135deg,var(--amber),var(--amber2));color:#1a0e0a;border:none;border-radius:12px;padding:clamp(10px,2.5vw,12px) clamp(20px,5vw,28px);font-weight:800;font-size:clamp(12px,3vw,14px);cursor:pointer;letter-spacing:.3px;transition:all .18s;}
-.btn-amber-sm:hover{filter:brightness(1.08);}
-.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--muted2);border-radius:14px;padding:clamp(11px,2.5vw,13px);font-weight:700;font-size:clamp(12px,3vw,13px);cursor:pointer;width:100%;transition:all .2s;font-family:inherit;}
-.btn-ghost:hover{border-color:var(--muted);color:var(--bone2);}
-.btn-link{background:none;border:none;color:var(--muted2);font-size:clamp(12px,3vw,13px);cursor:pointer;text-align:center;width:100%;padding:12px;display:block;transition:color .2s;font-family:inherit;}
-.btn-link:hover{color:var(--bone2);}
+.btn{width:100%;border:none;border-radius:9px;padding:clamp(12px,3vw,14px);font-weight:700;font-size:clamp(13px,3.5vw,14px);cursor:pointer;letter-spacing:.3px;transition:all .15s;font-family:inherit;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:var(--red2);}
+.btn-red:disabled{background:var(--muted);cursor:default;color:var(--muted2);}
+.btn-warm{background:var(--warm);color:#120a02;font-weight:800;}
+.btn-warm:hover{background:var(--warm2);}
+.btn-warm-sm{display:inline-block;background:var(--warm);color:#120a02;border:none;border-radius:7px;padding:clamp(9px,2.5vw,11px) clamp(18px,5vw,26px);font-weight:700;font-size:clamp(12px,3vw,13px);cursor:pointer;letter-spacing:.3px;transition:background .15s;}
+.btn-warm-sm:hover{background:var(--warm2);}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--muted2);border-radius:9px;padding:clamp(11px,2.5vw,13px);font-weight:600;font-size:clamp(12px,3vw,13px);cursor:pointer;width:100%;transition:all .16s;font-family:inherit;}
+.btn-ghost:hover{border-color:var(--muted);color:var(--text);}
+.btn-link{background:none;border:none;color:var(--muted2);font-size:clamp(12px,3vw,13px);cursor:pointer;text-align:center;width:100%;padding:12px;display:block;transition:color .16s;font-family:inherit;}
+.btn-link:hover{color:var(--text2);}
 
 /* ── Layout ── */
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:max(env(safe-area-inset-top),16px) clamp(14px,4vw,20px) 0;}
-.logo{font-family:'Cinzel',serif;font-weight:900;letter-spacing:2px;font-size:clamp(13px,3.5vw,16px);color:var(--bone);}
-.logo em{color:var(--coral2);font-style:normal;}
+.logo{font-family:'Cinzel',serif;font-weight:900;letter-spacing:3px;font-size:clamp(13px,3.5vw,16px);color:var(--text);}
+.logo em{color:var(--red);font-style:normal;}
 .topbar-r{display:flex;align-items:center;gap:10px;}
-.streak-pill{background:var(--panel2);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:clamp(10px,2.5vw,12px);font-weight:700;color:var(--amber);display:flex;align-items:center;gap:5px;}
-.gear-btn{background:none;border:none;cursor:pointer;color:var(--muted2);display:flex;align-items:center;padding:4px;transition:color .2s;}
-.gear-btn:hover{color:var(--bone2);}
-.screen{padding:clamp(16px,4vw,22px);padding-bottom:clamp(90px,22vw,110px);animation:fadeUp .28s ease;}
+.streak-pill{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:3px 9px;font-size:clamp(10px,2.5vw,11px);font-weight:700;color:var(--warm);display:flex;align-items:center;gap:4px;}
+.gear-btn{background:none;border:none;cursor:pointer;color:var(--muted2);display:flex;align-items:center;padding:4px;transition:color .16s;}
+.gear-btn:hover{color:var(--text);}
+.screen{padding:clamp(14px,3.5vw,20px);padding-bottom:clamp(88px,20vw,100px);animation:fadeUp .22s ease;}
 .bottomnav{
   position:fixed;bottom:0;left:50%;transform:translateX(-50%);
   width:100%;max-width:520px;
-  background:rgba(18,13,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(8,8,8,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-top:1px solid var(--border);
-  display:flex;padding:clamp(10px,3vw,13px) 0 max(calc(10px + env(safe-area-inset-bottom)),14px);
+  display:flex;padding:clamp(10px,3vw,14px) 0 max(calc(10px + env(safe-area-inset-bottom)),12px);
 }
-.navbtn{flex:1;background:none;border:none;color:var(--muted);font-weight:700;font-size:clamp(9px,2.5vw,11px);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .2s;letter-spacing:.3px;}
-.navbtn.on{color:var(--amber);}
-.navbtn svg{transition:transform .2s;}
-.navbtn.on svg{transform:scale(1.12);}
+.navbtn{flex:1;background:none;border:none;color:var(--muted2);font-weight:600;font-size:clamp(9px,2.5vw,10px);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .16s;letter-spacing:.4px;}
+.navbtn.on{color:var(--red);}
+.navbtn svg{transition:transform .16s;}
+.navbtn.on svg{transform:scale(1.1);}
 
 /* ── Page title ── */
-.ptitle{font-family:'Cinzel',serif;color:var(--amber);font-size:clamp(17px,4.5vw,21px);font-weight:700;text-align:center;letter-spacing:.5px;line-height:1.3;}
-.psub{color:var(--muted2);font-size:clamp(11px,2.8vw,13px);text-align:center;margin-top:5px;}
-.rule{width:36px;height:1px;background:var(--border2);margin:14px auto;}
+.ptitle{font-family:'Cinzel',serif;color:var(--text);font-size:clamp(16px,4.2vw,20px);font-weight:700;text-align:center;letter-spacing:.3px;line-height:1.3;}
+.psub{color:var(--muted2);font-size:clamp(11px,2.8vw,13px);text-align:center;margin-top:5px;line-height:1.5;}
+.rule{width:24px;height:1px;background:var(--border2);margin:12px auto;}
 
 /* ── Doll ── */
 .doll-wrap{position:relative;display:inline-flex;justify-content:center;}
 
 /* ── Death grid ── */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2.5vw,12px);margin-top:16px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(7px,2vw,10px);margin-top:14px;}
 .dcell{
-  background:var(--panel);border:1px solid var(--border);border-radius:18px;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
   padding:clamp(12px,3vw,16px) 8px;
-  display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;
-  transition:all .2s;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  transition:all .16s;overflow:hidden;
 }
-.dcell.on{border-color:var(--amber);box-shadow:0 0 14px var(--glow);}
-.dcell.on:hover{background:var(--panel2);}
-.dcell.off{opacity:.35;cursor:default;}
-.dcell .dlabel{color:var(--bone);font-size:clamp(11px,3vw,13px);font-weight:700;letter-spacing:.2px;text-align:center;}
+.dcell.on{border-color:var(--warm);}
+.dcell.on:hover{background:var(--surface2);}
+.dcell.off{opacity:.25;cursor:default;}
+.dcell .dlabel{color:var(--text);font-size:clamp(11px,3vw,13px);font-weight:600;text-align:center;}
 .dcell .dreq{color:var(--muted2);font-size:clamp(9px,2.5vw,10px);}
 .draw-cell{
-  grid-column:span 2;background:var(--panel);border:1px dashed var(--amber);border-radius:18px;
-  padding:clamp(14px,3.5vw,18px);display:flex;align-items:center;justify-content:center;gap:14px;
-  cursor:pointer;transition:background .2s;
+  grid-column:span 2;background:var(--surface);border:1px dashed var(--border2);border-radius:10px;
+  padding:clamp(14px,3.5vw,18px);display:flex;align-items:center;justify-content:center;gap:12px;
+  cursor:pointer;transition:background .16s;
 }
-.draw-cell:hover{background:var(--panel2);}
-.draw-cell .dlabel{color:var(--amber);font-size:clamp(13px,3.5vw,15px);font-weight:700;}
+.draw-cell:hover{background:var(--surface2);}
+.draw-cell .dlabel{color:var(--text);font-size:clamp(13px,3.5vw,15px);font-weight:600;}
 .draw-cell .dsub{color:var(--muted2);font-size:clamp(10px,2.5vw,11px);margin-top:2px;}
 
 /* ── Feed ── */
-.feed-card{background:var(--panel);border-radius:20px;padding:clamp(14px,3.5vw,18px);margin-bottom:clamp(10px,2.5vw,14px);border:1px solid var(--border);animation:fadeUp .25s ease;}
+.feed-list{margin-top:8px;}
+.feed-card{border-bottom:1px solid var(--border);padding:clamp(16px,4vw,20px) 0;animation:fadeUp .2s ease;}
+.feed-card:last-child{border-bottom:none;}
 .feed-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.avatar{width:clamp(28px,7vw,34px);height:clamp(28px,7vw,34px);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(10px,2.5vw,12px);color:rgba(0,0,0,.55);}
+.avatar{width:clamp(26px,6.5vw,32px);height:clamp(26px,6.5vw,32px);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(9px,2.5vw,11px);color:rgba(0,0,0,.65);}
 .feed-meta{flex:1;min-width:0;}
-.feed-name{color:var(--bone);font-weight:700;font-size:clamp(13px,3.5vw,14px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.feed-name{color:var(--text);font-weight:600;font-size:clamp(13px,3.5vw,14px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .feed-time{color:var(--muted2);font-size:clamp(10px,2.5vw,11px);}
-.friend-tag{background:var(--panel3);border:1px solid var(--border2);border-radius:8px;padding:2px 7px;font-size:clamp(9px,2vw,10px);font-weight:700;color:var(--amber);letter-spacing:.5px;white-space:nowrap;}
-.feed-razon{color:var(--bone2);font-size:clamp(13px,3.5vw,14px);margin:4px 0 8px;line-height:1.55;border-left:2px solid var(--border2);padding-left:10px;}
-.feed-castigo{display:inline-flex;align-items:center;gap:5px;background:var(--panel2);border-radius:8px;padding:3px 10px;font-size:clamp(10px,2.5vw,11px);font-weight:700;color:var(--amber);margin-bottom:12px;letter-spacing:.3px;}
+.friend-tag{border:1px solid var(--border2);border-radius:4px;padding:2px 6px;font-size:clamp(9px,2vw,10px);font-weight:700;color:var(--warm);letter-spacing:.5px;white-space:nowrap;}
+.feed-razon{color:var(--text2);font-size:clamp(13px,3.5vw,14px);margin:2px 0 8px;line-height:1.58;}
+.feed-castigo{display:inline-block;font-size:clamp(10px,2.5vw,11px);font-weight:700;color:var(--warm);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;}
 .dep-btn{
-  width:100%;border-radius:12px;padding:clamp(9px,2.5vw,11px);color:var(--bone2);
-  font-weight:700;font-size:clamp(12px,3vw,13px);
-  border:1px solid var(--coral);background:transparent;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px;transition:all .22s;letter-spacing:.3px;
+  width:100%;border-radius:7px;padding:clamp(8px,2.5vw,10px);color:var(--text2);
+  font-weight:600;font-size:clamp(12px,3vw,13px);
+  border:1px solid var(--border2);background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:all .16s;
 }
-.dep-btn.given{background:var(--coral);border-color:var(--coral2);color:var(--bone);}
-.dep-btn:not(.given):hover{background:var(--glowC);}
-.dep-count{color:var(--amber);font-weight:900;}
+.dep-btn.given{background:var(--surface2);border-color:var(--red);color:var(--text);}
+.dep-btn:not(.given):hover{background:var(--surface);}
+.dep-count{color:var(--warm);font-weight:800;}
 .follow-btn{
-  background:transparent;border:1px solid var(--border2);border-radius:10px;
-  padding:5px 12px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);font-weight:700;
-  cursor:pointer;transition:all .2s;letter-spacing:.3px;white-space:nowrap;flex-shrink:0;font-family:inherit;
+  background:transparent;border:1px solid var(--border2);border-radius:6px;
+  padding:4px 10px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);font-weight:600;
+  cursor:pointer;transition:all .16s;white-space:nowrap;flex-shrink:0;font-family:inherit;
 }
-.follow-btn.following{background:var(--panel3);border-color:var(--border2);color:var(--amber);}
-.own-dep{text-align:center;color:var(--muted);font-size:clamp(11px,3vw,12px);padding:8px;}
+.follow-btn.following{background:var(--surface2);border-color:var(--border2);color:var(--warm);}
+.own-dep{text-align:center;color:var(--muted2);font-size:clamp(11px,3vw,12px);padding:7px;display:flex;align-items:center;justify-content:center;gap:5px;}
 
-/* ── Canvas draw ── */
-canvas{background:var(--panel2);border-radius:18px;border:1px solid var(--border2);touch-action:none;display:block;margin:0 auto;max-width:100%;}
-.swatches{display:flex;justify-content:center;gap:clamp(8px,2vw,12px);margin-top:12px;flex-wrap:wrap;}
-.swatch{width:clamp(20px,5vw,26px);height:clamp(20px,5vw,26px);border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:transform .15s;}
-.swatch.on{border-color:var(--bone);transform:scale(1.22);}
-.wrow{display:flex;justify-content:center;gap:10px;margin-top:10px;align-items:center;}
-.wbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.wbtn.on{border-color:var(--amber);background:var(--panel2);}
-.wdot{border-radius:50%;background:var(--bone);}
-.clearbtn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);padding:6px 12px;cursor:pointer;transition:all .2s;font-family:inherit;}
+/* ── Canvas ── */
+canvas{background:var(--surface2);border-radius:10px;border:1px solid var(--border2);touch-action:none;display:block;margin:0 auto;max-width:100%;}
+.swatches{display:flex;justify-content:center;gap:clamp(8px,2vw,11px);margin-top:12px;flex-wrap:wrap;}
+.swatch{width:clamp(20px,5vw,25px);height:clamp(20px,5vw,25px);border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:transform .13s;}
+.swatch.on{border-color:var(--text);transform:scale(1.2);}
+.wrow{display:flex;justify-content:center;gap:9px;margin-top:10px;align-items:center;}
+.wbtn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .13s;}
+.wbtn.on{border-color:var(--warm);background:var(--surface2);}
+.wdot{border-radius:50%;background:var(--text);}
+.clearbtn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);padding:5px 10px;cursor:pointer;transition:all .16s;font-family:inherit;}
 .clearbtn:hover{border-color:var(--muted);}
 
 /* ── Settings ── */
-.colorpick{display:flex;justify-content:center;gap:clamp(10px,3vw,16px);flex-wrap:wrap;margin-top:20px;}
-.ccircle{width:clamp(34px,8vw,42px);height:clamp(34px,8vw,42px);border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0;transition:all .2s;}
-.ccircle.on{border-color:var(--amber);transform:scale(1.18);}
-.stat-block{background:var(--panel2);border:1px solid var(--border);border-radius:16px;padding:clamp(14px,3.5vw,18px);text-align:center;margin-top:20px;}
-.stat-num{font-family:'Cinzel',serif;font-size:clamp(28px,7vw,36px);font-weight:900;color:var(--amber);line-height:1;}
+.colorpick{display:flex;justify-content:center;gap:clamp(10px,3vw,14px);flex-wrap:wrap;margin-top:18px;}
+.ccircle{width:clamp(32px,8vw,40px);height:clamp(32px,8vw,40px);border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;transition:all .16s;}
+.ccircle.on{border-color:var(--text);transform:scale(1.14);}
+.stat-block{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(16px,4vw,20px);text-align:center;margin-top:18px;}
+.stat-num{font-family:'Cinzel',serif;font-size:clamp(30px,8vw,40px);font-weight:900;color:var(--warm);line-height:1;}
 .stat-label{color:var(--muted2);font-size:clamp(10px,2.5vw,11px);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
 
 /* ── Forms ── */
 textarea,input[type=text],input[type=email],input[type=password]{
-  width:100%;background:var(--panel);border:1px solid var(--border2);border-radius:14px;
-  color:var(--bone);padding:clamp(10px,2.5vw,13px) 14px;
-  font-size:clamp(14px,3.5vw,15px);font-family:inherit;outline:none;transition:border-color .2s;-webkit-appearance:none;
+  width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:7px;
+  color:var(--text);padding:clamp(10px,2.5vw,12px) 12px;
+  font-size:clamp(14px,3.5vw,15px);font-family:inherit;outline:none;transition:border-color .16s;-webkit-appearance:none;
 }
 textarea{min-height:76px;resize:none;}
-textarea:focus,input:focus{border-color:var(--amber);}
-.charcount{text-align:right;font-size:clamp(10px,2.5vw,11px);color:var(--muted);margin-top:4px;}
+textarea:focus,input:focus{border-color:var(--red);}
+.charcount{text-align:right;font-size:clamp(10px,2.5vw,11px);color:var(--muted);margin-top:3px;}
 
 /* ── Card done ── */
-.done-card{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:clamp(14px,3.5vw,20px);text-align:center;margin-top:16px;}
-.done-razon{color:var(--bone2);font-style:italic;font-size:clamp(13px,3.5vw,14px);line-height:1.55;margin-bottom:8px;}
-.done-castigo{color:var(--amber);font-weight:800;font-size:clamp(13px,3.5vw,14px);}
-/* ── Peor / anterior ── */
-.peor-btn{margin-top:14px;background:none;border:1px dashed var(--coral);border-radius:14px;padding:11px 20px;color:var(--coral2);font-size:clamp(12px,3vw,13px);font-weight:700;cursor:pointer;width:100%;letter-spacing:.3px;transition:all .2s;font-family:inherit;}
-.peor-btn:hover{background:var(--glowC);}
-.prev-toggle{background:none;border:none;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:clamp(10px,2.5vw,11px);cursor:pointer;padding:10px 0 0;transition:color .2s;font-family:inherit;letter-spacing:.3px;}
-.prev-toggle:hover{color:var(--muted2);}
-.prev-toggle svg{transition:transform .2s;}
-.prev-toggle.open svg{transform:rotate(180deg);}
-.prev-panel{overflow:hidden;max-height:0;transition:max-height .35s ease;opacity:.55;}
-.prev-panel.open{max-height:400px;}
-.prev-inner{padding:12px 0 4px;border-top:1px solid var(--border);margin-top:10px;}
-.prev-label{font-size:clamp(9px,2.5vw,10px);text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:center;margin-bottom:8px;}
-.prev-razon{color:var(--muted2);font-style:italic;font-size:clamp(11px,3vw,12px);text-align:center;margin-top:6px;line-height:1.5;}
-.prev-castigo{color:var(--muted);font-size:clamp(10px,2.5vw,11px);font-weight:700;text-align:center;margin-top:3px;}
+.done-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(14px,3.5vw,18px);text-align:center;margin-top:14px;}
+.done-razon{color:var(--text2);font-size:clamp(13px,3.5vw,14px);line-height:1.58;margin-bottom:8px;}
+.done-castigo{color:var(--warm);font-weight:700;font-size:clamp(13px,3.5vw,14px);letter-spacing:.5px;text-transform:uppercase;}
 
-/* ── Responsive desktop bump ── */
+/* ── Peor/anterior ── */
+.peor-btn{margin-top:12px;background:none;border:1px dashed var(--border2);border-radius:8px;padding:10px 16px;color:var(--muted2);font-size:clamp(12px,3vw,13px);font-weight:600;cursor:pointer;width:100%;transition:all .16s;font-family:inherit;}
+.peor-btn:hover{border-color:var(--muted);color:var(--text);}
+.prev-toggle{background:none;border:none;width:100%;display:flex;align-items:center;justify-content:center;gap:5px;color:var(--muted);font-size:clamp(10px,2.5vw,11px);cursor:pointer;padding:10px 0 0;transition:color .16s;font-family:inherit;letter-spacing:.3px;}
+.prev-toggle:hover{color:var(--muted2);}
+.prev-toggle svg{transition:transform .18s;}
+.prev-toggle.open svg{transform:rotate(180deg);}
+.prev-panel{overflow:hidden;max-height:0;transition:max-height .32s ease;opacity:.5;}
+.prev-panel.open{max-height:380px;}
+.prev-inner{padding:10px 0 4px;border-top:1px solid var(--border);margin-top:8px;}
+.prev-label{font-size:clamp(9px,2.5vw,10px);text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:center;margin-bottom:7px;}
+.prev-razon{color:var(--muted2);font-size:clamp(11px,3vw,12px);text-align:center;margin-top:5px;line-height:1.5;}
+.prev-castigo{color:var(--muted2);font-size:clamp(10px,2.5vw,11px);font-weight:600;text-align:center;margin-top:3px;letter-spacing:.4px;text-transform:uppercase;}
+
+/* ── Responsive ── */
 @media(min-width:560px){
   .auth-page{padding-top:60px;padding-bottom:60px;}
-  .bottomnav{border-radius:0;}
 }
 @media(min-width:768px){
   .screen{padding-left:clamp(22px,5vw,32px);padding-right:clamp(22px,5vw,32px);}
@@ -225,7 +224,7 @@ textarea:focus,input:focus{border-color:var(--amber);}
 </style>
 </head>
 <body>
-<div id="root"><div class="pg-load"><div class="brand cinzel">VUDÚ<em>REAL</em></div><div class="spin"></div></div></div>
+<div id="root"><div class="pg-load"><div class="brand cinzel">kill<em>.me</em></div><div class="spin"></div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
@@ -248,13 +247,19 @@ const DEATH_LABELS={
   fuego:"Quemado",agujas:"Acribillado",ahogo:"Ahogado",
   rayo:"Electrocutado",aplastado:"Aplastado",fantasma:"Exorcizado",
 };
+const SB_ERRORS={
+  "Invalid login credentials":"Email o contraseña incorrectos",
+  "Email not confirmed":"Confirma tu email antes de entrar",
+  "User already registered":"Ya existe una cuenta con ese email",
+  "Password should be at least 6 characters":"La contraseña debe tener al menos 6 caracteres",
+};
 
 // ── SVG Icons ──────────────────────────────────────────
 const ICO={
   doll:`<svg width="22" height="28" viewBox="0 0 22 28" fill="none"><circle cx="11" cy="5" r="4.2" fill="currentColor"/><path d="M11 9.2Q10.5 14 11 18.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M11 12.5Q7 13.5 4.5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11 12.5Q15 13.5 17.5 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11 18.5Q8 21.5 7 27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11 18.5Q14 21.5 15 27" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
   feed:`<svg width="22" height="20" viewBox="0 0 22 20" fill="none"><path d="M2 4h18M2 10h18M2 16h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-  flame:`<svg width="13" height="17" viewBox="0 0 13 17" fill="currentColor"><path d="M6.5 0C6.5 0 11 5.5 11 9.5C11 12.5 9.1 15 6.5 15C3.9 15 2 12.5 2 9.5C2 7.5 3 6 3 6C3 6 4 8 5.5 8C5.5 8 4.5 4.5 6.5 0Z"/></svg>`,
-  candle:`<svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M9 1C9 1 11.5 4.5 11.5 6.5C11.5 8.1 10.4 9 9 9C7.6 9 6.5 8.1 6.5 6.5C6.5 5 7.5 3.5 7.5 3.5C7.5 3.5 7.8 5 8.5 5C8.5 5 8.2 2.8 9 1Z" fill="currentColor"/><line x1="9" y1="9" x2="9" y2="12" stroke="currentColor" stroke-width="1.5"/><rect x="5" y="12" width="8" height="9" rx="2" fill="currentColor" opacity=".75"/></svg>`,
+  flame:`<svg width="12" height="16" viewBox="0 0 13 17" fill="currentColor"><path d="M6.5 0C6.5 0 11 5.5 11 9.5C11 12.5 9.1 15 6.5 15C3.9 15 2 12.5 2 9.5C2 7.5 3 6 3 6C3 6 4 8 5.5 8C5.5 8 4.5 4.5 6.5 0Z"/></svg>`,
+  candle:`<svg width="18" height="22" viewBox="0 0 18 22" fill="none"><path d="M9 1C9 1 11.5 4.5 11.5 6.5C11.5 8.1 10.4 9 9 9C7.6 9 6.5 8.1 6.5 6.5C6.5 5 7.5 3.5 7.5 3.5C7.5 3.5 7.8 5 8.5 5C8.5 5 8.2 2.8 9 1Z" fill="currentColor"/><line x1="9" y1="9" x2="9" y2="12" stroke="currentColor" stroke-width="1.5"/><rect x="5" y="12" width="8" height="9" rx="2" fill="currentColor" opacity=".7"/></svg>`,
   gear:`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.5v2M10 16.5v2M1.5 10h2M16.5 10h2M3.6 3.6l1.4 1.4M15 15l1.4 1.4M3.6 16.4l1.4-1.4M15 5l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
   pencil:`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M13 2L16 5L6 15L2 16L3 12L13 2Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   plus:`<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
@@ -273,6 +278,8 @@ const todayS=()=>new Date().toISOString().split('T')[0];
 const yesterS=()=>new Date(Date.now()-86400000).toISOString().split('T')[0];
 const ge=id=>document.getElementById(id);
 const initials=n=>(n||'?').slice(0,2).toUpperCase();
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const sbErr=m=>SB_ERRORS[m]||m;
 const timeAgo=ts=>{
   const m=Math.floor((Date.now()-new Date(ts))/60000);
   if(m<1)return'ahora';if(m<60)return`hace ${m}m`;
@@ -302,8 +309,6 @@ function dollSVG(color,death,dead,poseName,px){
   const ec=dark?"#2A1E38":"#0B0910";
   const ec2=dark?"rgba(0,0,0,.5)":"rgba(255,255,255,.55)";
 
-  // Face
-  const ey=h*.16; // eye y (head center at h*.175)
   const face=dead?`
     <line x1="${w*.41}" y1="${h*.15}" x2="${w*.47}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
     <line x1="${w*.47}" y1="${h*.15}" x2="${w*.41}" y2="${h*.17}" stroke="${ec}" stroke-width="2.8" stroke-linecap="round"/>
@@ -318,7 +323,6 @@ function dollSVG(color,death,dead,poseName,px){
     <path d="M ${w*.41} ${h*.199} Q ${w/2} ${h*.224} ${w*.59} ${h*.199}" stroke="${ec}" stroke-width="2.3" fill="none" stroke-linecap="round"/>
   `;
 
-  // Death effects
   let fx="";
   if(death==="fuego"){
     fx+=`<defs><radialGradient id="fl${px}" cx="50%" cy="100%" r="80%"><stop offset="0%" stop-color="#FFD86B"/><stop offset="55%" stop-color="#E8602C"/><stop offset="100%" stop-color="#7A1F2B"/></radialGradient></defs>`;
@@ -345,8 +349,7 @@ function dollSVG(color,death,dead,poseName,px){
   if(death==="aplastado"){
     fx+=`<defs><linearGradient id="rk${px}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8A8A8A"/><stop offset="100%" stop-color="#3A3838"/></linearGradient></defs>
     <ellipse cx="${w/2}" cy="${h*.095}" rx="84" ry="44" fill="url(#rk${px})"/>
-    <ellipse cx="${w/2}" cy="${h*.095}" rx="84" ry="44" fill="none" stroke="#555" stroke-width="1.5"/>
-    <path d="M${w*.38} ${h*.14} Q${w*.45} ${h*.16} ${w*.52} ${h*.13}" stroke="#555" stroke-width="1" opacity=".4"/>`;
+    <ellipse cx="${w/2}" cy="${h*.095}" rx="84" ry="44" fill="none" stroke="#555" stroke-width="1.5"/>`;
   }
   if(death==="fantasma"){
     fx+=`<g style="animation:floatSlow 3s ease-in-out infinite">
@@ -405,7 +408,6 @@ async function loadFeed(){
   myDeps=new Set((deps||[]).map(d=>d.post_id));
   myFollowing=new Set((follows||[]).map(f=>f.following_id));
   const primary=posts||[];
-  // fetch previous posts for cards that have one
   const prevIds=primary.map(p=>p.previous_post_id).filter(Boolean);
   let prevMap={};
   if(prevIds.length){
@@ -420,7 +422,6 @@ async function loadFeed(){
 }
 async function submitPost(pd){
   const t=todayS(),y=yesterS();
-  const ns=(profile.last_post_date===y||(profile.last_post_date===t))?(profile.streak||1):1;
   const prevId=todayPost?.id||null;
   if(prevId) await sb.from('posts').update({is_primary:false}).eq('id',prevId);
   const {data,error}=await sb.from('posts').insert({
@@ -469,7 +470,7 @@ async function doSignUp(email,pass,uname,color){
   const {data:ex}=await sb.from('profiles').select('id').eq('username',uname).maybeSingle();
   if(ex)return'Ese nombre ya está en uso';
   const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username:uname}}});
-  if(error)return error.message;
+  if(error)return sbErr(error.message);
   if(data.user){
     await new Promise(r=>setTimeout(r,600));
     await sb.from('profiles').upsert({id:data.user.id,username:uname,doll_color:color});
@@ -477,20 +478,25 @@ async function doSignUp(email,pass,uname,color){
   return null;
 }
 async function doSignIn(emailOrUser,pass){
-  if(!emailOrUser.includes('@')) return 'Introduce tu email, no tu nombre de usuario';
+  if(!emailOrUser.includes('@')) return 'Introduce tu email para entrar (no el nombre de usuario)';
   const {error}=await sb.auth.signInWithPassword({email:emailOrUser,password:pass});
-  if(error)return error.message;return null;
+  if(error)return sbErr(error.message);return null;
+}
+async function doResetPassword(email){
+  if(!email)return'Escribe tu email primero';
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://guyfroms.github.io/vudu-real/'});
+  if(error)return sbErr(error.message);return null;
 }
 
 // ── Renders ───────────────────────────────────────────
-function hdr(t,s){return`<div class="ptitle cinzel">${t}</div>${s?`<div class="psub">${s}</div>`+`<div class="rule"></div>`:'<div class="rule"></div>'}`;}
+function hdr(t,s){return`<div class="ptitle cinzel">${t}</div>${s?`<div class="psub">${s}</div>`:''}${`<div class="rule"></div>`}`;}
 
 function renderAuth(){
   const login=authTab==='login';
   if(authStep==='color'){
     ge('root').innerHTML=`
     <div class="auth-page">
-      <div class="auth-brand"><h1 class="cinzel">VUDÚ<em>REAL</em></h1><p>Elige el color de tu muñeco</p></div>
+      <div class="auth-brand"><h1 class="cinzel">kill<em>.me</em></h1><p>Elige el color de tu muñeco</p></div>
       <div class="auth-doll-preview" id="dollPreview">${dollSVG(pendingSignup.color,null,false,'idle',110)}</div>
       <div class="auth-card">
         <div class="step-label">Paso 2 de 2 · Tu muñeco</div>
@@ -498,7 +504,7 @@ function renderAuth(){
           ${DOLL_COLORS.map(c=>`<button class="onb-circle ${c===pendingSignup.color?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}
         </div>
         <div class="auth-err" id="aErr"></div>
-        <button class="btn btn-coral" id="btnCreate" style="margin-top:8px;">Crear cuenta</button>
+        <button class="btn btn-red" id="btnCreate" style="margin-top:8px;">Crear cuenta</button>
         <button class="btn-link" id="btnBackForm">← volver</button>
       </div>
     </div>`;
@@ -520,7 +526,10 @@ function renderAuth(){
   }
   ge('root').innerHTML=`
   <div class="auth-page">
-    <div class="auth-brand"><h1 class="cinzel">VUDÚ<em>REAL</em></h1><p>Una desgracia al día · Un castigo para tu muñeco</p></div>
+    <div class="auth-brand">
+      <h1 class="cinzel">kill<em>.me</em></h1>
+      <p>Una cosa ruin al día · Un castigo para tu muñeco</p>
+    </div>
     <div class="auth-doll-preview">${dollSVG(DOLL_COLORS[0],null,false,'idle',90)}</div>
     <div class="auth-card">
       <div class="auth-tabs">
@@ -528,22 +537,31 @@ function renderAuth(){
         <button class="auth-tab ${!login?'on':''}" id="tReg">Registrarse</button>
       </div>
       ${!login?`<div class="field"><label>Nombre de usuario</label><input type="text" id="aUser" placeholder="como quieres que te vean" maxlength="20"/></div>`:''}
-      <div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="tu@email.com (no el nombre de usuario)" autocomplete="email"/></div>
+      <div class="field"><label>Email</label><input type="email" id="aEmail" placeholder="tu@email.com" autocomplete="email"/></div>
       <div class="field">
         <label>Contraseña</label>
         <input type="password" id="aPass" placeholder="mínimo 6 caracteres" autocomplete="${login?'current-password':'new-password'}"/>
-        ${!login?`<div class="pass-hint">Usa una contraseña que no tengas en otros sitios. Si alguien accede a este servicio, no queremos que afecte al resto de tus cuentas.</div>`:''}
+        ${!login?`<div class="pass-hint"><strong>Usa una contraseña única.</strong> Si alguien accede a este servicio, no queremos que pueda entrar al resto de tus cuentas.</div>`:''}
       </div>
       <div class="auth-err" id="aErr"></div>
-      <button class="btn btn-coral" id="btnAuth">${login?'Entrar':'Siguiente →'}</button>
+      <button class="btn btn-red" id="btnAuth">${login?'Entrar':'Siguiente →'}</button>
+      ${login?`<button class="btn-link" id="btnForgot" style="margin-top:4px;font-size:clamp(11px,2.5vw,12px);">¿Olvidaste tu contraseña?</button>`:''}
     </div>
   </div>`;
   ge('tLogin').onclick=()=>{authTab='login';renderAuth();};
   ge('tReg').onclick=()=>{authTab='register';renderAuth();};
+  if(ge('btnForgot')){
+    ge('btnForgot').onclick=async()=>{
+      const email=(ge('aEmail').value||'').trim();
+      const err=ge('aErr');
+      const e=await doResetPassword(email);
+      if(e){err.textContent=e;}else{err.style.color='#5A9A5A';err.textContent='Email de recuperación enviado — revisa tu bandeja.';}
+    };
+  }
   ge('btnAuth').onclick=async()=>{
     const btn=ge('btnAuth'),err=ge('aErr');
     const email=(ge('aEmail').value||'').trim(),pass=ge('aPass').value||'';
-    err.textContent='';
+    err.textContent='';err.style.color='';
     if(authTab==='login'){
       btn.disabled=true;btn.textContent='...';
       const e=await doSignIn(email,pass);
@@ -577,9 +595,9 @@ function shell(content){
   const inMain=['home','muerte','dibujo','posted'].includes(view);
   ge('root').innerHTML=`
   <div class="topbar">
-    <span class="logo cinzel">VUDÚ<em>REAL</em></span>
+    <span class="logo cinzel">kill<em>.me</em></span>
     <div class="topbar-r">
-      ${streak>0?`<div class="streak-pill">${ICO.flame}<span>${streak} días</span></div>`:''}
+      ${streak>0?`<div class="streak-pill">${ICO.flame}<span>${streak}</span></div>`:''}
       <button class="gear-btn" id="btnGear">${ICO.gear}</button>
     </div>
   </div>
@@ -596,7 +614,7 @@ function shell(content){
 }
 
 function paint(){
-  if(view==='loading'){ge('root').innerHTML='<div class="pg-load"><div class="brand cinzel">VUDÚ<em>REAL</em></div><div class="spin"></div></div>';return;}
+  if(view==='loading'){ge('root').innerHTML='<div class="pg-load"><div class="brand cinzel">kill<em>.me</em></div><div class="spin"></div></div>';return;}
   if(view==='auth'){renderAuth();return;}
   let c='';
   if(view==='home')c=renderHome();
@@ -611,13 +629,13 @@ function paint(){
 function prevPostHTML(p,size){
   if(!p) return '';
   const d=DEATHS.find(x=>x.id===p.castigo);
-  const lbl=p.castigo==='dibujo'?p.dibujo_descripcion:DEATH_LABELS[p.castigo]||p.castigo;
+  const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):DEATH_LABELS[p.castigo]||p.castigo;
   return `<div class="prev-inner">
     <div class="prev-label">Lo de antes</div>
-    <div style="display:flex;justify-content:center;opacity:.6;">
+    <div style="display:flex;justify-content:center;opacity:.55;">
       ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',size||60)}
     </div>
-    <div class="prev-razon">"${p.razon}"</div>
+    <div class="prev-razon">"${esc(p.razon)}"</div>
     <div class="prev-castigo">${lbl}</div>
   </div>`;
 }
@@ -626,11 +644,11 @@ function renderHome(){
   const dc=profile.doll_color;
   if(todayPost){
     const p=todayPost,d=DEATHS.find(x=>x.id===p.castigo);
-    const lbl=p.castigo==='dibujo'?p.dibujo_descripcion:DEATH_LABELS[p.castigo]||p.castigo;
+    const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):DEATH_LABELS[p.castigo]||p.castigo;
     const hasPrev=!!todayPrevPost;
     const isOpen=expandedPrev.has('home');
     return `<div class="screen" style="text-align:center;">
-      ${hdr("Hoy ya está hecho",`"${p.razon}"`)}
+      ${hdr("Hoy ya está hecho",`"${esc(p.razon)}"`)}
       <div style="display:flex;justify-content:center;margin:28px 0;">
         ${dollWithDraw(dc,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',150)}
       </div>
@@ -649,16 +667,16 @@ function renderHome(){
       </div>
       <button class="peor-btn" id="btnPeor">Ha ido a peor — contar algo nuevo</button>
       <div style="display:flex;justify-content:center;margin-top:14px;">
-        <button class="btn-amber-sm" id="goFeed">Ver el feed</button>
+        <button class="btn-warm-sm" id="goFeed">Ver el feed</button>
       </div>
     </div>`;
   }
   return `<div class="screen" style="text-align:center;">
-    ${hdr("¿Qué te ha pasado hoy?","Solo puedes contar 1 desgracia al día")}
+    ${hdr("¿Qué te ha pasado hoy?","Una desgracia al día")}
     <div class="doll-wrap" style="display:flex;justify-content:center;margin:30px 0;animation:breathe 3.5s ease-in-out infinite;">
       ${dollSVG(dc,null,false,'idle',140)}
     </div>
-    <button class="btn btn-coral" id="empezar">Empezar</button>
+    <button class="btn btn-red" id="empezar">Empezar</button>
   </div>`;
 }
 
@@ -669,11 +687,11 @@ function renderMuerte(){
     return `<div class="dcell ${ok?'on':'off'}" data-death="${ok?d.id:''}">
       ${dollSVG(profile.doll_color,ok?d.id:null,ok,ok?d.pose:'idle',clamp(56,70))}
       <span class="dlabel">${d.label}</span>
-      ${!ok?`<span class="dreq">racha de ${d.min} días</span>`:''}
+      ${!ok?`<span class="dreq">racha ${d.min}d</span>`:''}
     </div>`;
   }).join('');
   return `<div class="screen">
-    ${hdr("Elige su castigo","Los castigos nuevos se desbloquean con tu racha")}
+    ${hdr("Elige su castigo","Los nuevos castigos se desbloquean con racha")}
     <div class="grid2">
       ${cells}
       <div class="draw-cell" id="drawCard">
@@ -689,7 +707,7 @@ function clamp(a,b){return Math.min(b,Math.max(a,Math.round(window.innerWidth/48
 function renderDibujo(){
   return `<div class="screen">
     ${hdr("Modo libre","Escribe qué pasó y dibuja qué le haces")}
-    <textarea id="razonDibujo" placeholder="¿qué te ha pasado hoy?" maxlength="120">${draftRazon}</textarea>
+    <textarea id="razonDibujo" placeholder="¿qué te ha pasado hoy?" maxlength="120">${esc(draftRazon)}</textarea>
     <div class="charcount" id="razonCount">${draftRazon.length}/120</div>
     <div style="display:flex;justify-content:center;margin-top:14px;"><canvas id="drawCanvas" width="220" height="280"></canvas></div>
     <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}</div>
@@ -698,33 +716,33 @@ function renderDibujo(){
       <button class="clearbtn" id="clearCanvas">limpiar</button>
     </div>
     <div style="margin-top:14px;"><input type="text" id="descDibujo" placeholder="¿qué le has hecho?" maxlength="80"/></div>
-    <div style="display:flex;justify-content:center;margin-top:16px;"><button class="btn-amber-sm" id="guardarDibujo" disabled>Publicar</button></div>
+    <div style="display:flex;justify-content:center;margin-top:16px;"><button class="btn-warm-sm" id="guardarDibujo" disabled>Publicar</button></div>
     <button class="btn-link" id="volverFormas">← volver a los castigos</button>
   </div>`;
 }
 
 function renderPosted(){
   const p=todayPost,d=DEATHS.find(x=>x.id===p.castigo);
-  const lbl=p.castigo==='dibujo'?p.dibujo_descripcion:DEATH_LABELS[p.castigo]||p.castigo;
+  const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):DEATH_LABELS[p.castigo]||p.castigo;
   return `<div class="screen" style="text-align:center;">
     ${hdr("Publicado")}
     <div style="display:flex;justify-content:center;margin:28px 0;">
       ${dollWithDraw(profile.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',150)}
     </div>
     <div class="done-card">
-      <div class="done-razon">"${p.razon}"</div>
+      <div class="done-razon">"${esc(p.razon)}"</div>
       <div class="done-castigo">${lbl}</div>
     </div>
     <div style="display:flex;justify-content:center;margin-top:20px;">
-      <button class="btn-amber-sm" id="irAlFeed">Ver el feed</button>
+      <button class="btn-warm-sm" id="irAlFeed">Ver el feed</button>
     </div>
   </div>`;
 }
 
 function renderFeed(){
-  if(!feedData.length)return`<div class="screen">${hdr("Feed","Lo de hoy, de tu gente")}<div style="text-align:center;color:var(--muted2);margin-top:50px;font-size:clamp(13px,3.5vw,15px);">Nadie ha publicado hoy todavía<br><span style="font-size:clamp(11px,3vw,12px);opacity:.6;display:block;margin-top:6px;">Sé el primero</span></div></div>`;
+  if(!feedData.length)return`<div class="screen">${hdr("Feed","Lo de hoy")}<div style="text-align:center;color:var(--muted2);margin-top:60px;font-size:clamp(13px,3.5vw,15px);">Nadie ha publicado hoy<br><span style="font-size:clamp(11px,3vw,12px);opacity:.5;display:block;margin-top:6px;">sé el primero</span></div></div>`;
   const cards=feedData.map(item=>{
-    const lbl=item.castigo==='dibujo'?item.dibujo_descripcion:DEATH_LABELS[item.castigo]||item.castigo;
+    const lbl=item.castigo==='dibujo'?esc(item.dibujo_descripcion):DEATH_LABELS[item.castigo]||item.castigo;
     const given=myDeps.has(item.id),own=item.user_id===user.id;
     const friend=myFollowing.has(item.user_id);
     const d=DEATHS.find(x=>x.id===item.castigo);
@@ -734,19 +752,19 @@ function renderFeed(){
       <div class="feed-head">
         <div class="avatar" style="background:${item.doll_color};">${initials(item.username)}</div>
         <div class="feed-meta">
-          <div class="feed-name">${item.username}</div>
+          <div class="feed-name">${esc(item.username)}</div>
           <div class="feed-time">${timeAgo(item.created_at)}</div>
         </div>
-        ${friend&&!own?`<span class="friend-tag">Amigo</span>`:''}
-        ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+' Siguiendo':ICO.plus+' Seguir'}</button>`:''}
+        ${friend&&!own?`<span class="friend-tag">amigo</span>`:''}
+        ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+' siguiendo':ICO.plus+' seguir'}</button>`:''}
       </div>
-      <p class="feed-razon">${item.razon}</p>
+      <p class="feed-razon">${esc(item.razon)}</p>
       <span class="feed-castigo">${lbl}</span>
-      <div style="display:flex;justify-content:center;margin:12px 0;">
+      <div style="display:flex;justify-content:center;margin:10px 0;">
         ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',80)}
       </div>
       ${own
-        ?`<div class="own-dep">${ICO.candle} ${item.dep_count||0} ${item.dep_count===1?'DEP':'DEPs'}</div>`
+        ?`<div class="own-dep">${ICO.candle} <span>${item.dep_count||0} ${item.dep_count===1?'DEP':'DEPs'}</span></div>`
         :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">${ICO.candle} DEP <span class="dep-count">${item.dep_count||0}</span></button>`}
       ${hasPrev?`
         <button class="prev-toggle ${isOpen?'open':''}" data-feedprev="${item.id}">
@@ -759,12 +777,12 @@ function renderFeed(){
       `:''}
     </div>`;
   }).join('');
-  return `<div class="screen">${hdr("Feed","Lo de hoy, de tu gente")}<div style="margin-top:16px;">${cards}</div></div>`;
+  return `<div class="screen">${hdr("Feed","Lo de hoy")}<div class="feed-list">${cards}</div></div>`;
 }
 
 function renderAjustes(){
   return `<div class="screen">
-    ${hdr("Ajustes",`@${profile.username}`)}
+    ${hdr("Ajustes",`@${esc(profile.username)}`)}
     <div style="display:flex;justify-content:center;margin:24px 0;">
       ${dollSVG(profile.doll_color,null,false,'idle',120)}
     </div>
@@ -840,13 +858,13 @@ function attachListeners(){
 function promptRazon(death){
   const d=DEATHS.find(x=>x.id===death);
   ge('app').innerHTML=`<div class="screen" style="text-align:center;">
-    ${hdr("¿Qué te ha pasado hoy?","Para acompañar el castigo elegido")}
+    ${hdr("¿Qué te ha pasado hoy?")}
     <div style="display:flex;justify-content:center;margin:22px 0;">
       ${dollSVG(profile.doll_color,death,true,d?.pose||'idle',110)}
     </div>
     <textarea id="razonFinal" placeholder="ej: se me ha caído el café al suelo..." maxlength="120" style="text-align:left;"></textarea>
     <div class="charcount" id="rfCount">0/120</div>
-    <button class="btn btn-coral" id="publicarFinal" disabled style="margin-top:14px;">Publicar</button>
+    <button class="btn btn-red" id="publicarFinal" disabled style="margin-top:14px;">Publicar</button>
   </div>`;
   const ta=ge('razonFinal'),btn=ge('publicarFinal'),cnt=ge('rfCount');
   ta.oninput=()=>{cnt.textContent=`${ta.value.length}/120`;btn.disabled=!ta.value.trim();};
