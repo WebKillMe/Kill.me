@@ -230,7 +230,8 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 
 /* ── Topbar ── */
 .topbar{border-bottom:1px solid var(--border);padding-bottom:14px;}
-.logo{font-size:clamp(16px,4.2vw,19px);letter-spacing:4px;}
+.logo{font-size:clamp(16px,4.2vw,19px);letter-spacing:1px;}
+.pg-load .brand{letter-spacing:1px;}
 .streak-pill{background:transparent;border-color:rgba(176,120,48,.3);padding:3px 10px;}
 
 /* ── Auth ── */
@@ -258,7 +259,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
   background:var(--warm);border:2px solid var(--bg);}
 .feed-name{font-size:clamp(14px,3.5vw,15px);font-weight:700;}
 .feed-time{font-size:clamp(10px,2.5vw,11px);color:var(--muted);}
-.follow-btn{padding:5px 11px;font-size:clamp(10px,2.5vw,11px);border-color:var(--border2);}
+.follow-btn{padding:5px 11px;font-size:clamp(10px,2.5vw,11px);border-color:var(--border2);align-self:flex-start;margin-top:1px;}
 .follow-btn.following{border-color:rgba(176,120,48,.25);color:var(--warm);background:transparent;}
 .feed-razon{font-size:clamp(14px,3.5vw,15px);color:var(--text2);font-style:italic;
   line-height:1.65;margin:4px 0 12px;}
@@ -291,20 +292,22 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 .draw-cell .dlabel{font-size:clamp(14px,3.5vw,15px);}
 
 /* ── Muertes collection ── */
-.dhs-pill{padding:12px 8px;border-radius:10px;}
-.dhs-num{font-size:clamp(20px,5.5vw,28px);}
-.dhs-lbl{font-size:clamp(8px,2vw,9px);margin-top:4px;}
+.deaths-header-stats{align-items:stretch;}
+.dhs-pill{padding:12px 8px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.dhs-num{font-family:system-ui,-apple-system,sans-serif;font-variant-numeric:lining-nums tabular-nums;font-size:clamp(20px,5.5vw,26px);letter-spacing:-.5px;}
+.dhs-lbl{font-size:clamp(8px,2vw,9px);margin-top:5px;}
 .deaths-section{margin-top:22px;}
 .death-row{padding:clamp(12px,3vw,16px) clamp(12px,3.5vw,16px);border-radius:10px;margin-bottom:8px;}
 .death-row.dr-unlocked{border-color:rgba(255,255,255,.045);}
 .dr-doll{width:clamp(58px,15vw,74px);}
 .dr-lock{width:clamp(58px,15vw,74px);}
-.dr-name{font-size:clamp(14px,3.5vw,15px);font-weight:700;}
+.dr-name{font-family:'Playfair Display',serif;font-size:clamp(14px,3.5vw,15px);font-weight:700;letter-spacing:.2px;}
 .dr-status{font-size:clamp(10px,2.5vw,11px);margin-top:4px;}
+.dr-prog-num{font-family:system-ui,-apple-system,sans-serif;font-variant-numeric:lining-nums tabular-nums;}
 
 /* ── Settings ── */
 .stat-block{padding:clamp(16px,4vw,22px);}
-.stat-num{font-size:clamp(30px,8vw,42px);}
+.stat-num{font-family:system-ui,-apple-system,sans-serif;font-variant-numeric:lining-nums tabular-nums;font-size:clamp(30px,8vw,40px);letter-spacing:-.5px;}
 
 /* ── Bottom nav ── */
 .navbtn{font-size:clamp(9px,2.5vw,11px);gap:5px;}
