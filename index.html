@@ -400,7 +400,7 @@ const STRINGS={
   es:{
     nav_hoy:'Hoy',nav_feed:'Feed',nav_senales:'Señales',nav_muertes:'Muertes',
     login_tab:'Entrar',register_tab:'Registrarse',
-    auth_tagline:'"pues me mato."',auth_sub:'La app para los días que merecen un castigo.',
+    auth_tagline:'"pues me mato."',auth_sub:'Hay desgracias que acaban contigo.',
     auth_beat1:'Cuenta tu ruina del día',auth_beat2:'Elige cómo muere tu muñeco',auth_beat3:'Recibe DEPs de tus amigos',
     lbl_username:'Nombre de usuario',lbl_email_or_user:'Email o usuario',lbl_email:'Email',lbl_password:'Contraseña',
     ph_username:'como quieres que te vean',ph_email_or_user:'email o nombre de usuario',ph_email:'tu@email.com',
@@ -455,7 +455,7 @@ const STRINGS={
   en:{
     nav_hoy:'Today',nav_feed:'Feed',nav_senales:'Signals',nav_muertes:'Deaths',
     login_tab:'Log in',register_tab:'Sign up',
-    auth_tagline:'"ugh, kill me."',auth_sub:'The app for days that deserve a punishment.',
+    auth_tagline:'"ugh, kill me."',auth_sub:'Some days just wreck you.',
     auth_beat1:'Share your daily disaster',auth_beat2:'Choose how your doll dies',auth_beat3:'Get DEPs from your friends',
     lbl_username:'Username',lbl_email_or_user:'Email or username',lbl_email:'Email',lbl_password:'Password',
     ph_username:'how you want to be seen',ph_email_or_user:'email or username',ph_email:'you@email.com',
@@ -1637,7 +1637,13 @@ function renderAjustes(){
     <div style="height:1px;background:var(--border);margin:clamp(20px,5vw,26px) 0;"></div>
     <button class="btn-ghost" id="btnChangePass" style="margin-bottom:10px;">${t('btn_change_pass')}</button>
     <button class="btn-ghost" id="btnInstructions" style="margin-bottom:10px;">${t('btn_what_is')}</button>
-    <button class="btn-ghost" id="btnLang" style="margin-bottom:10px;">${t('lang_btn')}</button>
+    <div style="display:flex;justify-content:center;margin-bottom:10px;">
+      <div style="display:inline-flex;border:1px solid var(--border2);border-radius:9px;overflow:hidden;">
+        <button id="btnLangEs" style="padding:9px 20px;border:none;background:${lang==='es'?'var(--surface2)':'transparent'};color:${lang==='es'?'var(--text)':'var(--muted2)'};font-weight:${lang==='es'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;transition:all .15s;">🇪🇸 ES</button>
+        <div style="width:1px;background:var(--border2);"></div>
+        <button id="btnLangEn" style="padding:9px 20px;border:none;background:${lang==='en'?'var(--surface2)':'transparent'};color:${lang==='en'?'var(--text)':'var(--muted2)'};font-weight:${lang==='en'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;transition:all .15s;">🇺🇸 EN</button>
+      </div>
+    </div>
     <button class="btn-ghost" id="btnLogout">${t('btn_logout')}</button>
     <button class="btn-link" id="volverAjustes">${t('btn_back')}</button>
   </div>`;
@@ -1705,7 +1711,9 @@ function attachListeners(){
       if(error){alert('Error: '+sbErr(error.message));}
       else{alert(t('pass_email_sent'));}
     };
-    if(ge('btnLang'))ge('btnLang').onclick=()=>{lang=lang==='es'?'en':'es';localStorage.setItem('kill_lang',lang);paint();};
+    if(ge('btnLangEs'))ge('btnLangEs').onclick=()=>{if(lang!=='es'){lang='es';localStorage.setItem('kill_lang','es');paint();}};
+    if(ge('btnLangEn'))ge('btnLangEn').onclick=()=>{if(lang!=='en'){lang='en';localStorage.setItem('kill_lang','en');paint();}};
+
     if(ge('btnLogout'))ge('btnLogout').onclick=async()=>{
       await sb.auth.signOut().catch(()=>{});
       user=null;profile=null;todayPost=null;todayPrevPost=null;
