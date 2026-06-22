@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=5"/>
 <title>kill.me</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23C0392B'/%3E%3Cline x1='10' y1='11' x2='14' y2='15' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='14' y1='11' x2='10' y2='15' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='18' y1='11' x2='22' y2='15' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='22' y1='11' x2='18' y2='15' stroke='%23fff' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M11 21 Q16 18 21 21' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"/>
 <link rel="manifest" href="manifest.json"/>
@@ -319,7 +319,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 /* ── Feed ── */
 .feed-list{margin-top:4px;}
 .feed-card{padding:clamp(20px,5vw,28px) 0;border-color:var(--border);}
-.feed-card.fc-friend{border-left:2px solid rgba(176,120,48,.28);padding-left:14px;margin-left:-14px;}
+.feed-card.fc-friend{}
 .feed-head{gap:12px;margin-bottom:12px;}
 .avatar{width:clamp(30px,7.5vw,36px);height:clamp(30px,7.5vw,36px);position:relative;overflow:visible;}
 .friend-dot{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;
@@ -413,6 +413,7 @@ const sb=createClient('https://vknwuevlvnavkgvtguku.supabase.co','sb_publishable
 // Palette: crimson, steel-blue, forest, amber, plum, ivory
 const DOLL_COLORS=["#BF3F3F","#4870A8","#4A8A68","#B07030","#7850A8","#C0B898"];
 const LINE_COLORS=["#E8C468","#BF3F3F","#4A8A68","#4870A8","#EDE6D8","#C890D0"];
+const LINE_COLORS_EXTRA=["#E06A2B","#8B3ABE","#2BA87A","#C63A8E","#D4C840"];
 const LINE_WIDTHS=[2,4,8];
 
 // ── i18n ──────────────────────────────────────────────
@@ -476,7 +477,7 @@ const STRINGS={
     safety_note:'Esto es humor dramático, no literal. Si algo se siente real,',safety_link:'hay ayuda disponible',
     dep_velado_1:'1 persona ha velado tu ruina',dep_velado_n:'$n personas han velado tu ruina',
     btn_delete:'Borrar desgracia',confirm_delete:'¿Seguro? Perderás los DEPs de hoy y no contará para la racha.',
-    vis_label:'Visibilidad',vis_public:'🌍 Público · aparece en el feed global',vis_friends:'👥 Amigos · solo lo ven tus amigos',vis_private:'🔒 Privado · solo lo ves tú',
+    vis_label:'Visibilidad',vis_public:'Público — aparece en el funeral global',vis_friends:'Amigos — solo tus seguidores',vis_private:'Privado — solo tú',
     cemetery_title:'Cementerio',cemetery_sub:'$n desgracias enterradas',cemetery_empty:'Aún no tienes ninguna desgracia enterrada.',cemetery_loading:'Cargando...',btn_cemetery:'Ver cementerio',
     following_tab:'Siguiendo',followers_tab:'Seguidores',no_followers:'Todavía nadie te sigue.',
     logros_title:'Logros',castigos_tab:'Almacén',logros_tab:'Logros',
@@ -544,7 +545,7 @@ const STRINGS={
     safety_note:'This is dramatic humor, not literal. If something feels real,',safety_link:'help is available',
     dep_velado_1:'1 person mourned your ruina',dep_velado_n:'$n people mourned your ruina',
     btn_delete:'Delete ruina',confirm_delete:"Are you sure? You'll lose today's DEPs and streak.",
-    vis_label:'Visibility',vis_public:'🌍 Public · appears in the global feed',vis_friends:'👥 Friends · only your friends see it',vis_private:'🔒 Private · only you see it',
+    vis_label:'Visibility',vis_public:'Public — appears in the global funeral',vis_friends:'Friends — only your followers',vis_private:'Private — only you',
     cemetery_title:'Cemetery',cemetery_sub:'$n ruinas buried',cemetery_empty:"You don't have any buried ruinas yet.",cemetery_loading:'Loading...',btn_cemetery:'View cemetery',
     following_tab:'Following',followers_tab:'Followers',no_followers:"Nobody is following you yet.",
     logros_title:'Achievements',castigos_tab:'Collection',logros_tab:'Achievements',
@@ -588,6 +589,7 @@ const AI={
   planet:`<svg width="22" height="20" viewBox="0 0 22 20" fill="none"><circle cx="11" cy="10" r="4.5" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 14C4 11 7.5 9 11 10C14.5 11 18 13.5 20.5 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
   snow:`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v16M2 10h16M4.2 4.2l11.6 11.6M15.8 4.2L4.2 15.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="2" fill="currentColor"/></svg>`,
   moon:`<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M15 11A7 7 0 0 1 7 3a7 7 0 1 0 8 8z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+  pencil:`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M12.5 2.5l3 3-9.5 9.5H3v-3l9.5-9.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`,
 };
 
 const ACHIEVEMENTS=[
@@ -609,12 +611,22 @@ const ACHIEVEMENTS=[
   {id:'late',  cat:'special',icon:AI.clock, secret:true, title_es:'La gota que colmó el vaso',title_en:'The last straw',desc_es:'Publica una desgracia a las 23:59',desc_en:'Post a ruina at 23:59',check:s=>(s.posts||[]).some(p=>{const d=new Date(p.created_at);return d.getHours()===23;})},
   {id:'wknd',  cat:'special',icon:AI.moon,  secret:true, title_es:'Resaca emocional', title_en:'Emotional hangover',desc_es:'Publica sábado y domingo consecutivos',desc_en:'Post on consecutive Saturday and Sunday',check:s=>{const dates=(s.posts||[]).map(p=>p.post_date||p.created_at.slice(0,10));for(let i=0;i<dates.length;i++){const d=new Date(dates[i]);if(d.getDay()===0){const sat=new Date(d);sat.setDate(sat.getDate()-1);const satStr=sat.toISOString().slice(0,10);if(dates.includes(satStr))return true;}}return false;}},
   {id:'bday',  cat:'special',icon:AI.cake,  secret:false,title_es:"No era tu día",   title_en:'Not your day',  desc_es:'Publica una desgracia en tu cumpleaños',desc_en:'Post on your birthday', check:s=>{if(!s.birthDate)return false;const b=new Date(s.birthDate);return(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===b.getMonth()&&d.getDate()===b.getDate();});}},
-  {id:'mercury',cat:'special',icon:AI.planet,secret:true,title_es:'Mercurio retrógrado',title_en:'Mercury retrograde',desc_es:'Publica durante Mercurio retrógrado',desc_en:'Post during Mercury retrograde',check:s=>{if(!s.birthDate)return false;return(s.posts||[]).some(p=>inMercuryRx(p.post_date||p.created_at.slice(0,10)));}}
+  {id:'mercury',cat:'special',icon:AI.planet,secret:true,title_es:'Mercurio retrógrado',title_en:'Mercury retrograde',desc_es:'Publica durante Mercurio retrógrado',desc_en:'Post during Mercury retrograde',check:s=>{if(!s.birthDate)return false;return(s.posts||[]).some(p=>inMercuryRx(p.post_date||p.created_at.slice(0,10)));},},
+  {id:'d1',  cat:'artista',icon:AI.pencil,secret:false,title_es:'Primer boceto',     title_en:'First sketch',    desc_es:'Publica 1 muerte dibujada',           desc_en:'Publish 1 drawing death',           check:s=>s.drawCount>=1},
+  {id:'d5',  cat:'artista',icon:AI.pencil,secret:false,title_es:'Aprendiz',           title_en:'Apprentice',     desc_es:'5 muertes dibujadas',                 desc_en:'5 drawing deaths',                  check:s=>s.drawCount>=5},
+  {id:'d10', cat:'artista',icon:AI.pencil,secret:false,title_es:'Artista',            title_en:'Artist',         desc_es:'10 muertes dibujadas',                desc_en:'10 drawing deaths',                 check:s=>s.drawCount>=10},
+  {id:'d25', cat:'artista',icon:AI.pencil,secret:false,title_es:'Artista en serio',   title_en:'Serious artist', desc_es:'25 muertes dibujadas',                desc_en:'25 drawing deaths',                 check:s=>s.drawCount>=25},
+  {id:'d50', cat:'artista',icon:AI.pencil,secret:false,title_es:'Maestro del trazo',  title_en:'Master strokes', desc_es:'50 muertes dibujadas · desbloquea 5 colores',desc_en:'50 drawing deaths · unlocks 5 colors',check:s=>s.drawCount>=50},
 ];
 
 function computeAchievements(posts){
-  const state={totalDeps,streak:profile?.streak||0,postCount:posts.length,posts,birthDate:profile?.birth_date||null};
+  const drawCount=posts.filter(p=>p.castigo==='dibujo').length;
+  const state={totalDeps,streak:profile?.streak||0,postCount:posts.length,posts,birthDate:profile?.birth_date||null,drawCount};
   return ACHIEVEMENTS.map(a=>({...a,unlocked:a.check(state)}));
+}
+function artistUnlocked(){
+  const posts=cemeteryPosts||[];
+  return posts.filter(p=>p.castigo==='dibujo').length>=50;
 }
 
 const SB_ERRORS={
@@ -678,6 +690,7 @@ let feedPreviousShown=10,expandedCemetery=new Set();
 let pendingSignup={username:"",email:"",pass:"",color:DOLL_COLORS[0]};
 let draftRazon="",totalDeps=0,navigating=false;
 let cemeteryPosts=null,muertesTab='castigos';
+let pinnedLogros=JSON.parse(localStorage.getItem('pinnedLogros')||'[]');
 let followersList=null,amigosTab='following';
 
 const todayS=()=>new Date().toISOString().split('T')[0];
@@ -701,14 +714,15 @@ function passReqsHTML(pass){
 
 // ── Poses ──────────────────────────────────────────────
 function getPose(name,w,h){
+  // Body starts at h*0.42 (below bigger head), arms at h*0.50, body end/legs start h*0.68
   const P={
-    idle:{body:`M${w/2} ${h*.29}Q${w*.46} ${h*.46} ${w/2} ${h*.62}`,aL:`M${w/2} ${h*.38}Q${w*.3} ${h*.41} ${w*.23} ${h*.53}`,aR:`M${w/2} ${h*.38}Q${w*.7} ${h*.41} ${w*.77} ${h*.53}`,lL:`M${w/2} ${h*.62}Q${w*.34} ${h*.79} ${w*.27} ${h*.96}`,lR:`M${w/2} ${h*.62}Q${w*.66} ${h*.79} ${w*.73} ${h*.96}`},
-    scared:{body:`M${w/2} ${h*.29}Q${w*.46} ${h*.46} ${w/2} ${h*.62}`,aL:`M${w/2} ${h*.38}Q${w*.26} ${h*.24} ${w*.18} ${h*.1}`,aR:`M${w/2} ${h*.38}Q${w*.74} ${h*.24} ${w*.82} ${h*.1}`,lL:`M${w/2} ${h*.62}Q${w*.36} ${h*.77} ${w*.28} ${h*.96}`,lR:`M${w/2} ${h*.62}Q${w*.64} ${h*.77} ${w*.72} ${h*.96}`},
-    cowering:{body:`M${w/2} ${h*.29}Q${w*.47} ${h*.42} ${w*.5} ${h*.57}`,aL:`M${w/2} ${h*.36}Q${w*.33} ${h*.28} ${w*.27} ${h*.18}`,aR:`M${w/2} ${h*.36}Q${w*.67} ${h*.28} ${w*.73} ${h*.18}`,lL:`M${w*.5} ${h*.57}Q${w*.37} ${h*.71} ${w*.31} ${h*.88}`,lR:`M${w*.5} ${h*.57}Q${w*.63} ${h*.71} ${w*.69} ${h*.88}`},
-    begging:{body:`M${w/2} ${h*.29}Q${w*.46} ${h*.46} ${w/2} ${h*.62}`,aL:`M${w/2} ${h*.38}Q${w*.3} ${h*.48} ${w*.15} ${h*.55}`,aR:`M${w/2} ${h*.38}Q${w*.7} ${h*.48} ${w*.85} ${h*.55}`,lL:`M${w/2} ${h*.62}Q${w*.34} ${h*.79} ${w*.27} ${h*.96}`,lR:`M${w/2} ${h*.62}Q${w*.66} ${h*.79} ${w*.73} ${h*.96}`},
-    dramatic:{body:`M${w/2} ${h*.29}Q${w*.46} ${h*.46} ${w/2} ${h*.62}`,aL:`M${w/2} ${h*.38}Q${w*.66} ${h*.33} ${w*.85} ${h*.28}`,aR:`M${w/2} ${h*.38}Q${w*.25} ${h*.5} ${w*.09} ${h*.6}`,lL:`M${w/2} ${h*.62}Q${w*.37} ${h*.77} ${w*.29} ${h*.96}`,lR:`M${w/2} ${h*.62}Q${w*.65} ${h*.8} ${w*.69} ${h*.96}`},
-    squish:{body:`M${w/2} ${h*.29}Q${w*.46} ${h*.4} ${w*.5} ${h*.54}`,aL:`M${w/2} ${h*.35}Q${w*.2} ${h*.37} ${w*.05} ${h*.41}`,aR:`M${w/2} ${h*.35}Q${w*.8} ${h*.37} ${w*.95} ${h*.41}`,lL:`M${w*.5} ${h*.54}Q${w*.31} ${h*.63} ${w*.16} ${h*.7}`,lR:`M${w*.5} ${h*.54}Q${w*.69} ${h*.63} ${w*.84} ${h*.7}`},
-    ghost:{body:`M${w/2} ${h*.29}Q${w*.44} ${h*.47} ${w*.5} ${h*.65}`,aL:`M${w/2} ${h*.38}Q${w*.27} ${h*.31} ${w*.15} ${h*.22}`,aR:`M${w/2} ${h*.38}Q${w*.73} ${h*.31} ${w*.85} ${h*.22}`,lL:`M${w*.5} ${h*.65}Q${w*.37} ${h*.81} ${w*.33} ${h*.97}`,lR:`M${w*.5} ${h*.65}Q${w*.63} ${h*.81} ${w*.67} ${h*.97}`},
+    idle:    {body:`M${w/2} ${h*.42}Q${w*.46} ${h*.55} ${w/2} ${h*.68}`,aL:`M${w/2} ${h*.50}Q${w*.28} ${h*.53} ${w*.18} ${h*.62}`,aR:`M${w/2} ${h*.50}Q${w*.72} ${h*.53} ${w*.82} ${h*.62}`,lL:`M${w/2} ${h*.68}Q${w*.40} ${h*.82} ${w*.36} ${h*.97}`,lR:`M${w/2} ${h*.68}Q${w*.60} ${h*.82} ${w*.64} ${h*.97}`},
+    scared:  {body:`M${w/2} ${h*.42}Q${w*.46} ${h*.55} ${w/2} ${h*.68}`,aL:`M${w/2} ${h*.50}Q${w*.28} ${h*.36} ${w*.20} ${h*.20}`,aR:`M${w/2} ${h*.50}Q${w*.72} ${h*.36} ${w*.80} ${h*.20}`,lL:`M${w/2} ${h*.68}Q${w*.40} ${h*.82} ${w*.36} ${h*.97}`,lR:`M${w/2} ${h*.68}Q${w*.60} ${h*.82} ${w*.64} ${h*.97}`},
+    cowering:{body:`M${w/2} ${h*.42}Q${w*.47} ${h*.53} ${w*.5} ${h*.65}`,aL:`M${w/2} ${h*.49}Q${w*.33} ${h*.40} ${w*.27} ${h*.28}`,aR:`M${w/2} ${h*.49}Q${w*.67} ${h*.40} ${w*.73} ${h*.28}`,lL:`M${w*.5} ${h*.65}Q${w*.38} ${h*.80} ${w*.32} ${h*.96}`,lR:`M${w*.5} ${h*.65}Q${w*.62} ${h*.80} ${w*.68} ${h*.96}`},
+    begging: {body:`M${w/2} ${h*.42}Q${w*.46} ${h*.55} ${w/2} ${h*.68}`,aL:`M${w/2} ${h*.50}Q${w*.30} ${h*.57} ${w*.15} ${h*.62}`,aR:`M${w/2} ${h*.50}Q${w*.70} ${h*.57} ${w*.85} ${h*.62}`,lL:`M${w/2} ${h*.68}Q${w*.40} ${h*.82} ${w*.36} ${h*.97}`,lR:`M${w/2} ${h*.68}Q${w*.60} ${h*.82} ${w*.64} ${h*.97}`},
+    dramatic:{body:`M${w/2} ${h*.42}Q${w*.46} ${h*.55} ${w/2} ${h*.68}`,aL:`M${w/2} ${h*.50}Q${w*.66} ${h*.44} ${w*.85} ${h*.38}`,aR:`M${w/2} ${h*.50}Q${w*.26} ${h*.57} ${w*.10} ${h*.65}`,lL:`M${w/2} ${h*.68}Q${w*.38} ${h*.82} ${w*.30} ${h*.97}`,lR:`M${w/2} ${h*.68}Q${w*.62} ${h*.82} ${w*.70} ${h*.97}`},
+    squish:  {body:`M${w/2} ${h*.42}Q${w*.46} ${h*.50} ${w*.5} ${h*.59}`,aL:`M${w/2} ${h*.48}Q${w*.22} ${h*.49} ${w*.06} ${h*.52}`,aR:`M${w/2} ${h*.48}Q${w*.78} ${h*.49} ${w*.94} ${h*.52}`,lL:`M${w*.5} ${h*.59}Q${w*.32} ${h*.67} ${w*.18} ${h*.73}`,lR:`M${w*.5} ${h*.59}Q${w*.68} ${h*.67} ${w*.82} ${h*.73}`},
+    ghost:   {body:`M${w/2} ${h*.42}Q${w*.44} ${h*.56} ${w*.5} ${h*.72}`,aL:`M${w/2} ${h*.50}Q${w*.27} ${h*.43} ${w*.15} ${h*.32}`,aR:`M${w/2} ${h*.50}Q${w*.73} ${h*.43} ${w*.85} ${h*.32}`,lL:`M${w*.5} ${h*.72}Q${w*.38} ${h*.84} ${w*.34} ${h*.97}`,lR:`M${w*.5} ${h*.72}Q${w*.62} ${h*.84} ${w*.66} ${h*.97}`},
   };
   return P[name]||P.idle;
 }
@@ -721,19 +735,22 @@ function dollSVG(color,death,dead,poseName,px){
   const dark=color==="#C0B898"||color==="#D0C8B8"||color==="#E8E8E8";
   const ec=dark?"#2A1E38":"#080808";
   const ec2=dark?"rgba(0,0,0,.5)":"rgba(255,255,255,.55)";
-  const lx=w*.44,rx=w*.56,ey=h*.157,ex=w*.026,eo=h*.021;
+  // Head: cy=h*0.22, r=w*0.22. Eyes at ±25% of r from center, 15% above center.
+  const hr=w*.22,hcy=h*.22;
+  const lx=w/2-hr*.55,rx=w/2+hr*.55,ey=hcy-hr*.15,ex=hr*.22,eo=hr*.18;
+  const er=Math.max(2.2,hr*.075);
   const face=dead?`
-    <line x1="${lx-ex}" y1="${ey-eo}" x2="${lx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
-    <line x1="${lx+ex}" y1="${ey-eo}" x2="${lx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
-    <line x1="${rx-ex}" y1="${ey-eo}" x2="${rx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
-    <line x1="${rx+ex}" y1="${ey-eo}" x2="${rx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.2" stroke-linecap="round"/>
-    <path d="M ${w*.42} ${h*.21} Q ${w/2} ${h*.195} ${w*.58} ${h*.21}" stroke="${ec}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <line x1="${lx-ex}" y1="${ey-eo}" x2="${lx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${lx+ex}" y1="${ey-eo}" x2="${lx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${rx-ex}" y1="${ey-eo}" x2="${rx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${rx+ex}" y1="${ey-eo}" x2="${rx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M ${w/2-hr*.32} ${hcy+hr*.28} Q ${w/2} ${hcy+hr*.18} ${w/2+hr*.32} ${hcy+hr*.28}" stroke="${ec}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
   `:`
-    <circle cx="${w*.44}" cy="${h*.157}" r="2.4" fill="${ec}"/>
-    <circle cx="${w*.56}" cy="${h*.157}" r="2.4" fill="${ec}"/>
-    <circle cx="${w*.448}" cy="${h*.153}" r="0.7" fill="${ec2}"/>
-    <circle cx="${w*.568}" cy="${h*.153}" r="0.7" fill="${ec2}"/>
-    <path d="M ${w*.41} ${h*.199} Q ${w/2} ${h*.224} ${w*.59} ${h*.199}" stroke="${ec}" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+    <circle cx="${lx}" cy="${ey}" r="${er}" fill="${ec}"/>
+    <circle cx="${rx}" cy="${ey}" r="${er}" fill="${ec}"/>
+    <circle cx="${lx-er*.25}" cy="${ey-er*.3}" r="${er*.25}" fill="${ec2}"/>
+    <circle cx="${rx-er*.25}" cy="${ey-er*.3}" r="${er*.25}" fill="${ec2}"/>
+    <path d="M ${w/2-hr*.28} ${hcy+hr*.30} Q ${w/2} ${hcy+hr*.42} ${w/2+hr*.28} ${hcy+hr*.30}" stroke="${ec}" stroke-width="2.4" fill="none" stroke-linecap="round"/>
   `;
   // Unified visual language: monochromatic, line-based, no saturated colors.
   // Palette: near-black overlays, bone whites (#C4BDB2), muted crimson (#8A1818→#A82828), dark greys.
@@ -898,7 +915,7 @@ function dollSVG(color,death,dead,poseName,px){
   <svg viewBox="0 0 ${w} ${h}" width="${px}" height="${ht}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;" ${anim}>
     ${fx}
     <g stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">
-      <circle cx="${w/2}" cy="${h*.175}" r="${w*.155}" fill="${color}" stroke="none"/>
+      <circle cx="${w/2}" cy="${h*.22}" r="${w*.22}" fill="${color}" stroke="none"/>
       <path d="${pose.body}"/>
       <path d="${pose.aL}"/>
       <path d="${pose.aR}"/>
@@ -1000,7 +1017,8 @@ async function submitPost(pd){
     dibujo_trazos:pd.dibujo?.trazos||null,dibujo_descripcion:pd.dibujo?.descripcion||null,
     doll_color:profile.doll_color,  // always use current profile color for new posts
     post_date:t,is_primary:true,previous_post_id:prevId,
-    visibility:window._postVisibility||'friends',
+    // visibility column: add to DB with: ALTER TABLE posts ADD COLUMN visibility TEXT DEFAULT 'public';
+    // visibility:window._postVisibility||'friends',
   }).select().single();
   if(error){alert('Error: '+error.message);return;}
   if(!profile.last_post_date||profile.last_post_date!==t){
@@ -1035,46 +1053,77 @@ async function toggleFollow(uid){
   paint();
 }
 
+function dollPureSVG(color,death,strokes,dead,poseName,svgW,svgH){
+  // Returns a standalone <svg> string (no wrapper div) suitable for canvas rendering
+  const w=svgW||220,h=svgH||280,sw=18;
+  const pose=getPose(poseName||'idle',w,h);
+  const dark=color==="#C0B898"||color==="#D0C8B8"||color==="#E8E8E8";
+  const ec=dark?"#2A1E38":"#080808";
+  const ec2=dark?"rgba(0,0,0,.5)":"rgba(255,255,255,.55)";
+  const hr=w*.22,hcy=h*.22;
+  const lx=w/2-hr*.55,rx=w/2+hr*.55,ey=hcy-hr*.15,ex=hr*.22,eo=hr*.18;
+  const er=Math.max(2.2,hr*.075);
+  const face=dead?`
+    <line x1="${lx-ex}" y1="${ey-eo}" x2="${lx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${lx+ex}" y1="${ey-eo}" x2="${lx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${rx-ex}" y1="${ey-eo}" x2="${rx+ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${rx+ex}" y1="${ey-eo}" x2="${rx-ex}" y2="${ey+eo}" stroke="${ec}" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M ${w/2-hr*.32} ${hcy+hr*.28} Q ${w/2} ${hcy+hr*.18} ${w/2+hr*.32} ${hcy+hr*.28}" stroke="${ec}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`
+  :`<circle cx="${lx}" cy="${ey}" r="${er}" fill="${ec}"/>
+    <circle cx="${rx}" cy="${ey}" r="${er}" fill="${ec}"/>
+    <path d="M ${w/2-hr*.28} ${hcy+hr*.30} Q ${w/2} ${hcy+hr*.42} ${w/2+hr*.28} ${hcy+hr*.30}" stroke="${ec}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  const drawLayer=strokes&&death==='dibujo'?strokes.map(s=>`<polyline points="${s.puntos.map(pt=>`${pt.x},${pt.y}`).join(' ')}" stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join(''):'';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+    <g stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <circle cx="${w/2}" cy="${h*.22}" r="${w*.22}" fill="${color}" stroke="none"/>
+      <path d="${pose.body}"/><path d="${pose.aL}"/><path d="${pose.aR}"/><path d="${pose.lL}"/><path d="${pose.lR}"/>
+    </g>
+    ${face}${drawLayer}
+  </svg>`;
+}
+
 async function sharePost(p){
   if(!p)return;
   const d=DEATHS.find(x=>x.id===p.castigo);
   const lbl=p.castigo==='dibujo'?(p.dibujo_descripcion||'Dibujo'):dl(p.castigo);
-  const W=1080,H=1350;
+  const W=1080,H=1350,DOLL_PX=400;
   const cv=document.createElement('canvas');
   cv.width=W;cv.height=H;
   const ctx=cv.getContext('2d');
 
-  // Background + grain effect
   ctx.fillStyle='#0A0A0A';ctx.fillRect(0,0,W,H);
-  // Top red bar
-  ctx.fillStyle='#C0392B';ctx.fillRect(0,0,W,10);
-  // Subtle border frame
-  ctx.strokeStyle='rgba(192,57,43,.15)';ctx.lineWidth=3;ctx.strokeRect(24,24,W-48,H-48);
+  ctx.fillStyle='#C0392B';ctx.fillRect(0,0,W,12);
+  ctx.strokeStyle='rgba(192,57,43,.12)';ctx.lineWidth=3;ctx.strokeRect(24,24,W-48,H-48);
 
-  // ── Brand ──
+  // ── Brand: measure "kill" first, then place ".me" right after ──
+  ctx.textAlign='left';
+  ctx.font='900 80px Georgia,"Times New Roman",serif';
+  const killW=ctx.measureText('kill').width;
+  const meW=ctx.measureText('.me').width;
+  const brandX=(W-killW-meW)/2;
+  ctx.fillStyle='#DEDEDE';ctx.fillText('kill',brandX,118);
+  ctx.fillStyle='#C0392B';ctx.fillText('.me',brandX+killW,118);
+
   ctx.textAlign='center';
-  ctx.fillStyle='#DEDEDE';
-  ctx.font='900 72px Georgia,"Playfair Display",serif';
-  ctx.fillText('kill',W/2-36,110);
-  ctx.fillStyle='#C0392B';
-  ctx.fillText('.me',W/2+62,110);
+  ctx.fillStyle='rgba(120,100,90,.55)';ctx.font='italic 30px Georgia,serif';
+  ctx.fillText('"pues me mato."',W/2,168);
 
-  // Tagline
-  ctx.fillStyle='rgba(120,100,90,.6)';ctx.font='italic 28px Georgia,serif';
-  ctx.fillText('"pues me mato."',W/2,160);
+  ctx.strokeStyle='rgba(192,57,43,.22)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(180,200);ctx.lineTo(W-180,200);ctx.stroke();
 
-  // Divider
-  ctx.strokeStyle='rgba(192,57,43,.25)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(200,190);ctx.lineTo(W-200,190);ctx.stroke();
-
-  // ── Doll SVG → Image ──
+  // ── Doll SVG → Image (pure SVG, no wrapper div) ──
   try{
-    const svgStr=dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',320);
+    const svgW=220,svgH=280,scale=DOLL_PX/svgW;
+    const svgStr=dollPureSVG(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',svgW,svgH);
     const svgBlob=new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'});
     const svgUrl=URL.createObjectURL(svgBlob);
-    await new Promise((res,rej)=>{
+    await new Promise(res=>{
       const img=new Image();
-      img.onload=()=>{ctx.drawImage(img,W/2-160,200,320,320*280/220);URL.revokeObjectURL(svgUrl);res();};
+      img.onload=()=>{
+        const dh=Math.round(svgH*scale);
+        ctx.drawImage(img,W/2-DOLL_PX/2,220,DOLL_PX,dh);
+        URL.revokeObjectURL(svgUrl);res();
+      };
       img.onerror=()=>{URL.revokeObjectURL(svgUrl);res();};
       img.src=svgUrl;
     });
@@ -1084,28 +1133,27 @@ async function sharePost(p){
   ctx.fillStyle='#B0A898';ctx.font='italic 48px Georgia,serif';ctx.textAlign='center';
   const maxW=W-160,lineH=68;
   const words=(`"${p.razon}"`).split(' ');
-  let line='',y=700;
+  let line='',y=760;
   for(const word of words){
     const test=line+word+' ';
-    if(ctx.measureText(test).width>maxW&&line){
-      ctx.fillText(line.trim(),W/2,y);line=word+' ';y+=lineH;
-    }else line=test;
+    if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line.trim(),W/2,y);line=word+' ';y+=lineH;}
+    else line=test;
   }
   ctx.fillText(line.trim(),W/2,y);
 
   // ── Castigo ──
-  y+=80;
-  ctx.fillStyle='#B07830';ctx.font='700 38px system-ui,sans-serif';ctx.letterSpacing='2px';
-  ctx.fillText(lbl.toUpperCase(),W/2,y);
+  y+=90;
+  ctx.fillStyle='#B07830';ctx.font='700 40px system-ui,sans-serif';ctx.letterSpacing='3px';
+  ctx.fillText(lbl.toUpperCase(),W/2,y);ctx.letterSpacing='0px';
 
   // ── DEPs ──
-  y+=56;
-  ctx.fillStyle='rgba(100,90,80,.65)';ctx.font='30px system-ui,sans-serif';
+  y+=58;
+  ctx.fillStyle='rgba(100,90,80,.6)';ctx.font='32px system-ui,sans-serif';
   ctx.fillText(`${p.dep_count||0} DEPs`,W/2,y);
 
   // ── Bottom URL ──
-  ctx.fillStyle='rgba(60,55,50,.5)';ctx.font='22px system-ui,sans-serif';
-  ctx.fillText('webkillme.github.io/Kill.me',W/2,H-40);
+  ctx.fillStyle='rgba(60,55,50,.45)';ctx.font='24px system-ui,sans-serif';
+  ctx.fillText('kill.me',W/2,H-44);
 
   cv.toBlob(async blob=>{
     const file=new File([blob],'kill-me-ruina.png',{type:'image/png'});
@@ -1582,6 +1630,7 @@ function renderProfile(){
       <div class="profile-stat"><div class="profile-stat-num" style="color:#5A8FD4">${td}</div><div class="profile-stat-lbl">${ICO.candle} ${t('profile_deps')}</div></div>
       <div class="profile-stat"><div class="profile-stat-num">${postCount}</div><div class="profile-stat-lbl">${t('profile_ruinas_lbl')}</div></div>
     </div>
+    ${isSelf&&pinnedLogros.length?`<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:clamp(14px,3.5vw,18px);">${pinnedLogros.map(aid=>{const a=ACHIEVEMENTS.find(x=>x.id===aid);if(!a)return'';const posts=cemeteryPosts||[];const state={totalDeps,streak:profile?.streak||0,postCount:posts.length,posts,birthDate:profile?.birth_date||null,drawCount:posts.filter(p=>p.castigo==='dibujo').length};const unlk=a.check(state);if(!unlk)return'';return`<div title="${lang==='en'?a.title_en:a.title_es}" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:clamp(10px,2.5vw,11px);color:var(--warm);">${a.icon} <span style="color:var(--text2);">${lang==='en'?a.title_en:a.title_es}</span></div>`;}).join('')}</div>`:''}
     <div style="height:1px;background:var(--border);margin-bottom:clamp(16px,4vw,20px);"></div>
     <div class="profile-posts-hdr">${t('profile_ruinas_last')}</div>
     <div class="feed-list">${cards||`<p style="text-align:center;color:var(--muted2);">${t('profile_no_ruinas')}</p>`}</div>
@@ -1639,22 +1688,22 @@ function renderHome(){
           <div class="prev-panel ${isOpen?'open':''}" id="prevPanel">${prevPostHTML(todayPrevPost,64)}</div>
         `:''}
       </div>
-      <div style="display:flex;justify-content:center;margin-top:20px;">
-        <button class="btn btn-red" id="goFeed" style="max-width:220px;font-size:clamp(13px,3.5vw,15px);">${t('btn_feed')}</button>
-      </div>
-      <div class="action-row">
-        <button class="action-btn warm" id="btnShare">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="15" cy="4" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="16" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="5" cy="10" r="2.2" stroke="currentColor" stroke-width="1.6"/><path d="M7 8.8l6-3.4M7 11.2l6 3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="action-row" style="margin-top:20px;">
+        <button class="action-btn" id="goFeed" style="flex:1.2;">
+          ${ICO.skull} ${t('btn_feed')}
+        </button>
+        <button class="action-btn warm" id="btnShare" style="flex:1;">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="15" cy="4" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="16" r="2.2" stroke="currentColor" stroke-width="1.6"/><circle cx="5" cy="10" r="2.2" stroke="currentColor" stroke-width="1.6"/><path d="M7 8.8l6-3.4M7 11.2l6 3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           ${t('btn_share_short')}
         </button>
-        <button class="action-btn" id="btnPeor">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M5 9l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <button class="action-btn" id="btnPeor" style="flex:1;">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M5 9l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
           ${t('btn_worse_short')}
         </button>
       </div>
-      <div style="display:flex;justify-content:center;margin-top:14px;">
-        <button class="btn-danger" id="btnDeletePost">
-          <svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 4h12M5 4V2h4v2M3 4l1 10h6l1-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div style="display:flex;justify-content:center;margin-top:10px;">
+        <button class="btn-link" id="btnDeletePost" style="font-size:clamp(10px,2.5vw,11px);color:var(--muted);opacity:.5;">
+          <svg width="12" height="14" viewBox="0 0 14 16" fill="none" style="vertical-align:middle;margin-right:3px;"><path d="M1 4h12M5 4V2h4v2M3 4l1 10h6l1-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           ${t('btn_delete')}
         </button>
       </div>
@@ -1718,7 +1767,7 @@ function renderDibujo(){
     <textarea id="razonDibujo" placeholder="${t('ph_razon_draw')}" maxlength="280">${esc(draftRazon)}</textarea>
     <div class="charcount" id="razonCount">${draftRazon.length}/280</div>
     <div style="display:flex;justify-content:center;margin-top:14px;"><canvas id="drawCanvas" width="220" height="280"></canvas></div>
-    <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}</div>
+    <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}${artistUnlocked()?LINE_COLORS_EXTRA.map(c=>`<button class="swatch" data-color="${c}" style="background:${c};"></button>`).join(''):LINE_COLORS_EXTRA.map(c=>`<button class="swatch swatch-locked" title="${t('d50_locked')||'Maestro del trazo (50 dibujos)'}" style="background:${c};opacity:.25;cursor:not-allowed;position:relative;" disabled></button>`).join('')}</div>
     <div class="wrow">
       ${LINE_WIDTHS.map((w,i)=>`<button class="wbtn ${i===1?'on':''}" data-width="${w}"><span class="wdot" style="width:${w+4}px;height:${w+4}px;"></span></button>`).join('')}
       <button class="clearbtn" id="clearCanvas">${t('btn_clear')}</button>
@@ -1748,8 +1797,37 @@ function renderPosted(){
   </div>`;
 }
 
+function renderLogrosContent(){
+  const posts=cemeteryPosts||[];
+  const list=computeAchievements(posts);
+  const unlocked=list.filter(a=>a.unlocked).length;
+  const lockICO=`<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><rect x="2" y="9" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 9V6a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+  const pinICO=`<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 1l4 4-1.5 1.5L10 5 7 8l.5 1.5L6 11 5 10l-4 4-.5-1L4 9 3 8l1.5-1.5L6 7 9 4l-1.5-1.5L9 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
+  const rows=list.map(a=>{
+    const hidden=a.secret&&!a.unlocked;
+    const isPinned=pinnedLogros.includes(a.id);
+    const canPin=a.unlocked&&!hidden;
+    return`<div style="display:flex;gap:12px;align-items:center;padding:clamp(10px,2.5vw,12px) 0;border-bottom:1px solid var(--border);opacity:${a.unlocked?1:hidden?.3:.45};">
+      <div style="flex-shrink:0;width:36px;display:flex;align-items:center;justify-content:center;color:${a.unlocked?'var(--warm)':'var(--muted2)'};">${hidden?lockICO:a.icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:clamp(13px,3.5vw,14px);font-weight:700;color:${a.unlocked?'var(--text)':'var(--muted2)'};">${hidden?'???':lang==='en'?a.title_en:a.title_es}</div>
+        <div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-top:2px;">${hidden?'…':lang==='en'?a.desc_en:a.desc_es}</div>
+      </div>
+      ${canPin?`<button class="logro-pin-btn ${isPinned?'pinned':''}" data-aid="${a.id}" title="${isPinned?'Quitar del perfil':'Mostrar en perfil'}" style="flex-shrink:0;background:none;border:1px solid ${isPinned?'var(--warm)':'var(--border2)'};border-radius:6px;padding:5px 7px;cursor:pointer;color:${isPinned?'var(--warm)':'var(--muted2)'};">${pinICO}</button>`:a.unlocked?`<div style="color:var(--warm);">${ICO.check}</div>`:''}
+    </div>`;
+  }).join('');
+  const pinnedNote=`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);text-align:center;margin-bottom:16px;">${lang==='en'?'Pin up to 3 achievements to your profile':'Fija hasta 3 logros en tu perfil'} · <strong style="color:var(--warm);">${pinnedLogros.length}/3</strong></div>`;
+  const loadingMsg=`<p style="text-align:center;color:var(--muted2);">${t('amigos_loading')}</p>`;
+  if(!cemeteryPosts){
+    (async()=>{
+      let data;try{({data}=await sb.from('posts').select('*').eq('user_id',user.id).eq('is_primary',true).order('created_at',{ascending:false}).limit(50));}catch(e){data=[];}
+      cemeteryPosts=data||[];paint();
+    })();
+  }
+  return`<div>${!cemeteryPosts?loadingMsg:pinnedNote+rows}<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);text-align:center;margin-top:12px;">${unlocked}/${list.length} ${lang==='en'?'unlocked':'desbloqueados'}</div></div>`;
+}
+
 function renderMuertes(){
-  if(muertesTab==='logros')return renderLogros();
   const streak=profile?.streak||0;
   const dollPx=clamp(56,72);
 
@@ -1811,12 +1889,18 @@ function renderMuertes(){
 
   const unlockedCount=DEATHS.filter(d=>streak>=d.min&&totalDeps>=d.deps).length;
 
-  return `<div class="screen">
-    ${hdr(t('nav_muertes'))}
-    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:16px;">
+  const tabBar=`<div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:16px;">
       <button id="tabCastigos" style="flex:1;padding:10px;background:none;border:none;border-bottom:2px solid ${muertesTab!=='logros'?'var(--red)':'transparent'};color:${muertesTab!=='logros'?'var(--text)':'var(--muted2)'};font-weight:${muertesTab!=='logros'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;">${t('castigos_tab')}</button>
       <button id="tabLogros" style="flex:1;padding:10px;background:none;border:none;border-bottom:2px solid ${muertesTab==='logros'?'var(--red)':'transparent'};color:${muertesTab==='logros'?'var(--text)':'var(--muted2)'};font-weight:${muertesTab==='logros'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;">${t('logros_title')}</button>
-    </div>
+    </div>`;
+
+  if(muertesTab==='logros'){
+    return `<div class="screen">${hdr(t('nav_muertes'))}${tabBar}${renderLogrosContent()}</div>`;
+  }
+
+  return `<div class="screen">
+    ${hdr(t('nav_muertes'))}
+    ${tabBar}
     <div class="deaths-header-stats">
       <div class="dhs-pill"><div class="dhs-num" style="color:var(--warm)">${unlockedCount}<span style="color:var(--muted);font-size:.6em;font-weight:400">/${DEATHS.length}</span></div><div class="dhs-lbl">${t('muertes_unlocked')}</div></div>
       <div class="dhs-pill"><div class="dhs-num">${streak}</div><div class="dhs-lbl">${t('profile_streak')}</div></div>
@@ -1847,31 +1931,28 @@ function feedCardHTML(item,older=false){
   const d=DEATHS.find(x=>x.id===item.castigo);
   const hasPrev=!!item.previous_post_id&&!!item._prev,isOpen=expandedPrev.has(item.id);
   const depCount=item.dep_count||0;
-  return `<div class="feed-card${friend&&!own?' fc-friend':''}${older?' older-card':''}">
-    <div class="feed-head">
-      <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;position:relative;">
-        <div class="avatar">${avatarDoll(item.doll_color,clamp(30,36))}${own?'<span class="friend-dot" style="background:#E8C468;border-color:var(--bg);"></span>':friend?'<span class="friend-dot"></span>':''}</div>
+  const dateStr=timeAgo(item.created_at);
+  return `<div class="feed-card${older?' older-card':''}">
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;position:relative;">
+        ${avatarDoll(item.doll_color,clamp(44,54))}${own?'<span class="friend-dot" style="background:#E8C468;border-color:var(--bg);position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;border:2px solid var(--bg);"></span>':friend?'<span class="friend-dot" style="position:absolute;bottom:0;right:0;"></span>':''}
       </button>
-      <div class="feed-meta">
-        <div class="feed-name">${esc(item.username)}</div>
-        <div class="feed-time">${timeAgo(item.created_at)}</div>
-      </div>
-      ${!own&&!older?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>`:''}
-    </div>
-    <div style="display:flex;gap:12px;align-items:flex-start;margin:8px 0 12px;">
-      <div style="flex-shrink:0;opacity:.9;">
-        ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',clamp(56,68))}
-      </div>
       <div style="flex:1;min-width:0;">
-        <p class="feed-razon" style="margin-bottom:6px;">"${esc(item.razon)}"</p>
-        <span class="feed-castigo">${lbl}</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;">
+          <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;font-size:clamp(12px,3vw,13px);color:var(--text2);font-weight:600;">@${esc(item.username)}</button>
+          <span style="font-size:clamp(10px,2.5vw,11px);color:var(--muted);flex-shrink:0;">${dateStr}</span>
+        </div>
+        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${lbl}</div>
+        <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(item.razon)}"</div>
+        ${older?'':`<div style="display:flex;align-items:center;gap:10px;margin-top:10px;">${own
+          ?`<div style="display:flex;align-items:center;gap:5px;font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${depCount===1?t('dep_velado_1'):t('dep_velado_n').replace('$n',depCount)}</div>`
+          :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}" style="flex-shrink:0;">${ICO.candle} DEP <span class="dep-count">${depCount}</span></button>`}
+          ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}" style="margin-left:auto;">${friend?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>`:''}
+        </div>`}
       </div>
     </div>
-    ${older?'':(own
-      ?`<div class="own-dep">${ICO.candle} <span style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${depCount===1?t('dep_velado_1'):t('dep_velado_n').replace('$n',depCount)}</span></div>`
-      :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">${ICO.candle} DEP <span class="dep-count">${depCount}</span></button>`)}
     ${hasPrev&&!older?`
-      <button class="prev-toggle ${isOpen?'open':''}" data-feedprev="${item.id}">
+      <button class="prev-toggle ${isOpen?'open':''}" data-feedprev="${item.id}" style="margin-top:8px;">
         <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         ${t('prev_btn')}
       </button>
@@ -1918,20 +1999,24 @@ function renderLogros(){
   const list=computeAchievements(posts);
   const unlocked=list.filter(a=>a.unlocked).length;
   const lockICO=`<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><rect x="2" y="9" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M5 9V6a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+  const pinICO=`<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 1l4 4-1.5 1.5L10 5 7 8l.5 1.5L6 11 5 10l-4 4-.5-1L4 9 3 8l1.5-1.5L6 7 9 4l-1.5-1.5L9 1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
   const rows=list.map(a=>{
     const hidden=a.secret&&!a.unlocked;
+    const isPinned=pinnedLogros.includes(a.id);
+    const canPin=a.unlocked&&!hidden;
     return`<div style="display:flex;gap:12px;align-items:center;padding:clamp(10px,2.5vw,12px) 0;border-bottom:1px solid var(--border);opacity:${a.unlocked?1:hidden?.3:.45};">
       <div style="flex-shrink:0;width:36px;display:flex;align-items:center;justify-content:center;color:${a.unlocked?'var(--warm)':'var(--muted2)'};">${hidden?lockICO:a.icon}</div>
       <div style="flex:1;">
         <div style="font-size:clamp(13px,3.5vw,14px);font-weight:700;color:${a.unlocked?'var(--text)':'var(--muted2)'};">${hidden?'???':lang==='en'?a.title_en:a.title_es}</div>
         <div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-top:2px;">${hidden?'…':lang==='en'?a.desc_en:a.desc_es}</div>
       </div>
-      ${a.unlocked?`<div style="color:var(--warm);">${ICO.check}</div>`:''}
+      ${canPin?`<button class="logro-pin-btn ${isPinned?'pinned':''}" data-aid="${a.id}" title="${isPinned?'Quitar del perfil':'Mostrar en perfil'}" style="flex-shrink:0;background:none;border:1px solid ${isPinned?'var(--warm)':'var(--border2)'};border-radius:6px;padding:5px 7px;cursor:pointer;color:${isPinned?'var(--warm)':'var(--muted2)'};">${pinICO}</button>`:a.unlocked?`<div style="color:var(--warm);">${ICO.check}</div>`:''}
     </div>`;
   }).join('');
+  const pinnedNote=`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);text-align:center;margin-bottom:16px;">${lang==='en'?'Pin up to 3 achievements to your profile':'Fija hasta 3 logros en tu perfil'} · <strong style="color:var(--warm);">${pinnedLogros.length}/3</strong></div>`;
   return `<div class="screen">
     ${hdr(t('logros_title'),`${unlocked}/${list.length}`)}
-    ${!cemeteryPosts?`<p style="text-align:center;color:var(--muted2);">${t('amigos_loading')}</p>`:rows}
+    ${!cemeteryPosts?`<p style="text-align:center;color:var(--muted2);">${t('amigos_loading')}</p>`:pinnedNote+rows}
     <button class="btn-link" id="volverLogros" style="margin-top:20px;">${t('btn_back')}</button>
   </div>`;
 }
@@ -1947,7 +2032,7 @@ function tombstoneCardHTML(item){
         <div class="avatar">${avatarDoll(item.doll_color,clamp(28,34))}${friend&&!own?'<span class="friend-dot"></span>':''}</div>
       </button>
       <div style="flex:1;min-width:0;">
-        <div style="font-size:clamp(12px,3vw,13px);color:var(--text2);font-weight:600;">@${esc(item.username)}</div>
+        <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;font-size:clamp(12px,3vw,13px);color:var(--text2);font-weight:600;">@${esc(item.username)}</button>
         <div style="font-size:clamp(13px,3.5vw,14px);font-weight:700;color:var(--warm);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;">${lbl}</div>
         <div style="font-size:clamp(11px,2.8vw,12px);color:var(--text2);font-style:italic;margin-top:3px;line-height:1.5;">"${esc(item.razon)}"</div>
         <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;">${ICO.candle} ${item.dep_count||0} DEPs</div>
@@ -2220,23 +2305,34 @@ function attachListeners(){
   }
   if(view==='muertes'){
     if(ge('tabCastigos'))ge('tabCastigos').onclick=()=>{muertesTab='castigos';paint();};
-    if(ge('tabLogros'))ge('tabLogros').onclick=()=>{
-      muertesTab='logros';
-      if(!cemeteryPosts){
-        (async()=>{
-          let data;try{({data}=await sb.from('posts').select('*').eq('user_id',user.id).eq('is_primary',true).order('created_at',{ascending:false}).limit(200));}catch(e){data=[];}
-          cemeteryPosts=data||[];paint();
-        })();
-      }
-      paint();
-    };
+    if(ge('tabLogros'))ge('tabLogros').onclick=()=>{muertesTab='logros';paint();};
     if(ge('volverLogros'))ge('volverLogros').onclick=()=>{muertesTab='castigos';paint();};
+    if(muertesTab==='logros'){
+      document.querySelectorAll('.logro-pin-btn').forEach(btn=>{
+        btn.onclick=()=>{
+          const aid=btn.getAttribute('data-aid');
+          if(pinnedLogros.includes(aid))pinnedLogros=pinnedLogros.filter(x=>x!==aid);
+          else if(pinnedLogros.length<3)pinnedLogros=[...pinnedLogros,aid];
+          localStorage.setItem('pinnedLogros',JSON.stringify(pinnedLogros));
+          paint();
+        };
+      });
+    }
   }
   if(view==='cementerio'){
     if(ge('volverCemetery'))ge('volverCemetery').onclick=()=>{view='home';paint();};
   }
   if(view==='logros'){
     if(ge('volverLogros'))ge('volverLogros').onclick=()=>{view='muertes';muertesTab='castigos';paint();};
+    document.querySelectorAll('.logro-pin-btn').forEach(btn=>{
+      btn.onclick=()=>{
+        const aid=btn.getAttribute('data-aid');
+        if(pinnedLogros.includes(aid)){pinnedLogros=pinnedLogros.filter(x=>x!==aid);}
+        else if(pinnedLogros.length<3){pinnedLogros=[...pinnedLogros,aid];}
+        localStorage.setItem('pinnedLogros',JSON.stringify(pinnedLogros));
+        paint();
+      };
+    });
   }
   if(view==='profile'){
     if(ge('volverProfile'))ge('volverProfile').onclick=()=>{view=profileReturnView||'amigos';paint();};
@@ -2398,6 +2494,28 @@ async function init(){
 }
 
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+// Pull-to-refresh (swipe down at top of page)
+(()=>{
+  let startY=0,pulling=false,indicator=null;
+  document.addEventListener('touchstart',e=>{if(window.scrollY===0){startY=e.touches[0].clientY;pulling=true;}},{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(!pulling)return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy>10&&!indicator){
+      indicator=document.createElement('div');
+      indicator.style.cssText='position:fixed;top:0;left:0;right:0;z-index:9999;height:3px;background:var(--warm,#B07830);animation:ptr-slide .4s ease;';
+      document.body.appendChild(indicator);
+    }
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!pulling)return;
+    const dy=e.changedTouches[0].clientY-startY;
+    if(indicator){indicator.remove();indicator=null;}
+    pulling=false;
+    if(dy>60&&window.scrollY===0&&(view==='feed'||view==='home')){loadFeed().then(()=>paint());}
+  },{passive:true});
+})();
 init();
 </script>
 </body>
