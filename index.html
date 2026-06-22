@@ -32,6 +32,18 @@ body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes floatSlow{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes icicleShimmer{0%,100%{opacity:.9}50%{opacity:.55}}
+@keyframes lightningFlash{0%,80%,100%{opacity:0}88%{opacity:.95}94%{opacity:.3}}
+@keyframes flameDance{0%,100%{transform:scaleX(1) translateY(0)}40%{transform:scaleX(.92) translateY(-3px)}70%{transform:scaleX(1.05) translateY(1px)}}
+@keyframes iridShift{0%,100%{filter:drop-shadow(0 0 4px currentColor) hue-rotate(0deg)}50%{filter:drop-shadow(0 0 8px currentColor) hue-rotate(40deg)}}
+@keyframes garnetPulse{0%,100%{filter:drop-shadow(0 0 4px #9B1B30) brightness(1)}50%{filter:drop-shadow(0 0 10px #E8274B) brightness(1.3)}}
+@keyframes diamondShimmer{0%,100%{filter:drop-shadow(0 0 3px #89CFF0) brightness(1)}50%{filter:drop-shadow(0 0 8px #B0E0FF) brightness(1.4) hue-rotate(20deg)}}
+.logro-t1{color:#CD7F32;}
+.logro-t2{color:#A8A9AD;}
+.logro-t3{color:#FFD700;filter:drop-shadow(0 0 3px rgba(255,215,0,.4));}
+.logro-t4{color:#89CFF0;animation:diamondShimmer 2.5s ease-in-out infinite;}
+.logro-t5{color:#C0392B;animation:garnetPulse 2s ease-in-out infinite;}
+.logro-special{color:#FFD700;animation:iridShift 2.5s ease-in-out infinite;}
 @keyframes flicker{0%,100%{opacity:.9;transform:scaleY(1)}45%{opacity:1;transform:scaleY(1.1) scaleX(.95)}70%{opacity:.85;transform:scaleY(.95)}}
 @keyframes shockPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5) saturate(1.3)}}
 @keyframes glow{0%,100%{opacity:.18}50%{opacity:.32}}
@@ -95,6 +107,7 @@ body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--
 .screen{padding:clamp(14px,3.5vw,20px);padding-bottom:clamp(88px,20vw,100px);animation:fadeUp .22s ease;}
 .bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;background:rgba(8,8,8,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;padding:clamp(10px,3vw,14px) 0 max(calc(10px + env(safe-area-inset-bottom)),12px);}
 .navbtn{flex:1;background:none;border:none;color:var(--muted2);font-weight:600;font-size:clamp(9px,2.5vw,10px);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:color .16s;letter-spacing:.4px;}
+.navbtn-ico{height:24px;display:flex;align-items:center;justify-content:center;}
 .navbtn.on{color:var(--red);}
 .navbtn svg{transition:transform .16s;}
 .navbtn.on svg{transform:scale(1.1);}
@@ -102,7 +115,7 @@ body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--
 .ptitle{font-family:'Playfair Display',serif;color:var(--text);font-size:clamp(16px,4.2vw,20px);font-weight:700;text-align:center;letter-spacing:.3px;line-height:1.3;}
 .psub{color:var(--muted2);font-size:clamp(11px,2.8vw,13px);text-align:center;margin-top:5px;line-height:1.5;}
 .rule{width:24px;height:1px;background:var(--border2);margin:12px auto;}
-.doll-wrap{position:relative;display:inline-flex;justify-content:center;}
+.doll-wrap{position:relative;display:inline-flex;justify-content:center;border-radius:12px;}
 /* Death grid */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(7px,2vw,10px);margin-top:14px;}
 .dcell{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:clamp(10px,2.5vw,14px) 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .16s;overflow:hidden;position:relative;}
@@ -161,9 +174,9 @@ body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--
 .friend-tag{border:1px solid var(--border2);border-radius:4px;padding:2px 6px;font-size:clamp(9px,2vw,10px);font-weight:700;color:var(--warm);letter-spacing:.5px;white-space:nowrap;}
 .feed-razon{color:var(--text2);font-size:clamp(13px,3.5vw,14px);margin:2px 0 8px;line-height:1.58;}
 .feed-castigo{display:inline-block;font-size:clamp(10px,2.5vw,11px);font-weight:700;color:var(--warm);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase;}
-.dep-btn{width:100%;border-radius:7px;padding:clamp(8px,2.5vw,10px);color:var(--text2);font-weight:600;font-size:clamp(12px,3vw,13px);border:1px solid var(--border2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .16s;}
-.dep-btn.given{background:var(--surface2);border-color:var(--red);color:var(--text);}
-.dep-btn:not(.given):hover{background:var(--surface);}
+.dep-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid transparent;border-radius:20px;padding:3px 8px;cursor:pointer;font-size:clamp(11px,2.8vw,12px);color:var(--muted2);transition:all .16s;font-family:inherit;}
+.dep-btn.given{color:var(--red);border-color:rgba(192,57,43,.32);}
+.dep-btn:not(.given):hover{background:rgba(192,57,43,.05);border-color:rgba(192,57,43,.2);color:var(--text2);}
 .dep-count{color:var(--warm);font-weight:800;}
 .follow-btn{background:transparent;border:1px solid var(--border2);border-radius:6px;padding:4px 10px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);font-weight:600;cursor:pointer;transition:all .16s;white-space:nowrap;flex-shrink:0;font-family:inherit;}
 .follow-btn.following{background:var(--surface2);border-color:var(--border2);color:var(--warm);}
@@ -335,11 +348,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
   border-radius:5px;padding:4px 10px;margin-bottom:14px;
   font-size:clamp(9px,2.5vw,10px);font-weight:700;color:var(--warm);
   letter-spacing:1px;text-transform:uppercase;}
-.dep-btn{border-radius:8px;padding:clamp(11px,2.8vw,13px);
-  border-color:rgba(255,255,255,.06);color:var(--muted2);letter-spacing:.2px;}
-.dep-btn:not(.given):hover{border-color:rgba(192,57,43,.3);background:rgba(192,57,43,.04);color:var(--text2);}
-.dep-btn.given{background:rgba(192,57,43,.06);border-color:rgba(192,57,43,.38);color:var(--text);}
-.dep-count{color:var(--warm);font-weight:700;font-size:clamp(13px,3.5vw,14px);}
+.dep-count{color:var(--warm);font-weight:700;}
 .own-dep{color:var(--muted);font-size:clamp(11px,3vw,12px);padding:9px;}
 
 /* ── Home/Posted done-card ── */
@@ -593,31 +602,35 @@ const AI={
 };
 
 const ACHIEVEMENTS=[
-  {id:'dep1',  cat:'dep',    icon:AI.candle,secret:false,title_es:'Primera vela',    title_en:'First candle',   desc_es:'Recibe tu primer DEP',        desc_en:'Receive your first DEP',    check:s=>s.totalDeps>=1},
-  {id:'dep10', cat:'dep',    icon:AI.candle,secret:false,title_es:'10 velas',        title_en:'10 candles',     desc_es:'Acumula 10 DEPs',             desc_en:'Collect 10 DEPs',           check:s=>s.totalDeps>=10},
-  {id:'dep100',cat:'dep',    icon:AI.candle,secret:false,title_es:'100 velas',       title_en:'100 candles',    desc_es:'Acumula 100 DEPs',            desc_en:'Collect 100 DEPs',          check:s=>s.totalDeps>=100},
-  {id:'dep500',cat:'dep',    icon:AI.candle,secret:false,title_es:'500 velas',       title_en:'500 candles',    desc_es:'Acumula 500 DEPs',            desc_en:'Collect 500 DEPs',          check:s=>s.totalDeps>=500},
-  {id:'dep1k', cat:'dep',    icon:AI.candle,secret:false,title_es:'1000 velas',      title_en:'1000 candles',   desc_es:'Acumula 1000 DEPs',           desc_en:'Collect 1000 DEPs',         check:s=>s.totalDeps>=1000},
-  {id:'s7',    cat:'racha',  icon:AI.flame, secret:false,title_es:'Primera semana',  title_en:'First week',     desc_es:'7 días de racha',             desc_en:'7-day streak',              check:s=>s.streak>=7},
-  {id:'s30',   cat:'racha',  icon:AI.flame, secret:false,title_es:'Primer mes',      title_en:'First month',    desc_es:'30 días de racha',            desc_en:'30-day streak',             check:s=>s.streak>=30},
-  {id:'s100',  cat:'racha',  icon:AI.flame, secret:false,title_es:'Centenario',      title_en:'Centenarian',    desc_es:'100 días de racha',           desc_en:'100-day streak',            check:s=>s.streak>=100},
-  {id:'p1',    cat:'ruinas', icon:AI.skull, secret:false,title_es:'Primera desgracia',title_en:'First ruina',  desc_es:'Publica tu primera desgracia',desc_en:'Publish your first ruina',  check:s=>s.postCount>=1},
-  {id:'p10',   cat:'ruinas', icon:AI.skull, secret:false,title_es:'Decena',          title_en:'Ten down',       desc_es:'10 desgracias publicadas',    desc_en:'10 ruinas published',       check:s=>s.postCount>=10},
-  {id:'p50',   cat:'ruinas', icon:AI.skull, secret:false,title_es:'Cincuentena',     title_en:'Fifty',          desc_es:'50 desgracias publicadas',    desc_en:'50 ruinas published',       check:s=>s.postCount>=50},
-  {id:'p100',  cat:'ruinas', icon:AI.skull, secret:false,title_es:'El centenar',     title_en:'The century',    desc_es:'100 desgracias publicadas',   desc_en:'100 ruinas published',      check:s=>s.postCount>=100},
-  {id:'vr13',  cat:'special',icon:AI.tomb,  secret:true, title_es:'Viernes 13',      title_en:'Friday the 13th',desc_es:'Publica una desgracia en viernes 13',desc_en:'Post a ruina on Friday the 13th',check:s=>(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getDay()===5&&d.getDate()===13;})},
-  {id:'xmas',  cat:'special',icon:AI.snow,  secret:true, title_es:'Navidad en familia',title_en:'Xmas family', desc_es:'Publica entre el 24 y el 25 de diciembre',desc_en:'Post on Dec 24th or 25th',check:s=>(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===11&&(d.getDate()===24||d.getDate()===25);})},
-  {id:'ny',    cat:'special',icon:AI.star,  secret:true, title_es:'Feliz año nuevo',  title_en:'Happy New Year',desc_es:'Publica el 1 de enero',        desc_en:'Post on January 1st',       check:s=>(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===0&&d.getDate()===1;})},
-  {id:'late',  cat:'special',icon:AI.clock, secret:true, title_es:'La gota que colmó el vaso',title_en:'The last straw',desc_es:'Publica una desgracia a las 23:59',desc_en:'Post a ruina at 23:59',check:s=>(s.posts||[]).some(p=>{const d=new Date(p.created_at);return d.getHours()===23;})},
-  {id:'wknd',  cat:'special',icon:AI.moon,  secret:true, title_es:'Resaca emocional', title_en:'Emotional hangover',desc_es:'Publica sábado y domingo consecutivos',desc_en:'Post on consecutive Saturday and Sunday',check:s=>{const dates=(s.posts||[]).map(p=>p.post_date||p.created_at.slice(0,10));for(let i=0;i<dates.length;i++){const d=new Date(dates[i]);if(d.getDay()===0){const sat=new Date(d);sat.setDate(sat.getDate()-1);const satStr=sat.toISOString().slice(0,10);if(dates.includes(satStr))return true;}}return false;}},
-  {id:'bday',  cat:'special',icon:AI.cake,  secret:false,title_es:"No era tu día",   title_en:'Not your day',  desc_es:'Publica una desgracia en tu cumpleaños',desc_en:'Post on your birthday', check:s=>{if(!s.birthDate)return false;const b=new Date(s.birthDate);return(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===b.getMonth()&&d.getDate()===b.getDate();});}},
-  {id:'mercury',cat:'special',icon:AI.planet,secret:true,title_es:'Mercurio retrógrado',title_en:'Mercury retrograde',desc_es:'Publica durante Mercurio retrógrado',desc_en:'Post during Mercury retrograde',check:s=>{if(!s.birthDate)return false;return(s.posts||[]).some(p=>inMercuryRx(p.post_date||p.created_at.slice(0,10)));},},
-  {id:'d1',  cat:'artista',icon:AI.pencil,secret:false,title_es:'Primer boceto',     title_en:'First sketch',    desc_es:'Publica 1 muerte dibujada',           desc_en:'Publish 1 drawing death',           check:s=>s.drawCount>=1},
-  {id:'d5',  cat:'artista',icon:AI.pencil,secret:false,title_es:'Aprendiz',           title_en:'Apprentice',     desc_es:'5 muertes dibujadas',                 desc_en:'5 drawing deaths',                  check:s=>s.drawCount>=5},
-  {id:'d10', cat:'artista',icon:AI.pencil,secret:false,title_es:'Artista',            title_en:'Artist',         desc_es:'10 muertes dibujadas',                desc_en:'10 drawing deaths',                 check:s=>s.drawCount>=10},
-  {id:'d25', cat:'artista',icon:AI.pencil,secret:false,title_es:'Artista en serio',   title_en:'Serious artist', desc_es:'25 muertes dibujadas',                desc_en:'25 drawing deaths',                 check:s=>s.drawCount>=25},
-  {id:'d50', cat:'artista',icon:AI.pencil,secret:false,title_es:'Maestro del trazo',  title_en:'Master strokes', desc_es:'50 muertes dibujadas · desbloquea 5 colores',desc_en:'50 drawing deaths · unlocks 5 colors',check:s=>s.drawCount>=50},
+  {id:'dep1',  cat:'dep',    tier:1,icon:AI.candle,secret:false,title_es:'Primera vela',      title_en:'First candle',     desc_es:'Recibe tu primer DEP',           desc_en:'Receive your first DEP',       check:s=>s.totalDeps>=1},
+  {id:'dep10', cat:'dep',    tier:2,icon:AI.candle,secret:false,title_es:'10 velas',          title_en:'10 candles',       desc_es:'Acumula 10 DEPs',                desc_en:'Collect 10 DEPs',              check:s=>s.totalDeps>=10},
+  {id:'dep100',cat:'dep',    tier:3,icon:AI.candle,secret:false,title_es:'100 velas',         title_en:'100 candles',      desc_es:'Acumula 100 DEPs',               desc_en:'Collect 100 DEPs',             check:s=>s.totalDeps>=100},
+  {id:'dep500',cat:'dep',    tier:4,icon:AI.candle,secret:false,title_es:'500 velas',         title_en:'500 candles',      desc_es:'Acumula 500 DEPs',               desc_en:'Collect 500 DEPs',             check:s=>s.totalDeps>=500},
+  {id:'dep1k', cat:'dep',    tier:5,icon:AI.candle,secret:false,title_es:'1000 velas',        title_en:'1000 candles',     desc_es:'Acumula 1000 DEPs',              desc_en:'Collect 1000 DEPs',            check:s=>s.totalDeps>=1000},
+  {id:'s7',    cat:'racha',  tier:1,icon:AI.flame, secret:false,title_es:'Primera semana',    title_en:'First week',       desc_es:'7 días de racha',                desc_en:'7-day streak',                 check:s=>s.streak>=7},
+  {id:'s30',   cat:'racha',  tier:2,icon:AI.flame, secret:false,title_es:'Primer mes',        title_en:'First month',      desc_es:'30 días de racha',               desc_en:'30-day streak',                check:s=>s.streak>=30},
+  {id:'s100',  cat:'racha',  tier:3,icon:AI.flame, secret:false,title_es:'Centenario',        title_en:'Centenarian',      desc_es:'100 días de racha',              desc_en:'100-day streak',               check:s=>s.streak>=100},
+  {id:'s365',  cat:'racha',  tier:4,icon:AI.flame, secret:false,title_es:'Un año de ruinas',  title_en:'A year of ruin',   desc_es:'365 días de racha',              desc_en:'365-day streak',               check:s=>s.streak>=365},
+  {id:'s1000', cat:'racha',  tier:5,icon:AI.flame, secret:false,title_es:'Eterno mártir',     title_en:'Eternal martyr',   desc_es:'1000 días de racha',             desc_en:'1000-day streak',              check:s=>s.streak>=1000},
+  {id:'p1',    cat:'ruinas', tier:1,icon:AI.skull, secret:false,title_es:'Primera desgracia', title_en:'First ruina',      desc_es:'Publica tu primera desgracia',   desc_en:'Publish your first ruina',     check:s=>s.postCount>=1},
+  {id:'p10',   cat:'ruinas', tier:2,icon:AI.skull, secret:false,title_es:'Decena',            title_en:'Ten down',         desc_es:'10 desgracias publicadas',       desc_en:'10 ruinas published',          check:s=>s.postCount>=10},
+  {id:'p50',   cat:'ruinas', tier:3,icon:AI.skull, secret:false,title_es:'Cincuentena',       title_en:'Fifty',            desc_es:'50 desgracias publicadas',       desc_en:'50 ruinas published',          check:s=>s.postCount>=50},
+  {id:'p100',  cat:'ruinas', tier:4,icon:AI.skull, secret:false,title_es:'El centenar',       title_en:'The century',      desc_es:'100 desgracias publicadas',      desc_en:'100 ruinas published',         check:s=>s.postCount>=100},
+  {id:'p500',  cat:'ruinas', tier:5,icon:AI.skull, secret:false,title_es:'500 desgracias',    title_en:'500 ruinas',       desc_es:'500 desgracias publicadas',      desc_en:'500 ruinas published',         check:s=>s.postCount>=500},
+  {id:'vr13',  cat:'special',tier:'special',icon:AI.tomb,  secret:true, title_es:'Viernes 13',           title_en:'Friday the 13th',      desc_es:'Publica una desgracia en viernes 13',            desc_en:'Post a ruina on Friday the 13th',        check:s=>(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getDay()===5&&d.getDate()===13;})},
+  {id:'xmas',  cat:'special',tier:'special',icon:AI.snow,  secret:true, title_es:'Navidad en familia',   title_en:'Xmas family',          desc_es:'Publica entre el 24 y el 25 de diciembre',       desc_en:'Post on Dec 24th or 25th',               check:s=>(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===11&&(d.getDate()===24||d.getDate()===25);})},
+  {id:'ny',    cat:'special',tier:'special',icon:AI.star,  secret:true, title_es:'Feliz año nuevo',      title_en:'Happy New Year',       desc_es:'Publica el 1 de enero',                          desc_en:'Post on January 1st',                    check:s=>(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===0&&d.getDate()===1;})},
+  {id:'late',  cat:'special',tier:'special',icon:AI.clock, secret:true, title_es:'La gota que colmó el vaso',title_en:'The last straw',   desc_es:'Publica una desgracia a las 23:59',              desc_en:'Post a ruina at 23:59',                  check:s=>(s.posts||[]).some(p=>{const d=new Date(p.created_at);return d.getHours()===23;})},
+  {id:'wknd',  cat:'special',tier:'special',icon:AI.moon,  secret:true, title_es:'Resaca emocional',     title_en:'Emotional hangover',   desc_es:'Publica sábado y domingo consecutivos',          desc_en:'Post on consecutive Saturday and Sunday',check:s=>{const dates=(s.posts||[]).map(p=>p.post_date||p.created_at.slice(0,10));for(let i=0;i<dates.length;i++){const d=new Date(dates[i]);if(d.getDay()===0){const sat=new Date(d);sat.setDate(sat.getDate()-1);const satStr=sat.toISOString().slice(0,10);if(dates.includes(satStr))return true;}}return false;}},
+  {id:'bday',  cat:'special',tier:'special',icon:AI.cake,  secret:false,title_es:"No era tu día",        title_en:'Not your day',         desc_es:'Publica una desgracia en tu cumpleaños',         desc_en:'Post on your birthday',                  check:s=>{if(!s.birthDate)return false;const b=new Date(s.birthDate);return(s.posts||[]).some(p=>{const d=new Date(p.post_date||p.created_at);return d.getMonth()===b.getMonth()&&d.getDate()===b.getDate();});}},
+  {id:'mercury',cat:'special',tier:'special',icon:AI.planet,secret:true,title_es:'Mercurio retrógrado', title_en:'Mercury retrograde',    desc_es:'Publica durante Mercurio retrógrado',            desc_en:'Post during Mercury retrograde',          check:s=>{if(!s.birthDate)return false;return(s.posts||[]).some(p=>inMercuryRx(p.post_date||p.created_at.slice(0,10)));}},
+  {id:'d1',  cat:'artista',tier:1,icon:AI.pencil,secret:false,title_es:'Primer boceto',      title_en:'First sketch',      desc_es:'Publica 1 muerte dibujada',          desc_en:'Publish 1 drawing death',          check:s=>s.drawCount>=1},
+  {id:'d5',  cat:'artista',tier:2,icon:AI.pencil,secret:false,title_es:'Aprendiz',           title_en:'Apprentice',        desc_es:'5 muertes dibujadas',                desc_en:'5 drawing deaths',                 check:s=>s.drawCount>=5},
+  {id:'d10', cat:'artista',tier:3,icon:AI.pencil,secret:false,title_es:'Artista',            title_en:'Artist',            desc_es:'10 muertes dibujadas',               desc_en:'10 drawing deaths',                check:s=>s.drawCount>=10},
+  {id:'d25', cat:'artista',tier:4,icon:AI.pencil,secret:false,title_es:'Artista en serio',   title_en:'Serious artist',    desc_es:'25 muertes dibujadas',               desc_en:'25 drawing deaths',                check:s=>s.drawCount>=25},
+  {id:'d50', cat:'artista',tier:5,icon:AI.pencil,secret:false,title_es:'Maestro del trazo',  title_en:'Master strokes',    desc_es:'50 muertes dibujadas · desbloquea 5 colores',desc_en:'50 drawing deaths · unlocks 5 colors',check:s=>s.drawCount>=50},
 ];
+function logroClass(a){if(!a)return'';if(a.tier==='special')return'logro-special';return`logro-t${a.tier}`||'';}
 
 function computeAchievements(posts){
   const drawCount=posts.filter(p=>p.castigo==='dibujo').length;
@@ -684,7 +697,7 @@ function icoStat(svg,targetH=20){
 // ── State ──────────────────────────────────────────────
 let user=null,profile=null,view="loading",todayPost=null;
 let feedData=[],myDeps=new Set(),myFollowing=new Set();
-let todayPrevPost=null,expandedPrev=new Set();
+let todayPrevPost=null,expandedPrev=new Set(),expandedDollItem=null;
 let authTab="login",authStep="form",pendingVerifyEmail="",recoverySession=false;
 let feedOlder=[],feedYesterday=[],señalesBadge=false,viewingProfile=null,friendsList=null;
 let searchQuery='',searchResults=null,expandedTombstone=new Set(),profileReturnView='amigos';
@@ -733,21 +746,22 @@ function getPose(name,w,h){
     lR:`M${cx+lW} ${bB} Q${cx+lW+2} ${h*.88} ${cx+lW+5} ${h*.97}`,
   };
   // Arms always start from BODY SIDES; head is drawn on top so upward arms hide naturally behind head
+  // Arms always route WIDE to the sides so they never overlap the big head circle
   if(name==='scared') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.04} ${(bT+hcy)*.57} ${w*.05} ${h*.37}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.96} ${(bT+hcy)*.57} ${w*.95} ${h*.37}`,
+    aL:`M${cx-bHW} ${aY} Q${w*.04} ${aY+10} ${w*.02} ${hcy+hr*.55}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.96} ${aY+10} ${w*.98} ${hcy+hr*.55}`,
   };
   if(name==='cowering') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.12} ${bT*.82} ${w*.21} ${h*.41}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.88} ${bT*.82} ${w*.79} ${h*.41}`,
+    aL:`M${cx-bHW} ${aY} Q${w*.05} ${aY-28} ${w*.04} ${hcy+hr*.35}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.95} ${aY-28} ${w*.96} ${hcy+hr*.35}`,
   };
   if(name==='begging') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.14} ${aY+16} ${w*.04} ${aY+22}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.86} ${aY+16} ${w*.96} ${aY+22}`,
+    aL:`M${cx-bHW} ${aY} Q${w*.14} ${aY+14} ${w*.04} ${aY+20}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.86} ${aY+14} ${w*.96} ${aY+20}`,
   };
   if(name==='dramatic') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.04} ${(bT+hcy)*.58} ${w*.06} ${h*.38}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.88} ${aY-10} ${w*.97} ${aY-22}`,
+    aL:`M${cx-bHW} ${aY} Q${w*.03} ${aY+10} ${w*.02} ${hcy+hr*.5}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.97} ${aY-40} ${w*.98} ${hcy-hr*.15}`,
   };
   const sbHW=Math.round(bHW*1.28),sbB=Math.round(bT+(bB-bT)*.62),saY=Math.round(bT+(sbB-bT)*.42);
   if(name==='squish') return{bHW:sbHW,bT,bB:sbB,bRx:9,
@@ -757,8 +771,8 @@ function getPose(name,w,h){
     lR:`M${cx+lW} ${sbB} Q${cx+lW+2} ${h*.79} ${cx+lW+5} ${h*.90}`,
   };
   if(name==='ghost') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.05} ${bT*.74} ${w*.04} ${h*.42}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.95} ${bT*.74} ${w*.96} ${h*.42}`,
+    aL:`M${cx-bHW} ${aY} Q${w*.03} ${aY} ${w*.02} ${hcy+hr*.65}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.97} ${aY} ${w*.98} ${hcy+hr*.65}`,
   };
   return D;
 }
@@ -783,19 +797,16 @@ function _dollCore(color,dead,poseName,w,h,sw,extraFx){
     <line x1="${lx+hr*.13}" y1="${ey-hr*.11}" x2="${lx-hr*.13}" y2="${ey+hr*.11}" stroke="${ec}" stroke-width="${sw_f}" stroke-linecap="round"/>
     <line x1="${rx-hr*.13}" y1="${ey-hr*.11}" x2="${rx+hr*.13}" y2="${ey+hr*.11}" stroke="${ec}" stroke-width="${sw_f}" stroke-linecap="round"/>
     <line x1="${rx+hr*.13}" y1="${ey-hr*.11}" x2="${rx-hr*.13}" y2="${ey+hr*.11}" stroke="${ec}" stroke-width="${sw_f}" stroke-linecap="round"/>
-    <path d="M${cx-hr*.30} ${hcy+hr*.30} Q${cx} ${hcy+hr*.20} ${cx+hr*.30} ${hcy+hr*.30}" stroke="${ec}" stroke-width="${sw_f}" fill="none" stroke-linecap="round"/>
+    <path d="M${cx-hr*.22} ${hcy+hr*.22} Q${cx} ${hcy+hr*.13} ${cx+hr*.22} ${hcy+hr*.22}" stroke="${ec}" stroke-width="${sw_f}" fill="none" stroke-linecap="round"/>
   `:`
     <circle cx="${lx}" cy="${ey}" r="${er}" fill="${ec}"/>
     <circle cx="${rx}" cy="${ey}" r="${er}" fill="${ec}"/>
-    <circle cx="${lx-er*.28}" cy="${ey-er*.32}" r="${er*.28}" fill="${ec2}"/>
-    <circle cx="${rx-er*.28}" cy="${ey-er*.32}" r="${er*.28}" fill="${ec2}"/>
-    <path d="M${cx-hr*.20} ${hcy+hr*.35} Q${cx} ${hcy+hr*.56} ${cx+hr*.20} ${hcy+hr*.35}" stroke="${ec}" stroke-width="${sw_f}" fill="none" stroke-linecap="round"/>
+    <path d="M${cx-hr*.13} ${hcy+hr*.20} Q${cx} ${hcy+hr*.28} ${cx+hr*.13} ${hcy+hr*.20}" stroke="${ec}" stroke-width="${sw_f}" fill="none" stroke-linecap="round"/>
   `;
   // Mechón — filled closed arch at upper-left of head, curves above head top
   const mech=`<path d="M${cx-hr*.36} ${hcy-hr*.78} C${cx-hr*.58} ${hcy-hr*.80} ${cx-hr*.60} ${hcy-hr*1.08} ${cx-hr*.26} ${hcy-hr*1.10} C${cx-hr*.08} ${hcy-hr*1.10} ${cx-hr*.06} ${hcy-hr*.84} ${cx-hr*.20} ${hcy-hr*.78} Z" fill="${color}"/>`;
   const shd=`<circle cx="${cx+hr*.10}" cy="${hcy+hr*.14}" r="${hr}" fill="rgba(0,0,0,.18)"/>`;
-  return `${extraFx||''}
-    ${shd}
+  return `${shd}
     <g stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">
       <path d="${pose.lL}"/><path d="${pose.lR}"/>
     </g>
@@ -805,7 +816,8 @@ function _dollCore(color,dead,poseName,w,h,sw,extraFx){
     </g>
     <circle cx="${cx}" cy="${hcy}" r="${hr}" fill="${color}" stroke="none"/>
     ${mech}
-    ${face}`;
+    ${face}
+    ${extraFx||''}`;
 }
 
 // ── Doll SVG ──────────────────────────────────────────
@@ -857,7 +869,7 @@ function dollSVG(color,death,dead,poseName,px){
     // Stark bone-white zigzag — no glow, no color, pure line
     const pts=`${w*.52},${h*.02} ${w*.36},${h*.3} ${w*.56},${h*.33} ${w*.38},${h*.66}`;
     fx=`<polyline points="${pts}" stroke="#1A1614" stroke-width="5" fill="none" stroke-linejoin="round" opacity=".5"/>
-    <polyline points="${pts}" stroke="#C4BDB2" stroke-width="1.8" fill="none" stroke-linejoin="round" opacity=".9" style="animation:shockPulse 1.6s ease-in-out infinite"/>`;
+    <polyline points="${pts}" stroke="#C4BDB2" stroke-width="1.8" fill="none" stroke-linejoin="round" opacity=".9" style="animation:lightningFlash 1.4s ease-in-out infinite"/>`;
   }
   if(death==="aplastado"){
     // Massive dark slab pressing from above
@@ -880,29 +892,36 @@ function dollSVG(color,death,dead,poseName,px){
     </g>`;
   }
   if(death==="hielo"){
-    // Dark freeze tint over the whole figure
-    fx=`<rect x="0" y="0" width="${w}" height="${h}" fill="#060D16" opacity=".32"/>`;
-    // Icicles hanging from top — sharp needle triangles, clearly ice
-    [[w*.22,h*.44],[w*.37,h*.55],[w*.52,h*.62],[w*.65,h*.5],[w*.79,h*.38]].forEach(([x,bot])=>{
-      const hw=w*.018;
-      fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#0C1B2A" opacity=".82"/>
-           <line x1="${x}" y1="0" x2="${x}" y2="${bot}" stroke="#C4BDB2" stroke-width=".5" opacity=".22"/>`;
+    // Blue frost atmosphere on body area
+    fx=`<ellipse cx="${cx}" cy="${h*.5}" rx="${w*.45}" ry="${h*.4}" fill="#061830" opacity=".28"/>`;
+    // Large visible icicles — ice-blue, rendered in front of doll
+    [[w*.18,h*.52,w*.026],[w*.32,h*.62,w*.021],[w*.48,h*.70,w*.025],[w*.63,h*.56,w*.021],[w*.78,h*.44,w*.019]].forEach(([x,bot,hw])=>{
+      fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#AADDFF" opacity=".9" style="animation:icicleShimmer 3s ease-in-out infinite"/>
+           <polygon points="${x-hw*.3},0 ${x+hw*.3},0 ${x},${bot}" fill="white" opacity=".35"/>`;
     });
-    // Thin icicles in gaps
-    [[w*.14,h*.28],[w*.44,h*.35],[w*.58,h*.3],[w*.86,h*.22]].forEach(([x,bot])=>{
-      const hw=w*.01;
-      fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#0C1B2A" opacity=".55"/>`;
+    [[w*.10,h*.30],[w*.25,h*.40],[w*.56,h*.42],[w*.70,h*.33],[w*.86,h*.27]].forEach(([x,bot])=>{
+      const hw=w*.013;
+      fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#C0E8FF" opacity=".65"/>`;
     });
-    // Frost crack lines on the body — branching, NOT snowflakes
-    fx+=`<g stroke="#C4BDB2" stroke-width=".8" opacity=".2" stroke-linecap="round">
-      <line x1="${w*.22}" y1="${h*.35}" x2="${w*.08}" y2="${h*.52}"/>
-      <line x1="${w*.08}" y1="${h*.52}" x2="${w*.14}" y2="${h*.6}"/>
-      <line x1="${w*.08}" y1="${h*.52}" x2="${w*.02}" y2="${h*.58}"/>
-      <line x1="${w*.72}" y1="${h*.58}" x2="${w*.88}" y2="${h*.72}"/>
-      <line x1="${w*.88}" y1="${h*.72}" x2="${w*.82}" y2="${h*.8}"/>
-      <line x1="${w*.88}" y1="${h*.72}" x2="${w*.94}" y2="${h*.78}"/>
-      <line x1="${w*.4}" y1="${h*.8}" x2="${w*.3}" y2="${h*.94}"/>
-      <line x1="${w*.3}" y1="${h*.94}" x2="${w*.24}" y2="${h*.98}"/>
+    // Frost crystals on body
+    [[w*.26,h*.46],[w*.61,h*.40],[w*.36,h*.64],[w*.70,h*.60],[w*.44,h*.26]].forEach(([x,y],i)=>{
+      const r=h*.022;const delay=`${i*.4}s`;
+      fx+=`<g stroke="#90C8E8" stroke-width="1.4" opacity=".75" stroke-linecap="round" style="animation:icicleShimmer 2.5s ${delay} ease-in-out infinite">
+        <line x1="${x-r}" y1="${y}" x2="${x+r}" y2="${y}"/>
+        <line x1="${x}" y1="${y-r}" x2="${x}" y2="${y+r}"/>
+        <line x1="${x-r*.7}" y1="${y-r*.7}" x2="${x+r*.7}" y2="${y+r*.7}"/>
+        <line x1="${x+r*.7}" y1="${y-r*.7}" x2="${x-r*.7}" y2="${y+r*.7}"/>
+      </g>`;
+    });
+    // Visible frost crack lines
+    fx+=`<g stroke="#90C0DC" stroke-width="1.5" opacity=".5" stroke-linecap="round">
+      <line x1="${w*.36}" y1="${h*.30}" x2="${w*.16}" y2="${h*.58}"/>
+      <line x1="${w*.16}" y1="${h*.58}" x2="${w*.08}" y2="${h*.66}"/>
+      <line x1="${w*.16}" y1="${h*.58}" x2="${w*.10}" y2="${h*.62}"/>
+      <line x1="${w*.66}" y1="${h*.50}" x2="${w*.84}" y2="${h*.70}"/>
+      <line x1="${w*.84}" y1="${h*.70}" x2="${w*.78}" y2="${h*.80}"/>
+      <line x1="${w*.84}" y1="${h*.70}" x2="${w*.90}" y2="${h*.76}"/>
+      <line x1="${w*.44}" y1="${h*.74}" x2="${w*.30}" y2="${h*.94}"/>
     </g>`;
   }
   if(death==="guillotina"){
@@ -1159,15 +1178,52 @@ async function toggleFollow(uid){
 }
 
 function dollPureSVG(color,death,strokes,dead,poseName,svgW,svgH){
-  const w=svgW||220,h=svgH||280,sw=22;
+  const w=svgW||220,h=svgH||280;
+  const tmp=dollSVG(color,death,dead,poseName,w);
+  const match=tmp.match(/<svg[^>]*>([\s\S]*?)<\/svg>/);
+  const inner=match?match[1]:'';
   const drawLayer=strokes&&death==='dibujo'?strokes.map(s=>`<polyline points="${s.puntos.map(pt=>`${pt.x},${pt.y}`).join(' ')}" stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join(''):'';
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-    ${_dollCore(color,dead,poseName,w,h,sw,'')}${drawLayer}
-  </svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${inner}${drawLayer}</svg>`;
 }
 
-async function sharePost(p){
+const KILLME_URL='https://webkillme.github.io/Kill.me/';
+
+function showShareMenu(p){
   if(!p)return;
+  const existing=document.getElementById('share-menu');
+  if(existing){existing.remove();return;}
+  const d=DEATHS.find(x=>x.id===p.castigo);
+  const lbl=p.castigo==='dibujo'?(p.dibujo_descripcion||'Dibujo'):dl(p.castigo);
+  const el=document.createElement('div');
+  el.id='share-menu';
+  el.style.cssText='position:fixed;inset:0;z-index:9998;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);';
+  el.innerHTML=`<div style="background:var(--surface2);border-radius:18px 18px 0 0;padding:20px 20px 32px;width:100%;max-width:480px;border-top:1px solid var(--border2);">
+    <div style="text-align:center;color:var(--muted2);font-size:12px;margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;">Compartir en</div>
+    <div style="display:flex;gap:12px;">
+      <button id="shareX" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:1px solid var(--border2);border-radius:12px;padding:16px 8px;cursor:pointer;color:var(--text2);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.836L2 2.25h6.957l4.264 5.626 5.023-5.626zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <span style="font-size:12px;">X / Twitter</span>
+      </button>
+      <button id="shareImg" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:1px solid var(--border2);border-radius:12px;padding:16px 8px;cursor:pointer;color:var(--text2);">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <span style="font-size:12px;">Imagen</span>
+      </button>
+    </div>
+  </div>`;
+  el.onclick=(e)=>{if(e.target===el)el.remove();};
+  document.getElementById('shareX').onclick=()=>{el.remove();shareToX(p,lbl);};
+  document.getElementById('shareImg').onclick=async()=>{el.remove();await shareImage(p);};
+  document.body.appendChild(el);
+}
+
+function shareToX(p,lbl){
+  const intro=lang==='en'?'The reason I can\'t today:':'La razón por la que no puedo más hoy:';
+  const txt=`${intro} "${p.razon}" — ${lbl||dl(p.castigo)} 🖤`;
+  const url=`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}&url=${encodeURIComponent(KILLME_URL)}`;
+  window.open(url,'_blank','noopener');
+}
+
+async function shareImage(p){
   const d=DEATHS.find(x=>x.id===p.castigo);
   const lbl=p.castigo==='dibujo'?(p.dibujo_descripcion||'Dibujo'):dl(p.castigo);
   const W=1080,H=1350,DOLL_PX=400;
@@ -1179,7 +1235,6 @@ async function sharePost(p){
   ctx.fillStyle='#C0392B';ctx.fillRect(0,0,W,12);
   ctx.strokeStyle='rgba(192,57,43,.12)';ctx.lineWidth=3;ctx.strokeRect(24,24,W-48,H-48);
 
-  // ── Brand: measure "kill" first, then place ".me" right after ──
   ctx.textAlign='left';
   ctx.font='900 80px Georgia,"Times New Roman",serif';
   const killW=ctx.measureText('kill').width;
@@ -1188,14 +1243,9 @@ async function sharePost(p){
   ctx.fillStyle='#DEDEDE';ctx.fillText('kill',brandX,118);
   ctx.fillStyle='#C0392B';ctx.fillText('.me',brandX+killW,118);
 
-  ctx.textAlign='center';
-  ctx.fillStyle='rgba(120,100,90,.55)';ctx.font='italic 30px Georgia,serif';
-  ctx.fillText('"pues me mato."',W/2,168);
-
   ctx.strokeStyle='rgba(192,57,43,.22)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(180,200);ctx.lineTo(W-180,200);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(180,160);ctx.lineTo(W-180,160);ctx.stroke();
 
-  // ── Doll SVG → Image (pure SVG, no wrapper div) ──
   try{
     const svgW=220,svgH=280,scale=DOLL_PX/svgW;
     const svgStr=dollPureSVG(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',svgW,svgH);
@@ -1203,21 +1253,21 @@ async function sharePost(p){
     const svgUrl=URL.createObjectURL(svgBlob);
     await new Promise(res=>{
       const img=new Image();
-      img.onload=()=>{
-        const dh=Math.round(svgH*scale);
-        ctx.drawImage(img,W/2-DOLL_PX/2,220,DOLL_PX,dh);
-        URL.revokeObjectURL(svgUrl);res();
-      };
+      img.onload=()=>{const dh=Math.round(svgH*scale);ctx.drawImage(img,W/2-DOLL_PX/2,190,DOLL_PX,dh);URL.revokeObjectURL(svgUrl);res();};
       img.onerror=()=>{URL.revokeObjectURL(svgUrl);res();};
       img.src=svgUrl;
     });
   }catch(e){}
 
-  // ── Razón ──
-  ctx.fillStyle='#B0A898';ctx.font='italic 48px Georgia,serif';ctx.textAlign='center';
-  const maxW=W-160,lineH=68;
+  ctx.textAlign='center';
+  const intro=lang==='en'?'The reason I can\'t today:':'La razón por la que no puedo más hoy:';
+  ctx.fillStyle='rgba(150,135,120,.65)';ctx.font='italic 32px Georgia,serif';
+  ctx.fillText(intro,W/2,730);
+
+  ctx.fillStyle='#B0A898';ctx.font='italic 50px Georgia,serif';
+  const maxW=W-160,lineH=72;
   const words=(`"${p.razon}"`).split(' ');
-  let line='',y=760;
+  let line='',y=810;
   for(const word of words){
     const test=line+word+' ';
     if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line.trim(),W/2,y);line=word+' ';y+=lineH;}
@@ -1225,24 +1275,22 @@ async function sharePost(p){
   }
   ctx.fillText(line.trim(),W/2,y);
 
-  // ── Castigo ──
-  y+=90;
+  y+=100;
   ctx.fillStyle='#B07830';ctx.font='700 40px system-ui,sans-serif';ctx.letterSpacing='3px';
   ctx.fillText(lbl.toUpperCase(),W/2,y);ctx.letterSpacing='0px';
 
-  // ── DEPs ──
-  y+=58;
-  ctx.fillStyle='rgba(100,90,80,.6)';ctx.font='32px system-ui,sans-serif';
-  ctx.fillText(`${p.dep_count||0} DEPs`,W/2,y);
+  ctx.strokeStyle='rgba(192,57,43,.15)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(180,H-120);ctx.lineTo(W-180,H-120);ctx.stroke();
 
-  // ── Bottom URL ──
-  ctx.fillStyle='rgba(60,55,50,.45)';ctx.font='24px system-ui,sans-serif';
-  ctx.fillText('kill.me',W/2,H-44);
+  ctx.fillStyle='rgba(180,160,140,.5)';ctx.font='italic 28px Georgia,serif';
+  ctx.fillText('kill.me — publica tu ruina diaria',W/2,H-74);
+  ctx.fillStyle='rgba(100,90,80,.4)';ctx.font='22px system-ui,sans-serif';
+  ctx.fillText(KILLME_URL,W/2,H-38);
 
   cv.toBlob(async blob=>{
     const file=new File([blob],'kill-me-ruina.png',{type:'image/png'});
     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-      try{await navigator.share({files:[file],title:'kill.me',text:`"${p.razon}" — ${lbl}`});}catch(e){}
+      try{await navigator.share({files:[file],title:'kill.me — mi ruina',text:`"${p.razon}" — ${lbl}`});}catch(e){}
     }else{
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a');a.href=url;a.download='kill-me-ruina.png';a.click();
@@ -1258,6 +1306,22 @@ function getSlides(){return[
   {icon:()=>icoStat(ICO.candle,48), title:t('ob2_title'),body:t('ob2_body')},
   {icon:()=>icoStat(ICO.flame,48),  title:t('ob4_title'),body:t('ob4_body')},
 ];}
+function showDollModal(item){
+  const existing=document.getElementById('doll-modal');
+  if(existing)existing.remove();
+  const d=DEATHS.find(x=>x.id===item.castigo);
+  const lbl=item.castigo==='dibujo'?esc(item.dibujo_descripcion):dl(item.castigo);
+  const el=document.createElement('div');
+  el.id='doll-modal';
+  el.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.82);cursor:zoom-out;';
+  el.innerHTML=`<div style="text-align:center;padding:24px;">
+    ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',180)}
+    <div style="margin-top:12px;color:var(--warm);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.5px;">${lbl}</div>
+    <div style="color:var(--muted2);font-size:12px;margin-top:4px;">@${esc(item.username)}</div>
+  </div>`;
+  el.onclick=()=>el.remove();
+  document.body.appendChild(el);
+}
 function showOnboarding(){
   if(document.getElementById('onboarding'))return;
   let cur=0;
@@ -1565,10 +1629,10 @@ function shell(content){
   </div>
   <div id="app">${content}</div>
   <div class="bottomnav">
-    <div class="navbtn-wrap"><button class="navbtn ${inMain?'on':''}" id="navHoy">${ICO.doll}<span>${t('nav_hoy')}</span></button></div>
-    <div class="navbtn-wrap"><button class="navbtn ${view==='feed'?'on':''}" id="navFeed">${ICO.feed}<span>${t('nav_feed')}</span></button></div>
-    <div class="navbtn-wrap"><button class="navbtn ${view==='señales'?'on':''}" id="navSeñales">${ICO.bell}<span>${t('nav_senales')}</span></button>${señalesBadge?'<div class="nav-badge"></div>':''}</div>
-    <div class="navbtn-wrap"><button class="navbtn ${view==='muertes'?'on':''}" id="navMuertes">${ICO.skull}<span>${t('nav_muertes')}</span></button></div>
+    <div class="navbtn-wrap"><button class="navbtn ${inMain?'on':''}" id="navHoy"><div class="navbtn-ico">${ICO.doll}</div><span>${t('nav_hoy')}</span></button></div>
+    <div class="navbtn-wrap"><button class="navbtn ${view==='feed'?'on':''}" id="navFeed"><div class="navbtn-ico">${ICO.feed}</div><span>${t('nav_feed')}</span></button></div>
+    <div class="navbtn-wrap"><button class="navbtn ${view==='señales'?'on':''}" id="navSeñales"><div class="navbtn-ico">${ICO.bell}</div><span>${t('nav_senales')}</span></button>${señalesBadge?'<div class="nav-badge"></div>':''}</div>
+    <div class="navbtn-wrap"><button class="navbtn ${view==='muertes'?'on':''}" id="navMuertes"><div class="navbtn-ico">${ICO.skull}</div><span>${t('nav_muertes')}</span></button></div>
   </div>`;
   ge('btnGear').onclick=()=>{view='ajustes';paint();};
   ge('btnSearch').onclick=()=>{searchQuery='';searchResults=null;view='buscar';paint();};
@@ -1727,7 +1791,7 @@ function renderProfile(){
       <div class="profile-stat"><div class="profile-stat-num" style="color:#5A8FD4">${td}</div><div class="profile-stat-lbl">${ICO.candle} ${t('profile_deps')}</div></div>
       <div class="profile-stat"><div class="profile-stat-num">${postCount}</div><div class="profile-stat-lbl">${t('profile_ruinas_lbl')}</div></div>
     </div>
-    ${isSelf&&pinnedLogros.length?`<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:clamp(14px,3.5vw,18px);">${pinnedLogros.map(aid=>{const a=ACHIEVEMENTS.find(x=>x.id===aid);if(!a)return'';const posts=cemeteryPosts||[];const state={totalDeps,streak:profile?.streak||0,postCount:posts.length,posts,birthDate:profile?.birth_date||null,drawCount:posts.filter(p=>p.castigo==='dibujo').length};const unlk=a.check(state);if(!unlk)return'';return`<div title="${lang==='en'?a.title_en:a.title_es}" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;font-size:clamp(10px,2.5vw,11px);color:var(--warm);">${a.icon} <span style="color:var(--text2);">${lang==='en'?a.title_en:a.title_es}</span></div>`;}).join('')}</div>`:''}
+${(()=>{const profState={totalDeps:td,streak:prof.streak||0,postCount:posts.length,posts,birthDate:prof.birth_date||null,drawCount:posts.filter(p=>p.castigo==='dibujo').length};const toShow=isSelf?pinnedLogros.map(aid=>ACHIEVEMENTS.find(x=>x.id===aid)).filter(a=>a&&a.check(profState)):ACHIEVEMENTS.filter(a=>!a.secret&&a.check(profState));if(!toShow.length)return'';return`<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:clamp(14px,3.5vw,18px);">${toShow.map(a=>`<div class="${logroClass(a)}" title="${lang==='en'?a.title_en:a.title_es}" style="display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:clamp(10px,2.5vw,11px);">${a.icon} <span style="color:var(--text2);">${lang==='en'?a.title_en:a.title_es}</span></div>`).join('')}</div>`;})()}
     <div style="height:1px;background:var(--border);margin-bottom:clamp(16px,4vw,20px);"></div>
     <div class="profile-posts-hdr">${t('profile_ruinas_last')}</div>
     <div class="feed-list">${cards||`<p style="text-align:center;color:var(--muted2);">${t('profile_no_ruinas')}</p>`}</div>
@@ -1851,12 +1915,12 @@ function renderMuerte(){
   const cells=DEATHS.map(d=>{
     const ok=streak>=d.min&&totalDeps>=d.deps;
     if(ok) return `<div class="dcell on" data-death="${d.id}">
-      <div style="width:${clamp(52,64)}px;height:${clamp(52,64)}px;display:flex;align-items:center;justify-content:center;overflow:hidden;">${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}</div>
+      <div style="display:flex;align-items:center;justify-content:center;">${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,68))}</div>
       <span class="dlabel">${dl(d.id)}</span>
     </div>`;
     const req=d.min>0&&streak<d.min?`${icoStat(ICO.flame,10)} ${d.min}d`:`${icoStat(ICO.candle,10)} ${d.deps}`;
     return `<div class="dcell off">
-      <div style="width:${clamp(52,64)}px;height:${clamp(52,64)}px;display:flex;align-items:center;justify-content:center;overflow:hidden;">${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}</div>
+      <div style="display:flex;align-items:center;justify-content:center;">${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,68))}</div>
       <span class="dlabel">${dl(d.id)}</span>
       <span class="dreq">${req}</span>
     </div>`;
@@ -1880,7 +1944,12 @@ function renderDibujo(){
     ${hdr(t('dibujo_title'),t('dibujo_sub'))}
     <textarea id="razonDibujo" placeholder="${t('ph_razon_draw')}" maxlength="280">${esc(draftRazon)}</textarea>
     <div class="charcount" id="razonCount">${draftRazon.length}/280</div>
-    <div style="display:flex;justify-content:center;margin-top:14px;"><canvas id="drawCanvas" width="220" height="280"></canvas></div>
+    <div style="display:flex;justify-content:center;margin-top:14px;">
+      <div style="position:relative;width:220px;height:280px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);">
+        <div style="position:absolute;inset:0;">${dollSVG(profile.doll_color,null,false,'idle',220)}</div>
+        <canvas id="drawCanvas" width="220" height="280" style="position:absolute;inset:0;background:transparent;border:none;border-radius:0;"></canvas>
+      </div>
+    </div>
     <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}${(()=>{const uc=unlockedExtraColors();const tips=['1 dibujo','5 dibujos','10 dibujos','25 dibujos','50 dibujos'];return LINE_COLORS_EXTRA.map((c,i)=>i<uc?`<button class="swatch" data-color="${c}" style="background:${c};"></button>`:`<button class="swatch swatch-locked" title="${tips[i]}" style="background:${c};opacity:.22;cursor:not-allowed;" disabled></button>`).join('');})()}</div>
     <div class="wrow">
       ${LINE_WIDTHS.map((w,i)=>`<button class="wbtn ${i===1?'on':''}" data-width="${w}"><span class="wdot" style="width:${w+4}px;height:${w+4}px;"></span></button>`).join('')}
@@ -1923,7 +1992,7 @@ function renderLogrosContent(){
     const isPinned=pinnedLogros.includes(a.id);
     const canPin=a.unlocked&&!hidden;
     return`<div style="display:flex;gap:12px;align-items:center;padding:clamp(10px,2.5vw,12px) 0;border-bottom:1px solid var(--border);opacity:${a.unlocked?1:hidden?.3:.45};">
-      <div style="flex-shrink:0;width:36px;display:flex;align-items:center;justify-content:center;color:${a.unlocked?'var(--warm)':'var(--muted2)'};">${hidden?lockICO:a.icon}</div>
+      <div class="${a.unlocked&&!hidden?logroClass(a):''}" style="flex-shrink:0;width:36px;display:flex;align-items:center;justify-content:center;color:${a.unlocked&&!hidden?'':'var(--muted2)'};">${hidden?lockICO:a.icon}</div>
       <div style="flex:1;">
         <div style="font-size:clamp(13px,3.5vw,14px);font-weight:700;color:${a.unlocked?'var(--text)':'var(--muted2)'};">${hidden?'???':lang==='en'?a.title_en:a.title_es}</div>
         <div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-top:2px;">${hidden?'…':lang==='en'?a.desc_en:a.desc_es}</div>
@@ -2047,22 +2116,23 @@ function feedCardHTML(item,older=false){
   const hasPrev=!!item.previous_post_id&&!!item._prev,isOpen=expandedPrev.has(item.id);
   const depCount=item.dep_count||0;
   const dateStr=timeAgo(item.created_at);
+  const dollPx=clamp(52,64);
   return `<div class="feed-card${older?' older-card':''}">
     <div style="display:flex;gap:12px;align-items:flex-start;">
-      <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;flex-shrink:0;position:relative;">
-        ${avatarDoll(item.doll_color,clamp(44,54))}${own?'<span class="friend-dot" style="background:#E8C468;border-color:var(--bg);position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;border:2px solid var(--bg);"></span>':friend?'<span class="friend-dot" style="position:absolute;bottom:0;right:0;"></span>':''}
+      <button class="doll-expand-btn" data-pid="${item.id}" style="background:none;border:none;padding:0;cursor:zoom-in;flex-shrink:0;line-height:0;">
+        ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',dollPx)}
       </button>
       <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px;">
           <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;font-size:clamp(12px,3vw,13px);color:var(--text2);font-weight:600;">@${esc(item.username)}</button>
-          <span style="font-size:clamp(10px,2.5vw,11px);color:var(--muted);flex-shrink:0;">${dateStr}</span>
+          ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>`:''}
+          <span style="font-size:clamp(10px,2.5vw,11px);color:var(--muted);margin-left:auto;flex-shrink:0;">${dateStr}</span>
         </div>
         <div style="font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${lbl}</div>
         <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(item.razon)}"</div>
-        ${older?'':`<div style="display:flex;align-items:center;gap:10px;margin-top:10px;">${own
-          ?`<div style="display:flex;align-items:center;gap:5px;font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${depCount===1?t('dep_velado_1'):t('dep_velado_n').replace('$n',depCount)}</div>`
-          :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}" style="flex-shrink:0;">${ICO.candle} DEP <span class="dep-count">${depCount}</span></button>`}
-          ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}" style="margin-left:auto;">${friend?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>`:''}
+        ${older?'':`<div style="margin-top:7px;">${own
+          ?`<span style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${depCount}</span>`
+          :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">${ICO.candle} <span class="dep-count">${depCount}</span></button>`}
         </div>`}
       </div>
     </div>
@@ -2121,7 +2191,7 @@ function renderLogros(){
     const isPinned=pinnedLogros.includes(a.id);
     const canPin=a.unlocked&&!hidden;
     return`<div style="display:flex;gap:12px;align-items:center;padding:clamp(10px,2.5vw,12px) 0;border-bottom:1px solid var(--border);opacity:${a.unlocked?1:hidden?.3:.45};">
-      <div style="flex-shrink:0;width:36px;display:flex;align-items:center;justify-content:center;color:${a.unlocked?'var(--warm)':'var(--muted2)'};">${hidden?lockICO:a.icon}</div>
+      <div class="${a.unlocked&&!hidden?logroClass(a):''}" style="flex-shrink:0;width:36px;display:flex;align-items:center;justify-content:center;color:${a.unlocked&&!hidden?'':'var(--muted2)'};">${hidden?lockICO:a.icon}</div>
       <div style="flex:1;">
         <div style="font-size:clamp(13px,3.5vw,14px);font-weight:700;color:${a.unlocked?'var(--text)':'var(--muted2)'};">${hidden?'???':lang==='en'?a.title_en:a.title_es}</div>
         <div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-top:2px;">${hidden?'…':lang==='en'?a.desc_en:a.desc_es}</div>
@@ -2256,7 +2326,7 @@ function attachListeners(){
     if(ge('btnInstrHome'))ge('btnInstrHome').onclick=()=>showOnboarding();
     if(ge('goFeed'))ge('goFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
     if(ge('btnPeor'))ge('btnPeor').onclick=()=>{draftRazon='';view='razon';paint();};
-    if(ge('btnShare'))ge('btnShare').onclick=()=>sharePost(todayPost);
+    if(ge('btnShare'))ge('btnShare').onclick=()=>showShareMenu(todayPost);
     if(ge('btnDeletePost'))ge('btnDeletePost').onclick=async()=>{
       if(!confirm(t('confirm_delete')))return;
       const deletingId=todayPost.id;
@@ -2317,6 +2387,14 @@ function attachListeners(){
   if(view==='feed'){
     document.querySelectorAll('.dep-btn').forEach(b=>{b.onclick=async()=>await toggleDep(b.getAttribute('data-pid'));});
     document.querySelectorAll('.follow-btn').forEach(b=>{b.onclick=async()=>await toggleFollow(b.getAttribute('data-uid'));});
+    document.querySelectorAll('.doll-expand-btn').forEach(b=>{b.onclick=(e)=>{
+      e.stopPropagation();
+      const pid=b.getAttribute('data-pid');
+      const item=[...feedData,...(feedData.flatMap(x=>x._prev?[x._prev]:[])||[])].find(x=>x.id===pid)||feedData.find(x=>x.id===pid);
+      if(!item)return;
+      expandedDollItem=item;
+      showDollModal(item);
+    };});
     document.querySelectorAll('[data-feedprev]').forEach(btn=>{
       btn.onclick=()=>{
         const id=btn.getAttribute('data-feedprev');
@@ -2595,19 +2673,7 @@ function setupCanvas(){
   const ctx=cv.getContext('2d');
   let drawing=false,curC=LINE_COLORS[0],curW=LINE_WIDTHS[1],cur=null;
   window.__strokes=[];
-  function guide(){
-    ctx.clearRect(0,0,220,280);
-    ctx.save();ctx.globalAlpha=.3;ctx.strokeStyle=profile.doll_color;ctx.fillStyle=profile.doll_color;
-    ctx.lineWidth=12;ctx.lineCap='round';ctx.lineJoin='round';
-    const w=220,h=280,p=getPose('idle',w,h);
-    ctx.beginPath();ctx.arc(w/2,h*.175,w*.155,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();
-    [p.body,p.aL,p.aR,p.lL,p.lR].forEach(path=>{
-      const m=path.match(/M([0-9.]+) ([0-9.]+)/),q=path.match(/Q([0-9.]+) ([0-9.]+) ([0-9.]+) ([0-9.]+)/);
-      if(m&&q){ctx.moveTo(+m[1],+m[2]);ctx.quadraticCurveTo(+q[1],+q[2],+q[3],+q[4]);}
-    });
-    ctx.stroke();ctx.restore();
-  }
+  function guide(){ctx.clearRect(0,0,220,280);}
   function redraw(){guide();window.__strokes.forEach(s=>{ctx.strokeStyle=s.color;ctx.lineWidth=s.grosor;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();s.puntos.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));ctx.stroke();});}
   function pos(e){const r=cv.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:(t.clientX-r.left)*(cv.width/r.width),y:(t.clientY-r.top)*(cv.height/r.height)};}
   cv.addEventListener('mousedown',e=>{e.preventDefault();drawing=true;cur={puntos:[pos(e)],color:curC,grosor:curW};});
