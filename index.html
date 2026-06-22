@@ -816,7 +816,7 @@ async function toggleFollow(uid){
 
 // ── Onboarding ────────────────────────────────────────
 const SLIDES=[
-  {icon:()=>icoStat(ICO.skull,48),title:'kill.me',body:`¿Alguna vez has dicho <em>"pues me mato"</em> después de un día de mierda?\n\nEsta app es exactamente eso. Suelta tu <em>ruina del día</em>, mata a tu muñeco, y sigue adelante.`},
+  {icon:()=>`<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.2"/><line x1="15" y1="17" x2="21" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><line x1="21" y1="17" x2="15" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><line x1="27" y1="17" x2="33" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><line x1="33" y1="17" x2="27" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M16 33 Q24 28 32 33" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,title:'kill.me',body:`¿Alguna vez has dicho <em>"pues me mato"</em> después de un día de mierda?\n\nEsta app es exactamente eso. Suelta tu <em>ruina del día</em>, mata a tu muñeco, y sigue adelante.`},
   {icon:()=>icoStat(ICO.candle,48),title:'¿Qué es un DEP?',body:`Tus amigos ven tu ruina en el feed y te mandan un <em>DEP</em> — Descanse En Paz.\n\nComo un like, pero para lo peor de tu día. Cuantos más DEPs, más se solidarizan con tu tragedia.`},
   {icon:()=>icoStat(ICO.skull,48),title:'Las muertes',body:`Cada día que publicas tu ruina, desbloqueas nuevas formas de matar a tu muñeco: quemado, acribillado, electrocutado...\n\nMantén la <em>racha</em> y acumula DEPs para desbloquearlas todas.`},
   {icon:()=>icoStat(ICO.flame,48),title:'Una al día',body:`Solo puedes publicar <em>una ruina al día</em>. Si el día mejora (o empeora), puedes actualizarla.\n\nRecuerda que la vida da para un "pues me mato" al día — no más.`},
@@ -1283,8 +1283,9 @@ function renderHome(){
         ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',clamp(140,170))}
       </div>
       <div class="done-card">
+        <div class="done-razon">"${esc(p.razon)}"</div>
         <div class="done-castigo">${lbl}</div>
-        <div style="color:var(--muted);font-size:clamp(11px,2.8vw,12px);margin-top:8px;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:5px;">${icoStat(ICO.candle,'14px')} ${p.dep_count||0} DEPs recibidos</div>
+        <div style="color:var(--muted);font-size:clamp(11px,2.8vw,12px);margin-top:8px;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:5px;">${icoStat(ICO.candle,14)} ${p.dep_count||0} DEPs recibidos</div>
         ${hasPrev?`
           <button class="prev-toggle ${isOpen?'open':''}" id="btnTogglePrev">
             <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
