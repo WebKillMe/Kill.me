@@ -821,19 +821,37 @@ function showOnboarding(){
 function maybeShowOnboarding(){if(!localStorage.getItem('sawOnboarding'))showOnboarding();}
 
 // ── Señales ────────────────────────────────────────────
+function señalesHistoryKey(){return`señalesHistory_${user?.id||'x'}`;}
 async function loadSeñales(){
-  if(!user||!todayPost)return[];
+  if(!user)return[];
+  // Load persisted history first
+  let history=[];
+  try{history=JSON.parse(localStorage.getItem(señalesHistoryKey())||'[]');}catch(e){}
+  // Fetch new items since last check
   const lastCheck=parseInt(localStorage.getItem('señalesCheck')||'0');
-  const since=new Date(lastCheck||Date.now()-86400000*3).toISOString();
-  const [{data:deps},{data:follows}]=await Promise.all([
-    sb.from('deps').select('created_at,user_id,profiles(username)').eq('post_id',todayPost.id).gt('created_at',since).order('created_at',{ascending:false}),
+  const since=new Date(lastCheck||Date.now()-86400000*7).toISOString();
+  const queries=[
     sb.from('follows').select('created_at,follower_id,profiles!follower_id(username)').eq('following_id',user.id).gt('created_at',since).order('created_at',{ascending:false}),
-  ]).catch(()=>[{data:[]},{data:[]}]);
+  ];
+  if(todayPost)queries.unshift(
+    sb.from('deps').select('created_at,user_id,profiles(username)').eq('post_id',todayPost.id).gt('created_at',since).order('created_at',{ascending:false})
+  );
+  const results=await Promise.all(queries).catch(()=>queries.map(()=>({data:[]})));
+  const deps=todayPost?results[0].data||[]:[];
+  const follows=results[todayPost?1:0].data||[];
+  const newItems=[
+    ...deps.map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien'})),
+    ...follows.map(f=>({type:'follow',time:f.created_at,user:f.profiles?.username||'alguien'})),
+  ];
+  // Merge with history — dedup by time+type+user
+  const seen=new Set(history.map(i=>`${i.type}|${i.time}|${i.user}`));
+  const merged=[...newItems.filter(i=>!seen.has(`${i.type}|${i.time}|${i.user}`)),...history]
+    .sort((a,b)=>new Date(b.time)-new Date(a.time))
+    .slice(0,120);
+  localStorage.setItem(señalesHistoryKey(),JSON.stringify(merged));
   localStorage.setItem('señalesCheck',Date.now().toString());
   señalesBadge=false;
-  return [...(deps||[]).map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien'})),
-          ...(follows||[]).map(f=>({type:'follow',time:f.created_at,user:f['profiles']?.username||f.profiles?.username||'alguien'}))
-         ].sort((a,b)=>new Date(b.time)-new Date(a.time));
+  return merged;
 }
 async function checkSeñalesBadge(){
   if(!user||!todayPost)return;
