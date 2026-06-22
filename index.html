@@ -443,7 +443,7 @@ const STRINGS={
     profile_streak:'racha',profile_deps:'DEPs',profile_ruinas_lbl:'ruinas',
     amigos_title:'Mis amigos',amigos_empty:'Todavía no sigues a nadie.',amigos_find:'Encuéntralos en el feed.',
     amigos_loading:'Cargando...',amigos_streak:'de racha · miembro desde ',amigos_following:' siguiendo',
-    time_now:'ahora',time_m:'hace $m',time_h:'hace $h',time_d:'hace $d',
+    time_now:'ahora',time_m:'hace $mm',time_h:'hace $hh',time_d:'hace $dd',
     err_load:'No se pudo iniciar sesión. Inténtalo de nuevo.',err_load2:'Error al cargar. Recarga la página.',
     pass_req:'6+ caracteres',
     ob_skip:'Saltar',ob_next:'Siguiente →',ob_start:'¡Empezar!',
@@ -498,7 +498,7 @@ const STRINGS={
     profile_streak:'streak',profile_deps:'DEPs',profile_ruinas_lbl:'ruinas',
     amigos_title:'My friends',amigos_empty:"You're not following anyone yet.",amigos_find:'Find them in the feed.',
     amigos_loading:'Loading...',amigos_streak:'streak · member since ',amigos_following:' following',
-    time_now:'now',time_m:'$m ago',time_h:'$h ago',time_d:'$d ago',
+    time_now:'now',time_m:'$mm ago',time_h:'$hh ago',time_d:'$dd ago',
     err_load:'Could not sign in. Please try again.',err_load2:'Error loading. Reload the page.',
     pass_req:'6+ characters',
     ob_skip:'Skip',ob_next:'Next →',ob_start:"Let's go!",
@@ -1433,7 +1433,7 @@ function renderMuerte(){
   const unlocked=DEATHS.filter(d=>streak>=d.min&&totalDeps>=d.deps);
   const cells=unlocked.map(d=>`<div class="dcell on" data-death="${d.id}">
     ${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}
-    <span class="dlabel">${d.label}</span>
+    <span class="dlabel">${dl(d.id)}</span>
   </div>`).join('');
   return `<div class="screen">
     ${hdr(t('muerte_title'),t('muerte_sub'))}
@@ -1497,7 +1497,7 @@ function renderMuertes(){
       return `<div class="death-row dr-unlocked">
         <div class="dr-doll">${dollSVG(profile.doll_color,d.id,true,d.pose,dollPx)}</div>
         <div class="dr-info">
-          <div class="dr-name">${d.label}</div>
+          <div class="dr-name">${dl(d.id)}</div>
           <div class="dr-status ok">${ICO.check}${t('death_ok')}</div>
         </div>
       </div>`;
@@ -1508,7 +1508,7 @@ function renderMuertes(){
       return `<div class="death-row dr-next-streak">
         <div class="dr-lock">${ICO.lock}</div>
         <div class="dr-info">
-          <div class="dr-name">${d.label}</div>
+          <div class="dr-name">${dl(d.id)}</div>
           <div class="dr-status streak">${left}${t('streak_left')}</div>
           <div class="dr-bar-wrap"><div class="dr-bar-fill streak" style="width:${pct}%"></div></div>
         </div>
@@ -1521,7 +1521,7 @@ function renderMuertes(){
       return `<div class="death-row dr-next-deps">
         <div class="dr-lock">${ICO.lock}</div>
         <div class="dr-info">
-          <div class="dr-name">${d.label}</div>
+          <div class="dr-name">${dl(d.id)}</div>
           <div class="dr-status deps">${left}${t('deps_left')}</div>
           <div class="dr-bar-wrap"><div class="dr-bar-fill deps" style="width:${pct}%"></div></div>
         </div>
@@ -1529,7 +1529,7 @@ function renderMuertes(){
       </div>`;
     }
     // Locked and not the immediate next — show requirement compactly
-    const reqTxt=!streakOk?`${ICO.flame} ${d.min}d racha`:`${ICO.candle} ${d.deps} DEPs`;
+    const reqTxt=!streakOk?`${ICO.flame} ${d.min}d ${t('profile_streak')}`:`${ICO.candle} ${d.deps} DEPs`;
     return `<div class="death-row dr-locked">
       <div class="dr-lock">${ICO.lock}</div>
       <div class="dr-info">
