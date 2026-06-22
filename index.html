@@ -216,6 +216,48 @@ textarea:focus,input:focus{border-color:var(--red);}
 @media(min-width:560px){.auth-page{padding-top:60px;padding-bottom:60px;}}
 @media(min-width:768px){.screen{padding-left:clamp(22px,5vw,32px);padding-right:clamp(22px,5vw,32px);}}
 
+/* ── Onboarding modal ── */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.82);display:flex;align-items:flex-end;justify-content:center;padding:0 0 clamp(16px,4vw,24px);animation:fadeUp .2s ease;}
+.modal-card{width:100%;max-width:480px;background:#0e0e0e;border:1px solid rgba(192,57,43,.18);border-radius:16px 16px 12px 12px;padding:clamp(24px,6vw,36px) clamp(20px,5vw,28px) clamp(20px,5vw,28px);overflow:hidden;}
+.modal-slide{display:none;}.modal-slide.on{display:block;animation:fadeUp .22s ease;}
+.modal-slide-icon{font-size:2.4em;text-align:center;margin-bottom:14px;line-height:1;}
+.modal-slide h2{font-family:'Playfair Display',serif;font-size:clamp(20px,5.5vw,26px);font-weight:900;color:var(--text);margin-bottom:10px;line-height:1.15;}
+.modal-slide p{color:var(--bone2);font-size:clamp(13px,3.5vw,15px);line-height:1.75;margin-bottom:6px;}
+.modal-slide p em{color:var(--warm);font-style:normal;font-weight:600;}
+.modal-dots{display:flex;justify-content:center;gap:6px;margin:18px 0 20px;}
+.modal-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:background .2s;}
+.modal-dot.on{background:var(--red);}
+.modal-nav{display:flex;gap:10px;}
+.modal-nav .btn-skip{flex:1;background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted2);padding:11px;font-size:clamp(13px,3.5vw,14px);cursor:pointer;font-family:inherit;}
+.modal-nav .btn-next{flex:2;background:var(--red);border:none;border-radius:8px;color:#fff;padding:11px;font-size:clamp(13px,3.5vw,14px);font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+
+/* ── Señales tab ── */
+.navbtn-wrap{position:relative;flex:1;display:flex;justify-content:center;}
+.nav-badge{position:absolute;top:0;right:calc(50% - 18px);width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg);}
+.señales-empty{text-align:center;color:var(--muted2);margin-top:60px;font-size:clamp(13px,3.5vw,14px);}
+.señal-row{display:flex;align-items:center;gap:12px;padding:clamp(12px,3vw,16px) 0;border-bottom:1px solid var(--border);}
+.señal-row:last-child{border-bottom:none;}
+.señal-icon{width:36px;height:36px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--warm);}
+.señal-text{flex:1;font-size:clamp(13px,3.5vw,14px);color:var(--text2);line-height:1.5;}
+.señal-text strong{color:var(--text);font-weight:700;}
+.señal-time{font-size:clamp(10px,2.5vw,11px);color:var(--muted);flex-shrink:0;}
+
+/* ── Feed older posts ── */
+.feed-older-hdr{text-align:center;font-size:clamp(9px,2.5vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin:clamp(20px,5vw,28px) 0 14px;display:flex;align-items:center;gap:10px;}
+.feed-older-hdr::before,.feed-older-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
+.feed-older .feed-card{opacity:.45;pointer-events:none;}
+.feed-older .dep-btn{opacity:.45;}
+
+/* ── Auth tagline slides ── */
+.auth-hero{margin-bottom:8px;}
+.auth-pitch{color:var(--bone2);font-size:clamp(13px,3.5vw,15px);line-height:1.8;margin-top:14px;text-align:left;padding:0 4px;}
+.auth-pitch em{color:var(--warm);font-style:normal;}
+
+/* ── Notif banner ── */
+.notif-banner{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.notif-banner p{flex:1;font-size:clamp(11px,3vw,13px);color:var(--muted2);line-height:1.5;margin:0;}
+.notif-banner button{background:none;border:1px solid var(--border2);border-radius:6px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);padding:5px 10px;cursor:pointer;white-space:nowrap;font-family:inherit;}
+
 /* ══════════════════════════════════════════════════════════
    REDISEÑO COMPLETO
    ══════════════════════════════════════════════════════════ */
@@ -377,6 +419,8 @@ const ICO={
   lock:`<svg width="14" height="16" viewBox="0 0 14 16" fill="none"><rect x="2" y="7" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M4 7V5a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
   mail:`<svg width="36" height="28" viewBox="0 0 36 28" fill="none"><rect x="1" y="1" width="34" height="26" rx="4" stroke="currentColor" stroke-width="1.8"/><path d="M1 7l17 11 17-11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
   skull:`<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 2C5.58 2 2 5.36 2 9.5c0 2.5 1.28 4.7 3.2 6.1V18a1 1 0 0 0 1 1h7.6a1 1 0 0 0 1-1v-2.4C16.72 14.2 18 12 18 9.5 18 5.36 14.42 2 10 2Z" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="10" r="1.6" fill="currentColor"/><circle cx="13" cy="10" r="1.6" fill="currentColor"/><path d="M7 19v2M10 19v2M13 19v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`,
+  bell:`<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 17a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7"/></svg>`,
+  question:`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M7 7c0-1.1.9-2 2-2s2 .9 2 2c0 .8-.5 1.4-1.2 1.7C9.3 9 9 9.5 9 10v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="13" r=".8" fill="currentColor"/></svg>`,
 };
 
 // ── State ──────────────────────────────────────────────
@@ -384,6 +428,7 @@ let user=null,profile=null,view="loading",todayPost=null;
 let feedData=[],myDeps=new Set(),myFollowing=new Set();
 let todayPrevPost=null,expandedPrev=new Set();
 let authTab="login",authStep="form",pendingVerifyEmail="",recoverySession=false;
+let feedOlder=[],señalesBadge=false;
 let pendingSignup={username:"",email:"",pass:"",color:DOLL_COLORS[0]};
 let draftRazon="",totalDeps=0,navigating=false;
 
@@ -473,13 +518,18 @@ function dollSVG(color,death,dead,poseName,px){
     });
   }
   if(death==="ahogo"){
-    // Dark water overlay + thin bone-white ripples + small bubbles
-    fx=`<rect x="0" y="${h*.42}" width="${w}" height="${h*.58}" fill="#0D1520" opacity=".72"/>
-    <path d="M0 ${h*.42} Q${w*.25} ${h*.39} ${w*.5} ${h*.42} Q${w*.75} ${h*.45} ${w} ${h*.42}" stroke="#C4BDB2" stroke-width="1.2" fill="none" opacity=".3"/>
-    <path d="M0 ${h*.56} Q${w*.3} ${h*.53} ${w*.6} ${h*.56} Q${w*.8} ${h*.58} ${w} ${h*.56}" stroke="#C4BDB2" stroke-width="1" fill="none" opacity=".18"/>
-    <circle cx="${w*.28}" cy="${h*.62}" r="3.5" stroke="#C4BDB2" stroke-width="1" fill="none" opacity=".22"/>
-    <circle cx="${w*.68}" cy="${h*.7}" r="2.5" stroke="#C4BDB2" stroke-width="1" fill="none" opacity=".18"/>
-    <circle cx="${w*.45}" cy="${h*.8}" r="1.8" stroke="#C4BDB2" stroke-width="1" fill="none" opacity=".14"/>`;
+    // Dark water filling from bottom — covers legs and waist, dramatic depth
+    fx=`<rect x="0" y="${h*.28}" width="${w}" height="${h*.72}" fill="#06101C" opacity=".75"/>`;
+    // Wave surface — double wavy line for water line
+    fx+=`<path d="M0 ${h*.28} Q${w*.12} ${h*.24} ${w*.25} ${h*.28} Q${w*.38} ${h*.32} ${w*.5} ${h*.28} Q${w*.63} ${h*.24} ${w*.75} ${h*.28} Q${w*.88} ${h*.32} ${w} ${h*.28}" stroke="#C4BDB2" stroke-width="1.4" fill="none" opacity=".38"/>`;
+    fx+=`<path d="M0 ${h*.31} Q${w*.12} ${h*.27} ${w*.25} ${h*.31} Q${w*.38} ${h*.35} ${w*.5} ${h*.31} Q${w*.63} ${h*.27} ${w*.75} ${h*.31} Q${w*.88} ${h*.35} ${w} ${h*.31}" stroke="#C4BDB2" stroke-width=".7" fill="none" opacity=".16"/>`;
+    // Depth bands — horizontal stripes suggesting deep water
+    fx+=`<line x1="0" y1="${h*.48}" x2="${w}" y2="${h*.48}" stroke="#C4BDB2" stroke-width=".6" opacity=".08"/>`;
+    fx+=`<line x1="0" y1="${h*.66}" x2="${w}" y2="${h*.66}" stroke="#C4BDB2" stroke-width=".6" opacity=".05"/>`;
+    // Bubbles rising from body
+    [[w*.27,h*.52,3.2],[w*.62,h*.62,2.4],[w*.44,h*.75,1.9],[w*.72,h*.45,1.6],[w*.33,h*.68,1.3]].forEach(([x,y,r])=>{
+      fx+=`<circle cx="${x}" cy="${y}" r="${r}" stroke="#C4BDB2" stroke-width=".8" fill="none" opacity=".25"/>`;
+    });
   }
   if(death==="rayo"){
     // Stark bone-white zigzag — no glow, no color, pure line
@@ -488,32 +538,50 @@ function dollSVG(color,death,dead,poseName,px){
     <polyline points="${pts}" stroke="#C4BDB2" stroke-width="1.8" fill="none" stroke-linejoin="round" opacity=".9" style="animation:shockPulse 1.6s ease-in-out infinite"/>`;
   }
   if(death==="aplastado"){
-    // Dark near-black slab + crack lines underneath
-    fx=`<ellipse cx="${w/2}" cy="${h*.08}" rx="${w*.42}" ry="${h*.1}" fill="#151212"/>
-    <ellipse cx="${w/2}" cy="${h*.08}" rx="${w*.42}" ry="${h*.1}" fill="none" stroke="#2A2626" stroke-width="1.5"/>
-    <line x1="${w*.5}" y1="${h*.18}" x2="${w*.44}" y2="${h*.32}" stroke="#2A2626" stroke-width="1" opacity=".6"/>
-    <line x1="${w*.5}" y1="${h*.18}" x2="${w*.57}" y2="${h*.28}" stroke="#2A2626" stroke-width="1" opacity=".6"/>
-    <line x1="${w*.44}" y1="${h*.32}" x2="${w*.38}" y2="${h*.38}" stroke="#2A2626" stroke-width="1" opacity=".4"/>`;
+    // Massive dark slab pressing from above
+    fx=`<rect x="${w*.04}" y="0" width="${w*.92}" height="${h*.2}" fill="#0A0808" rx="5"/>`;
+    fx+=`<rect x="${w*.04}" y="0" width="${w*.92}" height="${h*.2}" fill="none" stroke="#2A2626" stroke-width="1.8" rx="5" opacity=".7"/>`;
+    // Stone texture lines inside slab
+    fx+=`<line x1="${w*.12}" y1="${h*.07}" x2="${w*.88}" y2="${h*.07}" stroke="#181414" stroke-width="1.2" opacity=".5"/>`;
+    fx+=`<line x1="${w*.18}" y1="${h*.14}" x2="${w*.82}" y2="${h*.14}" stroke="#181414" stroke-width=".8" opacity=".35"/>`;
+    // Crack slab detail
+    fx+=`<path d="M${w*.52} ${h*.04} L${w*.48} ${h*.1} L${w*.53} ${h*.13} L${w*.49} ${h*.2}" stroke="#2A2626" stroke-width="1.2" fill="none" opacity=".5"/>`;
+    // Heavy shadow cast by slab
+    fx+=`<ellipse cx="${w*.5}" cy="${h*.21}" rx="${w*.44}" ry="${h*.045}" fill="#040303" opacity=".65"/>`;
+    // Impact cracks radiating down into the body
+    fx+=`<g stroke="#2A2626" stroke-width="1.1" opacity=".55" stroke-linecap="round">
+      <line x1="${w*.28}" y1="${h*.22}" x2="${w*.18}" y2="${h*.38}"/>
+      <line x1="${w*.5}" y1="${h*.22}" x2="${w*.46}" y2="${h*.42}"/>
+      <line x1="${w*.72}" y1="${h*.22}" x2="${w*.82}" y2="${h*.38}"/>
+      <line x1="${w*.18}" y1="${h*.38}" x2="${w*.12}" y2="${h*.46}"/>
+      <line x1="${w*.82}" y1="${h*.38}" x2="${w*.88}" y2="${h*.46}"/>
+    </g>`;
   }
   if(death==="hielo"){
-    // Bone-white frost geometry — no coloured overlay, just mark language
-    fx=`<g stroke="#C4BDB2" stroke-linecap="round" opacity=".55">
-      <line x1="${w*.17}" y1="${h*.05}" x2="${w*.17}" y2="${h*.19}" stroke-width="1.2"/>
-      <line x1="${w*.1}" y1="${h*.08}" x2="${w*.24}" y2="${h*.08}" stroke-width="1.2"/>
-      <line x1="${w*.1}" y1="${h*.06}" x2="${w*.17}" y2="${h*.12}" stroke-width="1"/>
-      <line x1="${w*.24}" y1="${h*.06}" x2="${w*.17}" y2="${h*.12}" stroke-width="1"/>
-      <line x1="${w*.1}" y1="${h*.1}" x2="${w*.17}" y2="${h*.04}" stroke-width="1"/>
-      <line x1="${w*.24}" y1="${h*.1}" x2="${w*.17}" y2="${h*.04}" stroke-width="1"/>
-      <line x1="${w*.78}" y1="${h*.62}" x2="${w*.78}" y2="${h*.76}" stroke-width="1.2"/>
-      <line x1="${w*.71}" y1="${h*.66}" x2="${w*.85}" y2="${h*.66}" stroke-width="1.2"/>
-      <line x1="${w*.71}" y1="${h*.64}" x2="${w*.78}" y2="${h*.7}" stroke-width="1"/>
-      <line x1="${w*.85}" y1="${h*.64}" x2="${w*.78}" y2="${h*.7}" stroke-width="1"/>
-      <line x1="${w*.71}" y1="${h*.68}" x2="${w*.78}" y2="${h*.62}" stroke-width="1"/>
-      <line x1="${w*.85}" y1="${h*.68}" x2="${w*.78}" y2="${h*.62}" stroke-width="1"/>
-      <line x1="${w*.5}" y1="${h*.88}" x2="${w*.5}" y2="${h*.98}" stroke-width="1"/>
-      <line x1="${w*.45}" y1="${h*.91}" x2="${w*.55}" y2="${h*.91}" stroke-width="1"/>
-    </g>
-    <rect x="0" y="0" width="${w}" height="${h}" fill="#0A0D12" opacity=".22"/>`;
+    // Dark freeze tint over the whole figure
+    fx=`<rect x="0" y="0" width="${w}" height="${h}" fill="#060D16" opacity=".32"/>`;
+    // Icicles hanging from top — sharp needle triangles, clearly ice
+    [[w*.22,h*.44],[w*.37,h*.55],[w*.52,h*.62],[w*.65,h*.5],[w*.79,h*.38]].forEach(([x,bot])=>{
+      const hw=w*.018;
+      fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#0C1B2A" opacity=".82"/>
+           <line x1="${x}" y1="0" x2="${x}" y2="${bot}" stroke="#C4BDB2" stroke-width=".5" opacity=".22"/>`;
+    });
+    // Thin icicles in gaps
+    [[w*.14,h*.28],[w*.44,h*.35],[w*.58,h*.3],[w*.86,h*.22]].forEach(([x,bot])=>{
+      const hw=w*.01;
+      fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#0C1B2A" opacity=".55"/>`;
+    });
+    // Frost crack lines on the body — branching, NOT snowflakes
+    fx+=`<g stroke="#C4BDB2" stroke-width=".8" opacity=".2" stroke-linecap="round">
+      <line x1="${w*.22}" y1="${h*.35}" x2="${w*.08}" y2="${h*.52}"/>
+      <line x1="${w*.08}" y1="${h*.52}" x2="${w*.14}" y2="${h*.6}"/>
+      <line x1="${w*.08}" y1="${h*.52}" x2="${w*.02}" y2="${h*.58}"/>
+      <line x1="${w*.72}" y1="${h*.58}" x2="${w*.88}" y2="${h*.72}"/>
+      <line x1="${w*.88}" y1="${h*.72}" x2="${w*.82}" y2="${h*.8}"/>
+      <line x1="${w*.88}" y1="${h*.72}" x2="${w*.94}" y2="${h*.78}"/>
+      <line x1="${w*.4}" y1="${h*.8}" x2="${w*.3}" y2="${h*.94}"/>
+      <line x1="${w*.3}" y1="${h*.94}" x2="${w*.24}" y2="${h*.98}"/>
+    </g>`;
   }
   if(death==="guillotina"){
     // Very dark wood + muted grey blade, structural and clean
@@ -526,28 +594,56 @@ function dollSVG(color,death,dead,poseName,px){
     <line x1="${w*.23}" y1="${h*.43}" x2="${w*.77}" y2="${h*.45}" stroke="#8A1818" stroke-width="1" opacity=".4"/>`;
   }
   if(death==="fantasma"){
-    // White wisps — subtle, no filter needed
-    fx=`<g style="animation:floatSlow 3.2s ease-in-out infinite">
-      <ellipse cx="${w*.62}" cy="${h*.12}" rx="22" ry="16" fill="white" opacity=".06"/>
-      <ellipse cx="${w*.62}" cy="${h*.12}" rx="13" ry="9" fill="white" opacity=".1"/>
-      <circle cx="${w*.58}" cy="${h*.09}" r="4" fill="white" opacity=".18"/>
-      <circle cx="${w*.68}" cy="${h*.11}" r="2.8" fill="white" opacity=".14"/>
-      <circle cx="${w*.63}" cy="${h*.16}" r="3" fill="white" opacity=".1"/>
+    // Dark crucifix — the exorcism instrument, clearly readable
+    fx=`<g opacity=".5">
+      <rect x="${w*.45}" y="${h*.02}" width="${w*.1}" height="${h*.52}" fill="#C4BDB2" rx="3"/>
+      <rect x="${w*.28}" y="${h*.16}" width="${w*.44}" height="${w*.1}" fill="#C4BDB2" rx="3"/>
+    </g>`;
+    // Glow aura behind cross (dark vignette inverted)
+    fx+=`<ellipse cx="${w*.5}" cy="${h*.2}" rx="${w*.36}" ry="${h*.28}" fill="#C4BDB2" opacity=".04"/>`;
+    // Radiating holy light lines — thin, subtle, 8 directions
+    const hcx=w*.5,hcy=h*.22;
+    [0,45,90,135,180,225,270,315].forEach(deg=>{
+      const r=deg%90===0?Math.PI/180*deg:Math.PI/180*deg;
+      const r1=w*.14,r2=w*.32;
+      fx+=`<line x1="${hcx+Math.cos(r)*r1}" y1="${hcy+Math.sin(r)*r1}" x2="${hcx+Math.cos(r)*r2}" y2="${hcy+Math.sin(r)*r2}" stroke="#C4BDB2" stroke-width=".7" opacity=".12"/>`;
+    });
+    // Rising soul wisps above the doll — animated
+    fx+=`<g style="animation:floatSlow 3.2s ease-in-out infinite">
+      <path d="M${w*.5} ${h*.02} C${w*.56} ${h*-.02} ${w*.44} ${h*-.06} ${w*.5} ${h*-.1}" stroke="#C4BDB2" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".35"/>
+      <circle cx="${w*.5}" cy="${h*.02}" r="3" fill="#C4BDB2" opacity=".28"/>
+      <circle cx="${w*.42}" cy="${h*-.01}" r="1.8" fill="#C4BDB2" opacity=".18"/>
+      <circle cx="${w*.58}" cy="${h*.0}" r="2.2" fill="#C4BDB2" opacity=".2"/>
     </g>`;
   }
   if(death==="zombi"){
-    // Dark sepia decay cracks — no green, no glow, just ruin marks
-    const sc='#2A1E14';
-    fx=`<line x1="${w*.5}" y1="${h*.22}" x2="${w*.36}" y2="${h*.38}" stroke="${sc}" stroke-width="2" opacity=".7"/>
-    <line x1="${w*.36}" y1="${h*.38}" x2="${w*.28}" y2="${h*.44}" stroke="${sc}" stroke-width="1.5" opacity=".5"/>
-    <line x1="${w*.36}" y1="${h*.38}" x2="${w*.4}" y2="${h*.48}" stroke="${sc}" stroke-width="1" opacity=".4"/>
-    <line x1="${w*.5}" y1="${h*.22}" x2="${w*.64}" y2="${h*.3}" stroke="${sc}" stroke-width="2" opacity=".7"/>
-    <line x1="${w*.64}" y1="${h*.3}" x2="${w*.74}" y2="${h*.25}" stroke="${sc}" stroke-width="1.5" opacity=".5"/>
-    <line x1="${w*.5}" y1="${h*.55}" x2="${w*.42}" y2="${h*.7}" stroke="${sc}" stroke-width="1.8" opacity=".6"/>
-    <line x1="${w*.5}" y1="${h*.55}" x2="${w*.6}" y2="${h*.68}" stroke="${sc}" stroke-width="1.8" opacity=".6"/>
-    <circle cx="${w*.36}" cy="${h*.38}" r="2.2" fill="${sc}" opacity=".7"/>
-    <circle cx="${w*.64}" cy="${h*.3}" r="2" fill="${sc}" opacity=".7"/>
-    <ellipse cx="${w/2}" cy="${h*.5}" rx="${w*.44}" ry="${h*.42}" fill="#120C08" opacity=".18"/>`;
+    // Zombie bite on the neck/shoulder + dark infection spreading through body
+    const bc='#1A0E08'; // very dark sepia
+    // Bite wound: two arcs of teeth on the neck/shoulder area
+    const bx=w*.64, by=h*.26, br=w*.1;
+    // Wound base — dark irregular pool
+    fx=`<ellipse cx="${bx}" cy="${by}" rx="${w*.1}" ry="${h*.06}" fill="${bc}" opacity=".75"/>`;
+    // Upper teeth arc (bite mark)
+    fx+=`<path d="M${bx-w*.09} ${by-h*.02} A${br} ${br} 0 0 1 ${bx+w*.09} ${by-h*.02}" stroke="#C4BDB2" stroke-width="1.4" fill="none" opacity=".35"/>`;
+    // Lower teeth arc
+    fx+=`<path d="M${bx-w*.07} ${by+h*.01} A${br*.8} ${br*.8} 0 0 0 ${bx+w*.07} ${by+h*.01}" stroke="#C4BDB2" stroke-width="1.4" fill="none" opacity=".28"/>`;
+    // Individual tooth marks along upper arc
+    [-0.07,-0.04,-0.01,0.02,0.05,0.08].forEach(dx=>{
+      const tx=bx+w*dx, ty=by-h*.03;
+      fx+=`<line x1="${tx}" y1="${ty}" x2="${tx}" y2="${ty-h*.018}" stroke="#C4BDB2" stroke-width="1.8" stroke-linecap="round" opacity=".3"/>`;
+    });
+    // Infection tendrils radiating from bite outward — jagged dark veins
+    fx+=`<g stroke="${bc}" stroke-linecap="round" fill="none">
+      <path d="M${bx} ${by} Q${w*.72} ${h*.35} ${w*.78} ${h*.48} Q${w*.82} ${h*.56} ${w*.74} ${h*.64}" stroke-width="2.2" opacity=".6"/>
+      <path d="M${bx} ${by} Q${w*.58} ${h*.36} ${w*.54} ${h*.5} Q${w*.5} ${h*.6} ${w*.56} ${h*.72}" stroke-width="1.8" opacity=".5"/>
+      <path d="M${bx} ${by} Q${w*.68} ${h*.28} ${w*.76} ${h*.22} Q${w*.8} ${h*.18} ${w*.86} ${h*.2}" stroke-width="1.4" opacity=".4"/>
+      <path d="M${w*.74} ${h*.64} Q${w*.78} ${h*.72} ${w*.7} ${h*.8}" stroke-width="1.2" opacity=".35"/>
+      <path d="M${w*.56} ${h*.72} Q${w*.48} ${h*.8} ${w*.52} ${h*.88}" stroke-width="1" opacity=".3"/>
+    </g>`;
+    // Small dark nodes at vein branch points
+    [[w*.72,h*.35],[w*.54,h*.5],[w*.74,h*.64],[w*.56,h*.72]].forEach(([nx,ny])=>{
+      fx+=`<circle cx="${nx}" cy="${ny}" r="2.2" fill="${bc}" opacity=".65"/>`;
+    });
   }
   const anim=poseName==='ghost'?'style="animation:floatSlow 3.5s ease-in-out infinite"':'';
   const ht=Math.round(px*280/220);
@@ -637,6 +733,11 @@ async function loadFeed(){
   }
   feedData=primary.map(p=>({...p,_prev:p.previous_post_id?prevMap[p.previous_post_id]||null:null}))
     .sort((a,b)=>{const af=myFollowing.has(a.user_id)?0:1,bf=myFollowing.has(b.user_id)?0:1;return af-bf||(new Date(b.created_at)-new Date(a.created_at));});
+  if(!feedData.length){
+    const cutoff=new Date();cutoff.setDate(cutoff.getDate()-5);
+    const {data:older}=await sb.from('posts').select('*').eq('is_primary',true).lt('post_date',todayS()).gte('post_date',cutoff.toISOString().slice(0,10)).order('created_at',{ascending:false}).limit(20);
+    feedOlder=(older||[]).map(p=>({...p,_prev:null})).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  }else{feedOlder=[];}
 }
 async function submitPost(pd){
   const t=todayS(),y=yesterS();
@@ -680,6 +781,68 @@ async function toggleFollow(uid){
   paint();
 }
 
+// ── Onboarding ────────────────────────────────────────
+const SLIDES=[
+  {icon:'💀',title:'kill.me',body:`¿Alguna vez has dicho <em>"pues me mato"</em> después de un día de mierda?\n\nEsta app es exactamente eso. Un sitio para soltar tu <em>ruina del día</em>, matar a tu muñeco por lo que te ha pasado, y seguir adelante sin idealizarlo.`},
+  {icon:'🕯️',title:'¿Qué es un DEP?',body:`Tus amigos ven tu ruina en el feed y te mandan un <em>DEP</em> — Descanse En Paz.\n\nComo un like, pero para lo peor de tu día. Cuantos más DEPs, más se solidarizan con tu tragedia.`},
+  {icon:'🔓',title:'Las muertes',body:`Cada día que publicas tu ruina, desbloqueas nuevas formas de matar a tu muñeco: quemado, acribillado, electrocutado...\n\nMantén la <em>racha</em> y acumula DEPs para desbloquearlas todas.`},
+  {icon:'📅',title:'Una al día',body:`Solo puedes publicar <em>una ruina al día</em>. Si el día mejora (o empeora), puedes actualizarla.\n\nLa app te recuerda que la vida da para un "pues me mato" al día — no más.`},
+];
+function showOnboarding(){
+  if(document.getElementById('onboarding'))return;
+  let cur=0;
+  const el=document.createElement('div');
+  el.id='onboarding';el.className='modal-overlay';
+  const render=()=>{
+    const s=SLIDES[cur];
+    el.innerHTML=`<div class="modal-card">
+      <div class="modal-slide on">
+        <div class="modal-slide-icon">${s.icon}</div>
+        <h2>${s.title}</h2>
+        <p>${s.body.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p>
+      </div>
+      <div class="modal-dots">${SLIDES.map((_,i)=>`<div class="modal-dot${i===cur?' on':''}"></div>`).join('')}</div>
+      <div class="modal-nav">
+        <button class="btn-skip" id="obSkip">Saltar</button>
+        <button class="btn-next" id="obNext">${cur<SLIDES.length-1?'Siguiente →':'¡Empezar!'}</button>
+      </div>
+    </div>`;
+    el.querySelector('#obSkip').onclick=()=>el.remove();
+    el.querySelector('#obNext').onclick=()=>{if(cur<SLIDES.length-1){cur++;render();}else{el.remove();}};
+  };
+  render();
+  document.body.appendChild(el);
+  localStorage.setItem('sawOnboarding','1');
+}
+function maybeShowOnboarding(){if(!localStorage.getItem('sawOnboarding'))showOnboarding();}
+
+// ── Señales ────────────────────────────────────────────
+async function loadSeñales(){
+  if(!user||!todayPost)return[];
+  const lastCheck=parseInt(localStorage.getItem('señalesCheck')||'0');
+  const since=new Date(lastCheck||Date.now()-86400000*3).toISOString();
+  const [{data:deps},{data:follows}]=await Promise.all([
+    sb.from('deps').select('created_at,user_id,profiles(username)').eq('post_id',todayPost.id).gt('created_at',since).order('created_at',{ascending:false}),
+    sb.from('follows').select('created_at,follower_id,profiles!follower_id(username)').eq('following_id',user.id).gt('created_at',since).order('created_at',{ascending:false}),
+  ]).catch(()=>[{data:[]},{data:[]}]);
+  localStorage.setItem('señalesCheck',Date.now().toString());
+  señalesBadge=false;
+  return [...(deps||[]).map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien'})),
+          ...(follows||[]).map(f=>({type:'follow',time:f.created_at,user:f['profiles']?.username||f.profiles?.username||'alguien'}))
+         ].sort((a,b)=>new Date(b.time)-new Date(a.time));
+}
+async function checkSeñalesBadge(){
+  if(!user||!todayPost)return;
+  const lastCheck=parseInt(localStorage.getItem('señalesCheck')||'0');
+  if(!lastCheck)return;
+  const since=new Date(lastCheck).toISOString();
+  const [{count:c1},{count:c2}]=await Promise.all([
+    sb.from('deps').select('*',{count:'exact',head:true}).eq('post_id',todayPost.id).gt('created_at',since),
+    sb.from('follows').select('*',{count:'exact',head:true}).eq('following_id',user.id).gt('created_at',since),
+  ]).catch(()=>[{count:0},{count:0}]);
+  señalesBadge=!!((c1||0)+(c2||0));
+}
+
 // ── Auth ──────────────────────────────────────────────
 async function doSignUp(email,pass,uname,color){
   const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username:uname}}});
@@ -715,7 +878,9 @@ async function navToHome(errEl,btn,btnLabel){
       if(!profile){const u=user.user_metadata?.username||user.email.split('@')[0];await sb.from('profiles').upsert({id:user.id,username:u,doll_color:DOLL_COLORS[0],email:user.email}).catch(()=>{});await loadProfile();}
       await loadTodayPost();
       if(todayPost){await loadFeed();view='feed';}else{view='home';}
+      checkSeñalesBadge();
       paint();
+      setTimeout(maybeShowOnboarding,400);
     }else{
       if(errEl)errEl.textContent='No se pudo iniciar sesión. Inténtalo de nuevo.';
       if(btn){btn.disabled=false;btn.textContent=btnLabel||'Entrar';}
@@ -804,9 +969,9 @@ function renderAuth(){
   }
   ge('root').innerHTML=`
   <div class="auth-page">
-    <div class="auth-brand">
+    <div class="auth-brand auth-hero">
       <h1 class="cinzel">kill<em>.me</em></h1>
-      <p>Una cosa ruin al día · Un castigo para tu muñeco</p>
+      ${!login?'':` <div class="auth-pitch">Para los días en que solo puedes decir<br><em>"pues me mato"</em>.<br><br>Publica tu ruina del día, elige cómo muere tu muñeco, y que tus amigos te manden un <em>DEP</em>.</div>`}
     </div>
     <div class="auth-doll-preview">${dollSVG(DOLL_COLORS[0],null,false,'idle',120)}</div>
     <div class="auth-card">
@@ -819,7 +984,7 @@ function renderAuth(){
       <div class="field">
         <label>Contraseña</label>
         <input type="password" id="aPass" placeholder="${login?'tu contraseña':'mínimo 6 caracteres'}" autocomplete="${login?'current-password':'new-password'}"/>
-        ${!login?`<div id="passReqs" style="margin-top:6px;"></div>`:''}
+        ${!login?`<div id="passReqs" style="margin-top:6px;"></div><div style="margin-top:8px;font-size:clamp(10px,2.6vw,11px);color:var(--muted);line-height:1.5;">Usa una contraseña nueva, no la de otro sitio.</div>`:''}
       </div>
       <div class="auth-err" id="aErr"></div>
       <button class="btn btn-red" id="btnAuth">${login?'Entrar':'Siguiente →'}</button>
@@ -870,7 +1035,7 @@ function renderAuth(){
 
 function shell(content){
   const streak=profile?.streak||0;
-  const inMain=['home','muerte','dibujo','posted'].includes(view);
+  const inMain=['home','razon','muerte','dibujo','posted'].includes(view);
   ge('root').innerHTML=`
   <div class="topbar">
     <span class="logo cinzel">kill<em>.me</em></span>
@@ -881,13 +1046,15 @@ function shell(content){
   </div>
   <div id="app">${content}</div>
   <div class="bottomnav">
-    <button class="navbtn ${inMain?'on':''}" id="navHoy">${ICO.doll}<span>Hoy</span></button>
-    <button class="navbtn ${view==='feed'?'on':''}" id="navFeed">${ICO.feed}<span>Feed</span></button>
-    <button class="navbtn ${view==='muertes'?'on':''}" id="navMuertes">${ICO.skull}<span>Muertes</span></button>
+    <div class="navbtn-wrap"><button class="navbtn ${inMain?'on':''}" id="navHoy">${ICO.doll}<span>Hoy</span></button></div>
+    <div class="navbtn-wrap"><button class="navbtn ${view==='feed'?'on':''}" id="navFeed">${ICO.feed}<span>Feed</span></button></div>
+    <div class="navbtn-wrap"><button class="navbtn ${view==='señales'?'on':''}" id="navSeñales">${ICO.bell}<span>Señales</span></button>${señalesBadge?'<div class="nav-badge"></div>':''}</div>
+    <div class="navbtn-wrap"><button class="navbtn ${view==='muertes'?'on':''}" id="navMuertes">${ICO.skull}<span>Muertes</span></button></div>
   </div>`;
   ge('btnGear').onclick=()=>{view='ajustes';paint();};
   ge('navHoy').onclick=()=>{view='home';paint();};
   ge('navFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
+  ge('navSeñales').onclick=async()=>{señalesBadge=false;window._señalesItems=await loadSeñales();view='señales';paint();};
   ge('navMuertes').onclick=()=>{view='muertes';paint()};
   attachListeners();
   if(view==='dibujo')setupCanvas();
@@ -900,7 +1067,7 @@ function renderRecovery(){
     <div class="auth-card">
       <div class="field">
         <label>Nueva contraseña</label>
-        <input type="password" id="rPass" placeholder="mín. 8 · mayúscula · número · especial" autocomplete="new-password"/>
+        <input type="password" id="rPass" placeholder="mínimo 6 caracteres" autocomplete="new-password"/>
         <div id="rReqs" style="margin-top:6px;"></div>
       </div>
       <div class="auth-err" id="rErr"></div>
@@ -928,13 +1095,30 @@ function paint(){
   if(view==='recovery'){renderRecovery();return;}
   let c='';
   if(view==='home')c=renderHome();
+  else if(view==='razon')c=renderRazon();
   else if(view==='muerte')c=renderMuerte();
   else if(view==='dibujo')c=renderDibujo();
   else if(view==='posted')c=renderPosted();
   else if(view==='feed')c=renderFeed();
   else if(view==='muertes')c=renderMuertes();
   else if(view==='ajustes')c=renderAjustes();
+  else if(view==='señales')c=renderSeñales();
   shell(c);
+}
+
+function renderSeñales(){
+  const items=window._señalesItems||[];
+  const timeAgo=t=>{const s=Math.floor((Date.now()-new Date(t))/1000);if(s<60)return'ahora';if(s<3600)return Math.floor(s/60)+'m';if(s<86400)return Math.floor(s/3600)+'h';return Math.floor(s/86400)+'d';};
+  const rows=items.map(i=>i.type==='dep'
+    ?`<div class="señal-row"><div class="señal-icon">${ICO.candle}</div><div class="señal-text"><strong>${esc(i.user)}</strong> te ha mandado un DEP</div><div class="señal-time">${timeAgo(i.time)}</div></div>`
+    :`<div class="señal-row"><div class="señal-icon">${ICO.skull}</div><div class="señal-text"><strong>${esc(i.user)}</strong> ha empezado a seguirte</div><div class="señal-time">${timeAgo(i.time)}</div></div>`
+  ).join('');
+  const emptyState=todayPost?'No hay señales nuevas desde tu última visita':'Publica tu ruina de hoy para recibir señales';
+  return `<div class="screen">
+    ${hdr('Señales',todayPost?'"'+esc(todayPost.razon).slice(0,38)+(todayPost.razon.length>38?'…':'')+'"':'')}
+    ${items.length?rows:`<p class="señales-empty">${emptyState}</p>`}
+    ${!todayPost?`<div style="text-align:center;margin-top:20px;"><button class="btn btn-red" onclick="draftRazon='';view='razon';paint()">Publicar ruina</button></div>`:''}
+  </div>`;
 }
 
 function prevPostHTML(p,size){
@@ -981,11 +1165,12 @@ function renderHome(){
     </div>`;
   }
   return `<div class="screen" style="text-align:center;">
-    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:clamp(20px,5vw,28px);">Una desgracia al día</div>
+    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:clamp(20px,5vw,28px);">Una ruina al día</div>
     <div style="display:flex;justify-content:center;margin-bottom:clamp(24px,6vw,36px);animation:breathe 3.5s ease-in-out infinite;">
       ${dollSVG(profile.doll_color,null,false,'idle',clamp(150,180))}
     </div>
-    <button class="btn btn-red" id="empezar" style="max-width:240px;margin:0 auto;font-size:clamp(14px,3.5vw,16px);letter-spacing:.4px;">¿Qué te ha pasado hoy?</button>
+    <button class="btn btn-red" id="empezar" style="max-width:240px;margin:0 auto;font-size:clamp(14px,3.5vw,16px);letter-spacing:.4px;">¿Cuál es tu ruina de hoy?</button>
+    <button class="btn-link" id="btnInstrHome" style="margin-top:10px;">¿qué es esto?</button>
   </div>`;
 }
 
@@ -1000,6 +1185,7 @@ function renderMuerte(){
   </div>`).join('');
   return `<div class="screen">
     ${hdr("Elige su castigo","Desbloquea más con racha y DEPs")}
+    <button class="btn-link" id="volverMuerte" style="margin-top:-8px;margin-bottom:6px;">← cambiar lo que pasó</button>
     <div class="grid2">
       ${cells}
       <div class="draw-cell" id="drawCard">
@@ -1031,9 +1217,8 @@ function renderPosted(){
   const p=todayPost,d=DEATHS.find(x=>x.id===p.castigo);
   const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):DEATH_LABELS[p.castigo]||p.castigo;
   return `<div class="screen" style="text-align:center;">
-    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:8px;">Publicado</div>
-    <div style="font-size:clamp(13px,3.5vw,15px);color:var(--muted2);font-style:italic;margin:0 clamp(12px,4vw,24px) 0;">"${esc(p.razon)}"</div>
-    <div style="display:flex;justify-content:center;margin:clamp(20px,5vw,30px) 0;">
+    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:16px;">Publicado</div>
+    <div style="display:flex;justify-content:center;margin:0 0 clamp(20px,5vw,28px);">
       ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',clamp(140,170))}
     </div>
     <div class="done-card">
@@ -1133,52 +1318,55 @@ function renderMuertes(){
   </div>`;
 }
 
+function feedCardHTML(item,older=false){
+  const lbl=item.castigo==='dibujo'?esc(item.dibujo_descripcion):DEATH_LABELS[item.castigo]||item.castigo;
+  const given=myDeps.has(item.id),own=item.user_id===user.id;
+  const friend=myFollowing.has(item.user_id);
+  const d=DEATHS.find(x=>x.id===item.castigo);
+  const hasPrev=!!item.previous_post_id&&!!item._prev,isOpen=expandedPrev.has(item.id);
+  return `<div class="feed-card${friend&&!own?' fc-friend':''}${older?' older-card':''}">
+    <div class="feed-head">
+      <div class="avatar">${avatarDoll(item.doll_color,clamp(30,36))}${friend&&!own?'<span class="friend-dot"></span>':''}</div>
+      <div class="feed-meta">
+        <div class="feed-name">${esc(item.username)}</div>
+        <div class="feed-time">${timeAgo(item.created_at)}</div>
+      </div>
+      ${!own&&!older?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+' siguiendo':ICO.plus+' seguir'}</button>`:''}
+    </div>
+    <p class="feed-razon">"${esc(item.razon)}"</p>
+    <span class="feed-castigo">${lbl}</span>
+    <div style="display:flex;justify-content:center;margin:4px 0 14px;">
+      ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',clamp(90,110))}
+    </div>
+    ${older?'':(own
+      ?`<div class="own-dep">${ICO.candle} <span>${item.dep_count||0} ${item.dep_count===1?'DEP':'DEPs'}</span></div>`
+      :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">${ICO.candle} DEP <span class="dep-count">${item.dep_count||0}</span></button>`)}
+    ${hasPrev&&!older?`
+      <button class="prev-toggle ${isOpen?'open':''}" data-feedprev="${item.id}">
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Antes había pasado algo
+      </button>
+      <div class="prev-panel ${isOpen?'open':''}">${prevPostHTML(item._prev,54)}</div>
+    `:''}
+  </div>`;
+}
+
 function renderFeed(){
-  if(!feedData.length)return`<div class="screen">${hdr("Feed","Lo de hoy")}<div style="text-align:center;color:var(--muted2);margin-top:60px;font-size:clamp(13px,3.5vw,15px);">Nadie ha publicado hoy<br><span style="font-size:clamp(11px,3vw,12px);opacity:.45;display:block;margin-top:6px;">sé el primero</span></div></div>`;
-  const cards=feedData.map(item=>{
-    const lbl=item.castigo==='dibujo'?esc(item.dibujo_descripcion):DEATH_LABELS[item.castigo]||item.castigo;
-    const given=myDeps.has(item.id),own=item.user_id===user.id;
-    const friend=myFollowing.has(item.user_id);
-    const d=DEATHS.find(x=>x.id===item.castigo);
-    const hasPrev=!!item.previous_post_id&&!!item._prev,isOpen=expandedPrev.has(item.id);
-    // Each feed card uses its own stored doll_color
-    return `<div class="feed-card${friend&&!own?' fc-friend':''}">
-      <div class="feed-head">
-        <div class="avatar">${avatarDoll(item.doll_color,clamp(30,36))}${friend&&!own?'<span class="friend-dot"></span>':''}</div>
-        <div class="feed-meta">
-          <div class="feed-name">${esc(item.username)}</div>
-          <div class="feed-time">${timeAgo(item.created_at)}</div>
-        </div>
-        ${!own?`<button class="follow-btn ${friend?'following':''}" data-uid="${item.user_id}">${friend?ICO.check+' siguiendo':ICO.plus+' seguir'}</button>`:''}
-      </div>
-      <p class="feed-razon">"${esc(item.razon)}"</p>
-      <span class="feed-castigo">${lbl}</span>
-      <div style="display:flex;justify-content:center;margin:4px 0 14px;">
-        ${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',clamp(90,110))}
-      </div>
-      ${own
-        ?`<div class="own-dep">${ICO.candle} <span>${item.dep_count||0} ${item.dep_count===1?'DEP':'DEPs'}</span></div>`
-        :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">${ICO.candle} DEP <span class="dep-count">${item.dep_count||0}</span></button>`}
-      ${hasPrev?`
-        <button class="prev-toggle ${isOpen?'open':''}" data-feedprev="${item.id}">
-          <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          Antes había pasado algo
-        </button>
-        <div class="prev-panel ${isOpen?'open':''}">${prevPostHTML(item._prev,54)}</div>
-      `:''}
-    </div>`;
-  }).join('');
-  return `<div class="screen">${hdr("Feed","Lo de hoy")}<div class="feed-list">${cards}</div></div>`;
+  const olderHTML=feedOlder.length?`<div class="feed-older-hdr">Días anteriores</div><div class="feed-older">${feedOlder.map(i=>feedCardHTML(i,true)).join('')}</div>`:'';
+  if(!feedData.length)return`<div class="screen">${hdr("Feed","Lo de hoy")}<div style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,15px);">Nadie ha publicado hoy<br><span style="font-size:clamp(11px,3vw,12px);opacity:.45;display:block;margin-top:6px;">sé el primero</span></div>${olderHTML}</div>`;
+  const cards=feedData.map(item=>feedCardHTML(item,false)).join('');
+  return `<div class="screen">${hdr("Feed","Lo de hoy")}<div class="feed-list">${cards}</div>${olderHTML}</div>`;
 }
 
 function renderAjustes(){
   const streak=profile?.streak||0;
   return `<div class="screen">
     ${hdr("Ajustes",`@${esc(profile.username)}`)}
-    <div style="display:flex;justify-content:center;margin:22px 0;">
-      ${dollSVG(profile.doll_color,null,false,'idle',120)}
+    <div style="text-align:center;color:var(--muted);font-size:clamp(10px,2.6vw,11px);margin-bottom:16px;">${esc(user?.email||'')}</div>
+    <div style="display:flex;justify-content:center;margin:8px 0 18px;">
+      ${dollSVG(profile.doll_color,null,false,'idle',110)}
     </div>
-    <div style="text-align:center;color:var(--muted2);font-size:clamp(9px,2.5vw,10px);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Color del muñeco (próxima publicación)</div>
+    <div style="text-align:center;color:var(--muted2);font-size:clamp(9px,2.5vw,10px);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Color del muñeco</div>
     <div class="colorpick">
       ${DOLL_COLORS.map(c=>`<button class="ccircle ${c===profile.doll_color?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}
     </div>
@@ -1193,6 +1381,8 @@ function renderAjustes(){
       </div>
     </div>
     <div style="height:1px;background:var(--border);margin:clamp(20px,5vw,26px) 0;"></div>
+    <button class="btn-ghost" id="btnChangePass" style="margin-bottom:10px;">Cambiar contraseña</button>
+    <button class="btn-ghost" id="btnInstructions" style="margin-bottom:10px;">¿Qué es kill.me?</button>
     <button class="btn-ghost" id="btnLogout">Cerrar sesión</button>
     <button class="btn-link" id="volverAjustes">← volver</button>
   </div>`;
@@ -1200,9 +1390,10 @@ function renderAjustes(){
 
 function attachListeners(){
   if(view==='home'){
-    if(ge('empezar'))ge('empezar').onclick=()=>{view='muerte';paint();};
+    if(ge('empezar'))ge('empezar').onclick=()=>{draftRazon='';view='razon';paint();};
+    if(ge('btnInstrHome'))ge('btnInstrHome').onclick=()=>showOnboarding();
     if(ge('goFeed'))ge('goFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
-    if(ge('btnPeor'))ge('btnPeor').onclick=()=>{view='muerte';paint();};
+    if(ge('btnPeor'))ge('btnPeor').onclick=()=>{draftRazon='';view='razon';paint();};
     if(ge('btnTogglePrev')){
       ge('btnTogglePrev').onclick=()=>{
         if(expandedPrev.has('home'))expandedPrev.delete('home');else expandedPrev.add('home');
@@ -1211,9 +1402,16 @@ function attachListeners(){
       };
     }
   }
+  if(view==='razon'){
+    const ta=ge('razonInput'),btn=ge('btnElegirCastigo'),cnt=ge('razonInputCount');
+    if(ta){ta.oninput=()=>{draftRazon=ta.value;cnt.textContent=`${draftRazon.length}/120`;btn.disabled=draftRazon.trim().length<2;};}
+    if(btn)btn.onclick=()=>{view='muerte';paint();};
+    if(ge('volverRazon'))ge('volverRazon').onclick=()=>{view='home';paint();};
+  }
   if(view==='muerte'){
-    document.querySelectorAll('.dcell.on').forEach(c=>{c.onclick=()=>promptRazon(c.getAttribute('data-death'));});
+    document.querySelectorAll('.dcell.on').forEach(c=>{c.onclick=()=>promptConfirmDeath(c.getAttribute('data-death'));});
     if(ge('drawCard'))ge('drawCard').onclick=()=>{view='dibujo';paint();};
+    if(ge('volverMuerte'))ge('volverMuerte').onclick=()=>{view='razon';paint();};
   }
   if(view==='dibujo'){
     ge('razonDibujo').oninput=e=>{draftRazon=e.target.value;ge('razonCount').textContent=`${draftRazon.length}/120`;checkDraw();};
@@ -1243,6 +1441,15 @@ function attachListeners(){
       };
     });
     if(ge('volverAjustes'))ge('volverAjustes').onclick=()=>{view=todayPost?'feed':'home';paint();};
+    if(ge('btnInstructions'))ge('btnInstructions').onclick=()=>showOnboarding();
+    if(ge('btnChangePass'))ge('btnChangePass').onclick=async()=>{
+      const btn=ge('btnChangePass');
+      btn.disabled=true;btn.textContent='Enviando...';
+      const {error}=await sb.auth.resetPasswordForEmail(user.email,{redirectTo:location.origin+location.pathname});
+      btn.disabled=false;btn.textContent='Cambiar contraseña';
+      if(error){alert('Error: '+sbErr(error.message));}
+      else{alert('Te hemos enviado un email para cambiar la contraseña.');}
+    };
     if(ge('btnLogout'))ge('btnLogout').onclick=async()=>{
       await sb.auth.signOut().catch(()=>{});
       user=null;profile=null;todayPost=null;todayPrevPost=null;
@@ -1252,20 +1459,41 @@ function attachListeners(){
   }
 }
 
-function promptRazon(death){
-  const d=DEATHS.find(x=>x.id===death);
-  ge('app').innerHTML=`<div class="screen" style="text-align:center;">
-    ${hdr("¿Qué te ha pasado hoy?")}
-    <div style="display:flex;justify-content:center;margin:20px 0;">
-      ${dollSVG(profile.doll_color,death,true,d?.pose||'idle',110)}
+function renderRazon(){
+  return `<div class="screen">
+    ${hdr("¿Cuál es tu ruina de hoy?")}
+    <textarea id="razonInput" placeholder="ej: se me ha caído el café al suelo..." maxlength="120">${esc(draftRazon)}</textarea>
+    <div class="charcount" id="razonInputCount">${draftRazon.length}/120</div>
+    <div style="display:flex;justify-content:center;margin-top:20px;">
+      <button class="btn btn-red" id="btnElegirCastigo" ${draftRazon.trim().length<2?'disabled':''}>Elegir castigo →</button>
     </div>
-    <textarea id="razonFinal" placeholder="ej: se me ha caído el café al suelo..." maxlength="120" style="text-align:left;"></textarea>
-    <div class="charcount" id="rfCount">0/120</div>
-    <button class="btn btn-red" id="publicarFinal" disabled style="margin-top:14px;">Publicar</button>
+    <button class="btn-link" id="volverRazon">← volver</button>
   </div>`;
-  const ta=ge('razonFinal'),btn=ge('publicarFinal'),cnt=ge('rfCount');
-  ta.oninput=()=>{cnt.textContent=`${ta.value.length}/120`;btn.disabled=!ta.value.trim();};
-  btn.onclick=async()=>{btn.disabled=true;btn.textContent='...';await submitPost({razon:ta.value.trim(),castigo:death,dibujo:null});};
+}
+
+function promptConfirmDeath(death){
+  const d=DEATHS.find(x=>x.id===death);
+  const lbl=d?.label||death;
+  ge('app').innerHTML=`<div class="screen" style="text-align:center;">
+    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:12px;">¿Así muere?</div>
+    <div style="display:flex;justify-content:center;margin:0 0 clamp(16px,4vw,24px);">
+      ${dollSVG(profile.doll_color,death,true,d?.pose||'idle',clamp(130,160))}
+    </div>
+    <div class="done-card" style="margin-bottom:20px;">
+      <div class="done-razon">"${esc(draftRazon)}"</div>
+      <div class="done-castigo">${lbl}</div>
+    </div>
+    <div style="display:flex;justify-content:center;">
+      <button class="btn btn-red" id="btnPublicarFinal">Publicar</button>
+    </div>
+    <button class="btn-link" id="volverConfirm">← cambiar castigo</button>
+  </div>`;
+  ge('btnPublicarFinal').onclick=async()=>{
+    const btn=ge('btnPublicarFinal');
+    btn.disabled=true;btn.textContent='...';
+    await submitPost({razon:draftRazon,castigo:death,dibujo:null});
+  };
+  ge('volverConfirm').onclick=()=>{view='muerte';paint();};
 }
 
 function checkDraw(){
