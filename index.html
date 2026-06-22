@@ -920,8 +920,10 @@ async function loadTodayPost(){
   todayPrevPost=todayPost?.previous_post_id ? all.find(p=>p.id===todayPost.previous_post_id)||null : null;
 }
 async function loadFollows(){
-  const {data}=await sb.from('follows').select('following_id').eq('follower_id',user.id).catch(()=>({data:[]}));
-  myFollowing=new Set((data||[]).map(f=>f.following_id));
+  try{
+    const {data}=await sb.from('follows').select('following_id').eq('follower_id',user.id);
+    myFollowing=new Set((data||[]).map(f=>f.following_id));
+  }catch(e){myFollowing=new Set();}
 }
 async function loadFeed(){
   const [{data:posts},{data:deps},{data:follows},{data:yPosts}]=await Promise.all([
