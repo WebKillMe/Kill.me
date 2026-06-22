@@ -442,7 +442,7 @@ const STRINGS={
     profile_since:'Miembro desde ',profile_ruinas_last:'Últimas ruinas',profile_no_ruinas:'Sin ruinas todavía.',
     profile_streak:'racha',profile_deps:'DEPs',profile_ruinas_lbl:'ruinas',
     amigos_title:'Siguiendo',amigos_empty:'Todavía no sigues a nadie.',amigos_find:'Encuéntralos en el feed.',
-    amigos_loading:'Cargando...',amigos_streak:'de racha · miembro desde ',amigos_following:' siguiendo',
+    amigos_loading:'Cargando...',amigos_streak:'días de racha · miembro desde ',amigos_following:' siguiendo',
     time_now:'ahora',time_m:'hace $mm',time_h:'hace $hh',time_d:'hace $dd',
     err_load:'No se pudo iniciar sesión. Inténtalo de nuevo.',err_load2:'Error al cargar. Recarga la página.',
     pass_req:'6+ caracteres',
@@ -497,7 +497,7 @@ const STRINGS={
     profile_since:'Member since ',profile_ruinas_last:'Latest ruinas',profile_no_ruinas:'No ruinas yet.',
     profile_streak:'streak',profile_deps:'DEPs',profile_ruinas_lbl:'ruinas',
     amigos_title:'Following',amigos_empty:"You're not following anyone yet.",amigos_find:'Find them in the feed.',
-    amigos_loading:'Loading...',amigos_streak:'streak · member since ',amigos_following:' following',
+    amigos_loading:'Loading...',amigos_streak:'day streak · member since ',amigos_following:' following',
     time_now:'now',time_m:'$mm ago',time_h:'$hh ago',time_d:'$dd ago',
     err_load:'Could not sign in. Please try again.',err_load2:'Error loading. Reload the page.',
     pass_req:'6+ characters',
@@ -1400,7 +1400,6 @@ function renderHome(){
         ${dollWithDraw(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',clamp(140,170))}
       </div>
       <div class="done-card">
-        <div class="done-razon">"${esc(p.razon)}"</div>
         <div class="done-castigo">${lbl}</div>
         <div style="color:var(--muted);font-size:clamp(11px,2.8vw,12px);margin-top:8px;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:5px;">${icoStat(ICO.candle,14)} ${p.dep_count||0} ${t('deps_received')}</div>
         ${hasPrev?`
@@ -1411,9 +1410,11 @@ function renderHome(){
           <div class="prev-panel ${isOpen?'open':''}" id="prevPanel">${prevPostHTML(todayPrevPost,64)}</div>
         `:''}
       </div>
-      <button class="peor-btn" id="btnPeor">${t('btn_worse')}</button>
-      <div style="display:flex;justify-content:center;margin-top:16px;">
-        <button class="btn-warm-sm" id="goFeed">${t('btn_feed')}</button>
+      <div style="display:flex;justify-content:center;margin-top:20px;">
+        <button class="btn btn-red" id="goFeed" style="max-width:220px;font-size:clamp(13px,3.5vw,15px);">${t('btn_feed')}</button>
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:10px;">
+        <button class="btn-link" id="btnPeor" style="font-size:clamp(11px,3vw,12px);opacity:.7;">${t('btn_worse')}</button>
       </div>
     </div>`;
   }
@@ -1431,11 +1432,19 @@ function clamp(a,b){return Math.min(b,Math.max(a,Math.round(window.innerWidth/48
 
 function renderMuerte(){
   const streak=profile?.streak||0;
-  const unlocked=DEATHS.filter(d=>streak>=d.min&&totalDeps>=d.deps);
-  const cells=unlocked.map(d=>`<div class="dcell on" data-death="${d.id}">
-    ${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}
-    <span class="dlabel">${dl(d.id)}</span>
-  </div>`).join('');
+  const cells=DEATHS.map(d=>{
+    const ok=streak>=d.min&&totalDeps>=d.deps;
+    if(ok) return `<div class="dcell on" data-death="${d.id}">
+      ${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}
+      <span class="dlabel">${dl(d.id)}</span>
+    </div>`;
+    const req=d.min>0&&streak<d.min?`${icoStat(ICO.flame,10)} ${d.min}d`:`${icoStat(ICO.candle,10)} ${d.deps}`;
+    return `<div class="dcell off">
+      ${dollSVG(profile.doll_color,d.id,true,d.pose,clamp(52,64))}
+      <span class="dlabel">${dl(d.id)}</span>
+      <span class="dreq">${req}</span>
+    </div>`;
+  }).join('');
   return `<div class="screen">
     ${hdr(t('muerte_title'),t('muerte_sub'))}
     <button class="btn-link" id="volverMuerte" style="margin-top:-8px;margin-bottom:6px;">${t('btn_back_muerte')}</button>
@@ -1477,6 +1486,7 @@ function renderPosted(){
     <div class="done-card">
       <div class="done-razon">"${esc(p.razon)}"</div>
       <div class="done-castigo">${lbl}</div>
+      <div style="color:var(--muted);font-size:clamp(11px,2.8vw,12px);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px;">${icoStat(ICO.candle,14)} ${p.dep_count||0} ${t('deps_received')}</div>
     </div>
     <div style="display:flex;justify-content:center;margin-top:20px;">
       <button class="btn-warm-sm" id="irAlFeed">${t('btn_feed')}</button>
