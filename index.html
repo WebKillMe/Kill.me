@@ -692,6 +692,7 @@ let draftRazon="",totalDeps=0,navigating=false;
 let cemeteryPosts=null,muertesTab='castigos';
 let pinnedLogros=JSON.parse(localStorage.getItem('pinnedLogros')||'[]');
 let followersList=null,amigosTab='following';
+let myFriends=new Set(),pendingFriendReqs=[],sentFriendReqs=new Set();
 
 const todayS=()=>new Date().toISOString().split('T')[0];
 const yesterS=()=>new Date(Date.now()-86400000).toISOString().split('T')[0];
@@ -985,6 +986,48 @@ async function loadFollows(){
     const {data}=await sb.from('follows').select('following_id').eq('follower_id',user.id);
     myFollowing=new Set((data||[]).map(f=>f.following_id));
   }catch(e){myFollowing=new Set();}
+}
+async function loadFriendRequests(){
+  try{
+    const [{data:recv},{data:sent}]=await Promise.all([
+      sb.from('friend_requests').select('*,sender:profiles!friend_requests_sender_id_fkey(id,username,doll_color)').eq('receiver_id',user.id).eq('status','pending'),
+      sb.from('friend_requests').select('receiver_id,status').eq('sender_id',user.id),
+    ]);
+    pendingFriendReqs=recv||[];
+    sentFriendReqs=new Set((sent||[]).map(r=>r.receiver_id));
+    const {data:accepted}=await sb.from('friend_requests').select('sender_id,receiver_id').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`).eq('status','accepted');
+    myFriends=new Set((accepted||[]).map(r=>r.sender_id===user.id?r.receiver_id:r.sender_id));
+    señalesBadge=pendingFriendReqs.length>0;
+  }catch(e){pendingFriendReqs=[];sentFriendReqs=new Set();myFriends=new Set();}
+}
+async function sendFriendRequest(uid){
+  try{
+    await sb.from('friend_requests').insert({sender_id:user.id,receiver_id:uid});
+    sentFriendReqs.add(uid);paint();
+  }catch(e){alert('Error al enviar solicitud: '+e.message);}
+}
+async function acceptFriendRequest(reqId,senderId){
+  try{
+    await sb.from('friend_requests').update({status:'accepted'}).eq('id',reqId);
+    pendingFriendReqs=pendingFriendReqs.filter(r=>r.id!==reqId);
+    myFriends.add(senderId);
+    señalesBadge=pendingFriendReqs.length>0;
+    paint();
+  }catch(e){alert('Error: '+e.message);}
+}
+async function rejectFriendRequest(reqId){
+  try{
+    await sb.from('friend_requests').update({status:'rejected'}).eq('id',reqId);
+    pendingFriendReqs=pendingFriendReqs.filter(r=>r.id!==reqId);
+    señalesBadge=pendingFriendReqs.length>0;
+    paint();
+  }catch(e){alert('Error: '+e.message);}
+}
+async function removeFriend(uid){
+  try{
+    await sb.from('friend_requests').delete().or(`and(sender_id.eq.${user.id},receiver_id.eq.${uid}),and(sender_id.eq.${uid},receiver_id.eq.${user.id})`);
+    myFriends.delete(uid);sentFriendReqs.delete(uid);paint();
+  }catch(e){alert('Error: '+e.message);}
 }
 async function loadFeed(){
   const [{data:posts},{data:deps},{data:follows},{data:yPosts}]=await Promise.all([
@@ -1293,6 +1336,7 @@ async function navToHome(errEl,btn,btnLabel){
     if(!profile){const u=user.user_metadata?.username||user.email.split('@')[0];try{await sb.from('profiles').upsert({id:user.id,username:u,doll_color:DOLL_COLORS[0],email:user.email});}catch(e){}await loadProfile();}
     await loadTodayPost();
     await loadFollows();
+    loadFriendRequests().catch(()=>{});
     if(todayPost){await loadFeed();view='feed';}else{view='home';}
     checkSeñalesBadge();
     paint();
@@ -1622,7 +1666,14 @@ function renderProfile(){
       ${dollSVG(prof.doll_color||DOLL_COLORS[0],null,true,'idle',clamp(90,110))}
       <div class="profile-name">@${esc(prof.username)}</div>
       <div class="profile-since">${t('profile_since')}${since}</div>
-      ${!isSelf?`<button class="follow-btn ${isFollowing?'following':''}" id="profileFollow" data-uid="${prof.id}" style="margin-top:12px;">${isFollowing?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>`:''}
+      ${!isSelf?`<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+        <button class="follow-btn ${isFollowing?'following':''}" id="profileFollow" data-uid="${prof.id}">${isFollowing?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>
+        ${myFriends.has(prof.id)
+          ?`<button class="follow-btn following" id="profileUnfriend" data-uid="${prof.id}">${ICO.check} ${lang==='en'?'Friends':'Amigos'}</button>`
+          :sentFriendReqs.has(prof.id)
+            ?`<button class="follow-btn" id="profileFriendReq" disabled style="opacity:.5;">${ICO.people} ${lang==='en'?'Request sent':'Solicitud enviada'}</button>`
+            :`<button class="follow-btn" id="profileFriendReq" data-uid="${prof.id}">${ICO.people} ${lang==='en'?'Add friend':'Añadir amigo'}</button>`}
+      </div>`:''}
     </div>
     <div style="height:1px;background:var(--border);"></div>
     <div class="profile-stats">
@@ -1643,10 +1694,23 @@ function renderSeñales(){
     ?`<div class="señal-row"><div class="señal-icon">${ICO.candle}</div><div class="señal-text"><strong>${esc(i.user)}</strong> ${t('sig_dep')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`
     :`<div class="señal-row"><div class="señal-icon">${ICO.skull}</div><div class="señal-text"><strong>${esc(i.user)}</strong> ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`
   ).join('');
+  const friendReqRows=pendingFriendReqs.map(r=>`
+    <div class="señal-row" style="align-items:center;gap:10px;background:rgba(176,120,48,.06);border-radius:8px;padding:10px 12px;border:1px solid rgba(176,120,48,.2);">
+      <div style="flex-shrink:0;">${avatarDoll(r.sender?.doll_color||DOLL_COLORS[0],clamp(32,36))}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:clamp(12px,3vw,13px);font-weight:600;color:var(--text);">@${esc(r.sender?.username||'?')}</div>
+        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);">${lang==='en'?'wants to be friends':'quiere ser tu amigo/a'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn-warm-sm fr-accept" data-reqid="${r.id}" data-senderid="${r.sender_id}" style="padding:5px 10px;font-size:clamp(11px,2.8vw,12px);">${ICO.check}</button>
+        <button class="btn-link fr-reject" data-reqid="${r.id}" style="font-size:18px;color:var(--muted2);padding:5px 8px;">✕</button>
+      </div>
+    </div>`).join('');
   const emptyState=todayPost?t('senales_empty_post'):t('senales_empty_no_post');
   return `<div class="screen">
     ${hdr(t('senales_title'),'')}
-    ${items.length?rows:`<p class="señales-empty">${emptyState}</p>`}
+    ${pendingFriendReqs.length?`<div style="margin-bottom:16px;"><div style="font-size:clamp(9px,2.3vw,10px);text-transform:uppercase;letter-spacing:1.5px;color:var(--warm);margin-bottom:8px;">${lang==='en'?'Friend requests':'Solicitudes de amistad'} · ${pendingFriendReqs.length}</div>${friendReqRows}</div>`:''}
+    ${items.length?rows:`<p class="señales-empty">${pendingFriendReqs.length?'':emptyState}</p>`}
     ${!todayPost?`<div style="text-align:center;margin-top:20px;"><button class="btn btn-red" onclick="draftRazon='';view='razon';paint()">${t('btn_publish_ruina')}</button></div>`:''}
   </div>`;
 }
@@ -2343,6 +2407,27 @@ function attachListeners(){
       viewingProfile=await loadProfileData(uid);
       paint();
     };
+    const frb=ge('profileFriendReq');
+    if(frb&&!frb.disabled)frb.onclick=async()=>{
+      const uid=frb.getAttribute('data-uid');
+      await sendFriendRequest(uid);
+    };
+    const ufb=ge('profileUnfriend');
+    if(ufb)ufb.onclick=async()=>{
+      if(confirm(lang==='en'?'Remove friend?':'¿Eliminar amistad?')){
+        await removeFriend(ufb.getAttribute('data-uid'));
+        viewingProfile=await loadProfileData(ufb.getAttribute('data-uid'));
+        paint();
+      }
+    };
+  }
+  if(view==='señales'){
+    document.querySelectorAll('.fr-accept').forEach(btn=>{
+      btn.onclick=async()=>await acceptFriendRequest(btn.getAttribute('data-reqid'),btn.getAttribute('data-senderid'));
+    });
+    document.querySelectorAll('.fr-reject').forEach(btn=>{
+      btn.onclick=async()=>await rejectFriendRequest(btn.getAttribute('data-reqid'));
+    });
   }
   // Feed: click avatar → open profile
   document.querySelectorAll('.feed-avatar-btn').forEach(btn=>{
