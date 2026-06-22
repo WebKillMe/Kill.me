@@ -1117,11 +1117,12 @@ async function doSignIn(emailOrUser,pass){
   let email=emailOrUser;
   if(!emailOrUser.includes('@')){
     const {data:prof}=await sb.from('profiles').select('email').eq('username',emailOrUser).maybeSingle();
-    if(!prof?.email)return'Usuario no encontrado o aún sin email guardado. Usa tu email la primera vez.';
+    if(!prof?.email)return{err:lang==='en'?'User not found. Try with your email.':'Usuario no encontrado. Usa tu email.',user:null};
     email=prof.email;
   }
-  const {error}=await sb.auth.signInWithPassword({email,password:pass});
-  if(error)return sbErr(error.message);return null;
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error)return{err:sbErr(error.message),user:null};
+  return{err:null,user:data.user};
 }
 async function doResetPassword(email){
   if(!email||!email.includes('@'))return t('err_invalid_email');
@@ -1132,21 +1133,25 @@ async function doResetPassword(email){
 // ── Session navigation ─────────────────────────────────
 async function navToHome(errEl,btn,btnLabel){
   try{
-    const res=await safeGetSession();
-    const s=res?.data?.session;
-    if(s?.user){
-      user=s.user;await loadProfile();
-      if(!profile){const u=user.user_metadata?.username||user.email.split('@')[0];await sb.from('profiles').upsert({id:user.id,username:u,doll_color:DOLL_COLORS[0],email:user.email}).catch(()=>{});await loadProfile();}
-      await loadTodayPost();
-      await loadFollows();
-      if(todayPost){await loadFeed();view='feed';}else{view='home';}
-      checkSeñalesBadge();
-      paint();
-      setTimeout(maybeShowOnboarding,400);
-    }else{
-      if(errEl)errEl.textContent=t('err_load');
-      if(btn){btn.disabled=false;btn.textContent=btnLabel||t('btn_login');}
+    // Skip getSession if user already set (e.g. from signInWithPassword or onAuthStateChange)
+    if(!user){
+      const res=await safeGetSession();
+      const s=res?.data?.session;
+      if(!s?.user){
+        if(errEl)errEl.textContent=t('err_load');
+        if(btn){btn.disabled=false;btn.textContent=btnLabel||t('btn_login');}
+        return;
+      }
+      user=s.user;
     }
+    await loadProfile();
+    if(!profile){const u=user.user_metadata?.username||user.email.split('@')[0];await sb.from('profiles').upsert({id:user.id,username:u,doll_color:DOLL_COLORS[0],email:user.email}).catch(()=>{});await loadProfile();}
+    await loadTodayPost();
+    await loadFollows();
+    if(todayPost){await loadFeed();view='feed';}else{view='home';}
+    checkSeñalesBadge();
+    paint();
+    setTimeout(maybeShowOnboarding,400);
   }catch(ex){
     console.error('navToHome error',ex);
     if(errEl)errEl.textContent=t('err_load2');
@@ -1293,8 +1298,9 @@ function renderAuth(){
       if(!emailOrUser){err.textContent=t('err_no_user');return;}
       if(!pass){err.textContent=t('err_no_pass');return;}
       btn.disabled=true;btn.textContent='...';navigating=true;
-      const e=await doSignIn(emailOrUser,pass);
-      if(e){err.textContent=e;btn.disabled=false;btn.textContent=t('btn_login');navigating=false;return;}
+      const {err:signInErr,user:signedInUser}=await doSignIn(emailOrUser,pass);
+      if(signInErr){err.textContent=signInErr;btn.disabled=false;btn.textContent=t('btn_login');navigating=false;return;}
+      user=signedInUser;
       await navToHome(err,btn,t('btn_login'));
     }else{
       const uname=(ge('aUser').value||'').trim(),email=emailOrUser;
