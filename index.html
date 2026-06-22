@@ -682,17 +682,12 @@ async function toggleFollow(uid){
 
 // ── Auth ──────────────────────────────────────────────
 async function doSignUp(email,pass,uname,color){
-  const {data:ex}=await sb.from('profiles').select('id').eq('username',uname).maybeSingle();
-  if(ex)return'Ese nombre ya está en uso';
-  const {data,error}=await sb.auth.signUp({
-    email,password:pass,
-    options:{data:{username:uname},emailRedirectTo:'https://webkillme.github.io/Kill.me/'},
-  });
+  const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{username:uname}}});
   if(error)return sbErr(error.message);
   if(data.user){
     await sb.from('profiles').upsert({id:data.user.id,username:uname,doll_color:color,email:email}).catch(()=>{});
   }
-  return null;
+  return{user:data.user,session:data.session};
 }
 async function doSignIn(emailOrUser,pass){
   let email=emailOrUser;
@@ -788,14 +783,21 @@ function renderAuth(){
     ge('btnCreate').onclick=async()=>{
       const btn=ge('btnCreate'),err=ge('aErr');
       btn.disabled=true;btn.textContent='Creando...';err.textContent='';
-      const e=await doSignUp(pendingSignup.email,pendingSignup.pass,pendingSignup.username,pendingSignup.color);
-      if(e){err.textContent=e;btn.disabled=false;btn.textContent='Crear cuenta';}
-      else{
-        // autoconfirm enabled — sign in immediately after signup
+      navigating=true;
+      const result=await doSignUp(pendingSignup.email,pendingSignup.pass,pendingSignup.username,pendingSignup.color);
+      if(typeof result==='string'){
+        err.textContent=result;btn.disabled=false;btn.textContent='Crear cuenta';navigating=false;return;
+      }
+      // Use session from signUp directly — no second signIn needed
+      if(result.session){
+        user=result.user;authStep='form';
+        await navToHome(err,btn,'Crear cuenta');
+      }else{
+        // autoconfirm off — shouldn't happen but fall back to signIn
         btn.textContent='Entrando...';
         const signInErr=await doSignIn(pendingSignup.email,pendingSignup.pass);
-        if(signInErr){err.textContent=signInErr||'Cuenta creada — inicia sesión';btn.disabled=false;btn.textContent='Crear cuenta';}
-        else{authStep='form';navigating=true;await navToHome(err,btn,'Crear cuenta');}
+        if(signInErr){err.textContent=signInErr;btn.disabled=false;btn.textContent='Crear cuenta';navigating=false;}
+        else{authStep='form';await navToHome(err,btn,'Crear cuenta');}
       }
     };
     return;
