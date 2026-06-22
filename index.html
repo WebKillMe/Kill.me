@@ -1637,14 +1637,16 @@ function renderAjustes(){
     <div style="height:1px;background:var(--border);margin:clamp(20px,5vw,26px) 0;"></div>
     <button class="btn-ghost" id="btnChangePass" style="margin-bottom:10px;">${t('btn_change_pass')}</button>
     <button class="btn-ghost" id="btnInstructions" style="margin-bottom:10px;">${t('btn_what_is')}</button>
-    <div style="display:flex;justify-content:center;margin-bottom:10px;">
+    <button class="btn-ghost" id="btnLogout" style="margin-bottom:10px;">${t('btn_logout')}</button>
+    <div style="height:1px;background:var(--border);margin:clamp(16px,4vw,22px) 0;"></div>
+    <div style="text-align:center;color:var(--muted2);font-size:clamp(9px,2.5vw,10px);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">Language / Idioma</div>
+    <div style="display:flex;justify-content:center;">
       <div style="display:inline-flex;border:1px solid var(--border2);border-radius:9px;overflow:hidden;">
-        <button id="btnLangEs" style="padding:9px 20px;border:none;background:${lang==='es'?'var(--surface2)':'transparent'};color:${lang==='es'?'var(--text)':'var(--muted2)'};font-weight:${lang==='es'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;transition:all .15s;">🇪🇸 ES</button>
+        <button id="btnLangEs" style="padding:11px 28px;border:none;background:${lang==='es'?'var(--surface2)':'transparent'};color:${lang==='es'?'var(--text)':'var(--muted2)'};font-weight:${lang==='es'?700:400};font-size:clamp(13px,3.5vw,14px);cursor:pointer;transition:all .15s;">🇪🇸 Español</button>
         <div style="width:1px;background:var(--border2);"></div>
-        <button id="btnLangEn" style="padding:9px 20px;border:none;background:${lang==='en'?'var(--surface2)':'transparent'};color:${lang==='en'?'var(--text)':'var(--muted2)'};font-weight:${lang==='en'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;transition:all .15s;">🇺🇸 EN</button>
+        <button id="btnLangEn" style="padding:11px 28px;border:none;background:${lang==='en'?'var(--surface2)':'transparent'};color:${lang==='en'?'var(--text)':'var(--muted2)'};font-weight:${lang==='en'?700:400};font-size:clamp(13px,3.5vw,14px);cursor:pointer;transition:all .15s;">🇺🇸 English</button>
       </div>
     </div>
-    <button class="btn-ghost" id="btnLogout">${t('btn_logout')}</button>
     <button class="btn-link" id="volverAjustes">${t('btn_back')}</button>
   </div>`;
 }
