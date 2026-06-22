@@ -461,6 +461,8 @@ const STRINGS={
     logros_title:'Logros',castigos_tab:'Castigos',logros_tab:'Logros',
     lbl_birthday:'Fecha de nacimiento',btn_save_birthday:'Guardar',
     btn_share:'Compartir ruina',
+    feed_yesterday:'Ayer · ya enterrados',feed_tomb_hide:'ocultar',
+    search_title:'Buscar',search_ph:'Busca por nombre de usuario...',search_empty:'Sin resultados',search_hint:'Escribe para buscar personas',
   },
   en:{
     nav_hoy:'Today',nav_feed:'Funeral',nav_senales:'Activity',nav_muertes:'Punishments',
@@ -526,6 +528,8 @@ const STRINGS={
     logros_title:'Achievements',castigos_tab:'Punishments',logros_tab:'Achievements',
     lbl_birthday:'Date of birth',btn_save_birthday:'Save',
     btn_share:'Share ruina',
+    feed_yesterday:'Yesterday · already buried',feed_tomb_hide:'hide',
+    search_title:'Search',search_ph:'Search by username...',search_empty:'No results',search_hint:'Type to search people',
   }
 };
 function t(k){return(STRINGS[lang]||STRINGS.es)[k]||STRINGS.es[k]||k;}
@@ -609,6 +613,8 @@ const ICO={
   bell:`<svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M10 2a6 6 0 0 0-6 6v4l-2 3h16l-2-3V8a6 6 0 0 0-6-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8 17a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7"/></svg>`,
   people:`<svg width="22" height="20" viewBox="0 0 22 20" fill="none"><circle cx="8" cy="5" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M1 19c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="17" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M20 19c0-2.8-1.6-5.2-4-6.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
   question:`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M7 7c0-1.1.9-2 2-2s2 .9 2 2c0 .8-.5 1.4-1.2 1.7C9.3 9 9 9.5 9 10v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="9" cy="13" r=".8" fill="currentColor"/></svg>`,
+  search:`<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>`,
+  tombstone:`<svg width="18" height="22" viewBox="0 0 18 22" fill="none"><rect x="2" y="4" width="14" height="14" rx="7" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="14" width="10" height="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 8.5h6M9 7v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`,
 };
 
 function icoStat(svg,targetH=20){
@@ -623,7 +629,8 @@ let user=null,profile=null,view="loading",todayPost=null;
 let feedData=[],myDeps=new Set(),myFollowing=new Set();
 let todayPrevPost=null,expandedPrev=new Set();
 let authTab="login",authStep="form",pendingVerifyEmail="",recoverySession=false;
-let feedOlder=[],señalesBadge=false,viewingProfile=null,friendsList=null;
+let feedOlder=[],feedYesterday=[],señalesBadge=false,viewingProfile=null,friendsList=null;
+let searchQuery='',searchResults=null,expandedTombstone=new Set(),profileReturnView='amigos';
 let pendingSignup={username:"",email:"",pass:"",color:DOLL_COLORS[0]};
 let draftRazon="",totalDeps=0,navigating=false;
 let cemeteryPosts=null,muertesTab='castigos';
@@ -917,10 +924,11 @@ async function loadFollows(){
   myFollowing=new Set((data||[]).map(f=>f.following_id));
 }
 async function loadFeed(){
-  const [{data:posts},{data:deps},{data:follows}]=await Promise.all([
+  const [{data:posts},{data:deps},{data:follows},{data:yPosts}]=await Promise.all([
     sb.from('posts').select('*').eq('post_date',todayS()).eq('is_primary',true).order('created_at',{ascending:false}),
     sb.from('deps').select('post_id').eq('user_id',user.id),
     sb.from('follows').select('following_id').eq('follower_id',user.id),
+    sb.from('posts').select('*').eq('post_date',yesterS()).eq('is_primary',true).order('created_at',{ascending:false}).limit(30),
   ]);
   myDeps=new Set((deps||[]).map(d=>d.post_id));
   myFollowing=new Set((follows||[]).map(f=>f.following_id));
@@ -933,9 +941,10 @@ async function loadFeed(){
   }
   feedData=primary.map(p=>({...p,_prev:p.previous_post_id?prevMap[p.previous_post_id]||null:null}))
     .sort((a,b)=>{const af=myFollowing.has(a.user_id)?0:1,bf=myFollowing.has(b.user_id)?0:1;return af-bf||(new Date(b.created_at)-new Date(a.created_at));});
+  feedYesterday=(yPosts||[]).sort((a,b)=>{const af=myFollowing.has(a.user_id)?0:1,bf=myFollowing.has(b.user_id)?0:1;return af-bf||(new Date(b.created_at)-new Date(a.created_at));});
   if(!feedData.length){
     const cutoff=new Date();cutoff.setDate(cutoff.getDate()-5);
-    const {data:older}=await sb.from('posts').select('*').eq('is_primary',true).lt('post_date',todayS()).gte('post_date',cutoff.toISOString().slice(0,10)).order('created_at',{ascending:false}).limit(20);
+    const {data:older}=await sb.from('posts').select('*').eq('is_primary',true).lt('post_date',yesterS()).gte('post_date',cutoff.toISOString().slice(0,10)).order('created_at',{ascending:false}).limit(20);
     feedOlder=(older||[]).map(p=>({...p,_prev:null})).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   }else{feedOlder=[];}
 }
@@ -1328,6 +1337,7 @@ function shell(content){
     <button class="logo cinzel" id="logoBtn" style="background:none;border:none;cursor:pointer;padding:0;">kill<em>.me</em></button>
     <div class="topbar-r">
       ${streak>0?`<div class="streak-pill">${ICO.flame}<span>${streak}</span></div>`:''}
+      <button class="gear-btn" id="btnSearch" style="margin-right:2px;">${ICO.search}</button>
       <button class="gear-btn" id="btnAmigos" style="margin-right:2px;">${ICO.people}</button>
       <button class="gear-btn" id="btnGear">${ICO.gear}</button>
     </div>
@@ -1340,6 +1350,7 @@ function shell(content){
     <div class="navbtn-wrap"><button class="navbtn ${view==='muertes'?'on':''}" id="navMuertes">${ICO.skull}<span>${t('nav_muertes')}</span></button></div>
   </div>`;
   ge('btnGear').onclick=()=>{view='ajustes';paint();};
+  ge('btnSearch').onclick=()=>{searchQuery='';searchResults=null;view='buscar';paint();};
   ge('btnAmigos').onclick=async()=>{view='amigos';paint();};
   ge('navHoy').onclick=()=>{view='home';paint();};
   ge('navFeed').onclick=async()=>{await loadFeed();view='feed';paint();};
@@ -1397,6 +1408,7 @@ function paint(){
   else if(view==='profile')c=renderProfile();
   else if(view==='cementerio')c=renderCemetery();
   else if(view==='logros')c=renderLogros();
+  else if(view==='buscar')c=renderSearch();
   shell(c);
 }
 
@@ -1828,11 +1840,37 @@ function renderLogros(){
   </div>`;
 }
 
+function tombstoneCardHTML(item){
+  const d=DEATHS.find(x=>x.id===item.castigo);
+  const lbl=item.castigo==='dibujo'?esc(item.dibujo_descripcion):dl(item.castigo);
+  const isOpen=expandedTombstone.has(item.id);
+  const friend=myFollowing.has(item.user_id),own=item.user_id===user.id;
+  return `<div class="feed-card tombstone-card" style="opacity:.72;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="feed-avatar-btn" data-uid="${item.user_id}" style="background:none;border:none;padding:0;cursor:pointer;">
+        <div class="avatar">${avatarDoll(item.doll_color,clamp(28,34))}${friend&&!own?'<span class="friend-dot"></span>':''}</div>
+      </button>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:clamp(12px,3vw,13px);color:var(--text2);font-weight:600;">@${esc(item.username)}</div>
+        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"${esc(item.razon)}"</div>
+      </div>
+      <button class="tombstone-toggle ${isOpen?'open':''}" data-tomb="${item.id}" style="flex-shrink:0;background:none;border:1px solid var(--border2);border-radius:7px;padding:5px 8px;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);">
+        ${ICO.tombstone} <span>${isOpen?t('feed_tomb_hide'):lbl}</span>
+      </button>
+    </div>
+    ${isOpen?`<div style="margin-top:12px;display:flex;gap:12px;align-items:center;padding:10px;background:var(--bg2);border-radius:8px;">
+      <div style="flex-shrink:0;">${dollWithDraw(item.doll_color,item.castigo,item.dibujo_trazos,true,d?.pose||'idle',clamp(52,64))}</div>
+      <div><div style="font-size:clamp(13px,3.5vw,14px);font-weight:700;color:var(--text);">${lbl}</div><div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-top:4px;">${ICO.candle} ${item.dep_count||0} DEPs</div></div>
+    </div>`:''}
+  </div>`;
+}
+
 function renderFeed(){
   const olderHTML=feedOlder.length?`<div class="feed-older-hdr">${t('feed_older')}</div><div class="feed-older">${feedOlder.map(i=>feedCardHTML(i,true)).join('')}</div>`:'';
-  if(!feedData.length)return`<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,15px);">${t('feed_empty')}<br><span style="font-size:clamp(11px,3vw,12px);opacity:.45;display:block;margin-top:6px;">${t('feed_empty_sub')}</span></div>${olderHTML}</div>`;
+  const yesterHTML=feedYesterday.length?`<div class="feed-older-hdr" style="display:flex;align-items:center;gap:6px;">${ICO.tombstone} ${t('feed_yesterday')}</div><div class="feed-list">${feedYesterday.map(tombstoneCardHTML).join('')}</div>`:'';
+  if(!feedData.length)return`<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,15px);">${t('feed_empty')}<br><span style="font-size:clamp(11px,3vw,12px);opacity:.45;display:block;margin-top:6px;">${t('feed_empty_sub')}</span></div>${yesterHTML}${olderHTML}</div>`;
   const cards=feedData.map(item=>feedCardHTML(item,false)).join('');
-  return `<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div class="feed-list">${cards}</div>${olderHTML}</div>`;
+  return `<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div class="feed-list">${cards}</div>${yesterHTML}${olderHTML}</div>`;
 }
 
 function renderAjustes(){
@@ -1879,6 +1917,33 @@ function renderAjustes(){
       </div>
     </div>
     <button class="btn-link" id="volverAjustes">${t('btn_back')}</button>
+  </div>`;
+}
+
+function renderSearch(){
+  const resultRows=(searchResults||[]).map(p=>{
+    const isFollowing=myFollowing.has(p.id),isSelf=p.id===user.id;
+    return `<div class="amigo-row search-result" data-uid="${p.id}">
+      <div style="flex-shrink:0;">${avatarDoll(p.doll_color||DOLL_COLORS[0],clamp(40,48))}</div>
+      <div class="amigo-info">
+        <div class="amigo-name">@${esc(p.username)}</div>
+        <div class="amigo-meta">${p.streak||0} ${t('amigos_streak')}${p.created_at?new Date(p.created_at).toLocaleDateString(lang==='en'?'en-US':'es-ES',{month:'short',year:'numeric'}):'—'}</div>
+      </div>
+      ${!isSelf?`<div style="font-size:clamp(11px,2.8vw,12px);color:${isFollowing?'var(--muted2)':'var(--warm)'};">${isFollowing?t('btn_following'):t('btn_follow')}</div>`:''}
+    </div>`;
+  }).join('');
+  const bodyHTML=searchResults===null
+    ?`<p style="text-align:center;color:var(--muted);margin-top:60px;font-size:clamp(13px,3.5vw,14px);">${t('search_hint')}</p>`
+    :searchResults.length?resultRows
+    :`<p style="text-align:center;color:var(--muted2);margin-top:60px;">${t('search_empty')}</p>`;
+  return `<div class="screen">
+    ${hdr(t('search_title'),'')}
+    <div style="position:relative;margin-bottom:4px;">
+      <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;">${ICO.search}</div>
+      <input id="searchInput" type="search" placeholder="${t('search_ph')}" value="${esc(searchQuery)}"
+        style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 12px 11px 40px;font-size:clamp(14px,3.5vw,15px);font-family:inherit;outline:none;"/>
+    </div>
+    ${bodyHTML}
   </div>`;
 }
 
@@ -1939,6 +2004,38 @@ function attachListeners(){
         const id=btn.getAttribute('data-feedprev');
         if(expandedPrev.has(id))expandedPrev.delete(id);else expandedPrev.add(id);
         btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('open');
+      };
+    });
+    document.querySelectorAll('[data-tomb]').forEach(btn=>{
+      btn.onclick=(e)=>{
+        e.stopPropagation();
+        const id=btn.getAttribute('data-tomb');
+        if(expandedTombstone.has(id))expandedTombstone.delete(id);else expandedTombstone.add(id);
+        paint();
+      };
+    });
+  }
+  if(view==='buscar'){
+    const inp=ge('searchInput');
+    if(inp){
+      inp.focus();
+      let debounce;
+      inp.oninput=()=>{
+        searchQuery=inp.value.trim();
+        clearTimeout(debounce);
+        if(!searchQuery){searchResults=null;paint();return;}
+        debounce=setTimeout(async()=>{
+          const {data}=await sb.from('profiles').select('*').ilike('username','%'+searchQuery+'%').limit(20).catch(()=>({data:[]}));
+          searchResults=data||[];
+          paint();
+        },300);
+      };
+    }
+    document.querySelectorAll('.search-result').forEach(row=>{
+      row.onclick=async()=>{
+        profileReturnView='buscar';
+        viewingProfile=await loadProfileData(row.getAttribute('data-uid'));
+        view='profile';paint();
       };
     });
   }
@@ -2003,6 +2100,7 @@ function attachListeners(){
     }
     document.querySelectorAll('.amigo-row').forEach(row=>{
       row.onclick=async()=>{
+        profileReturnView='amigos';
         viewingProfile=await loadProfileData(row.getAttribute('data-uid'));
         view='profile';paint();
       };
@@ -2029,7 +2127,7 @@ function attachListeners(){
     if(ge('volverLogros'))ge('volverLogros').onclick=()=>{view='muertes';muertesTab='castigos';paint();};
   }
   if(view==='profile'){
-    if(ge('volverProfile'))ge('volverProfile').onclick=()=>{view='amigos';paint();};
+    if(ge('volverProfile'))ge('volverProfile').onclick=()=>{view=profileReturnView||'amigos';paint();};
     const fb=ge('profileFollow');
     if(fb)fb.onclick=async()=>{
       const uid=fb.getAttribute('data-uid');
@@ -2043,6 +2141,7 @@ function attachListeners(){
     btn.onclick=async(e)=>{
       e.stopPropagation();
       const uid=btn.getAttribute('data-uid');
+      profileReturnView='feed';
       viewingProfile=await loadProfileData(uid);
       view='profile';paint();
     };
