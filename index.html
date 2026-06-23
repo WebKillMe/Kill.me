@@ -1107,6 +1107,13 @@ async function rejectFriendRequest(reqId){
     paint();
   }catch(e){alert('Error: '+e.message);}
 }
+async function cancelFriendRequest(uid){
+  try{
+    await sb.from('friend_requests').delete().eq('sender_id',user.id).eq('receiver_id',uid).eq('status','pending');
+    sentFriendReqs.delete(uid);
+    paint();
+  }catch(e){alert('Error: '+e.message);}
+}
 async function removeFriend(uid){
   try{
     await sb.from('friend_requests').delete().or(`and(sender_id.eq.${user.id},receiver_id.eq.${uid}),and(sender_id.eq.${uid},receiver_id.eq.${user.id})`);
@@ -1807,7 +1814,7 @@ function renderProfile(){
             :incomingReq
               ?`<button class="follow-btn" id="profileAcceptFriend" data-reqid="${incomingReq.id}" data-senderid="${incomingReq.sender_id}" style="background:var(--warm);color:#120a02;border-color:var(--warm);">${ICO.check} ${lang==='en'?'Accept friendship':'Aceptar amistad'}</button>`
               :sentFriendReqs.has(prof.id)
-                ?`<button class="follow-btn" id="profileFriendReq" disabled style="opacity:.5;">${ICO.people} ${lang==='en'?'Request sent':'Solicitud enviada'}</button>`
+                ?`<button class="follow-btn" id="profileCancelReq" data-uid="${prof.id}" style="opacity:.7;">${ICO.people} ${lang==='en'?'Request sent · cancel':'Solicitud enviada · cancelar'}</button>`
                 :`<button class="follow-btn" id="profileFriendReq" data-uid="${prof.id}">${ICO.people} ${lang==='en'?'Add friend':'Añadir amigo'}</button>`}
         </div>`;
       })():''}
@@ -2592,10 +2599,9 @@ function attachListeners(){
       paint();
     };
     const frb=ge('profileFriendReq');
-    if(frb&&!frb.disabled)frb.onclick=async()=>{
-      const uid=frb.getAttribute('data-uid');
-      await sendFriendRequest(uid);
-    };
+    if(frb)frb.onclick=async()=>{await sendFriendRequest(frb.getAttribute('data-uid'));};
+    const crb=ge('profileCancelReq');
+    if(crb)crb.onclick=async()=>{await cancelFriendRequest(crb.getAttribute('data-uid'));};
     const ufb=ge('profileUnfriend');
     if(ufb)ufb.onclick=async()=>{
       if(confirm(lang==='en'?'Remove friend?':'¿Eliminar amistad?')){
