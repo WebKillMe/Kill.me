@@ -798,24 +798,26 @@ function getPose(name,w,h){
     aL:`M${cx-bHW} ${aY} Q${w*.03} ${aY} ${w*.02} ${hcy+hr*.65}`,
     aR:`M${cx+bHW} ${aY} Q${w*.97} ${aY} ${w*.98} ${hcy+hr*.65}`,
   };
-  if(name==='running') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.08} ${aY-22} ${w*.12} ${hcy-hr*.4}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.90} ${aY+18} ${w*.86} ${aY+38}`,
-    lL:`M${cx-lW} ${bB} Q${cx-lW-10} ${h*.88} ${cx-lW-14} ${h*.98}`,
-    lR:`M${cx+lW} ${bB} Q${cx+lW+18} ${h*.68} ${cx+lW+14} ${h*.55}`,
-  };
   if(name==='exploded') return{...D,
-    hcyOff:Math.round(h*-.06),
-    aL:`M${cx-bHW} ${aY} Q${w*.04} ${aY-18} ${w*.01} ${aY-10}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.96} ${aY-18} ${w*.99} ${aY-10}`,
-    lL:`M${cx-lW} ${bB} Q${cx-lW-18} ${h*.88} ${cx-lW-22} ${h*.98}`,
-    lR:`M${cx+lW} ${bB} Q${cx+lW+18} ${h*.88} ${cx+lW+22} ${h*.98}`,
+    hcyOff:Math.round(h*-.09),
+    aL:`M${cx-bHW} ${aY} Q${w*-.04} ${aY-22} ${w*-.06} ${aY-8}`,
+    aR:`M${cx+bHW} ${aY} Q${w*1.04} ${aY-22} ${w*1.06} ${aY-8}`,
+    lL:`M${cx-lW} ${bB} Q${cx-lW-30} ${h*.85} ${cx-lW-38} ${h*.98}`,
+    lR:`M${cx+lW} ${bB} Q${cx+lW+30} ${h*.85} ${cx+lW+38} ${h*.98}`,
   };
+  // Egyptian: left arm straight horizontal, right arm bent down, legs walking
   if(name==='egyptian') return{...D,
-    aL:`M${cx-bHW} ${aY} Q${w*.04} ${aY+2} ${w*.00} ${aY}`,
-    aR:`M${cx+bHW} ${aY} Q${w*.86} ${aY+28} ${w*.82} ${aY+48}`,
-    lL:`M${cx-lW} ${bB} Q${cx-lW+6} ${h*.88} ${cx-lW+9} ${h*.97}`,
-    lR:`M${cx+lW} ${bB} Q${cx+lW-4} ${h*.88} ${cx+lW-6} ${h*.97}`,
+    aL:`M${cx-bHW} ${aY} Q${w*.06} ${aY} ${w*.01} ${aY}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.80} ${aY+5} ${w*.75} ${bB-4}`,
+    lL:`M${cx-lW} ${bB} Q${cx-lW+12} ${h*.87} ${cx-lW+16} ${h*.97}`,
+    lR:`M${cx+lW} ${bB} Q${cx+lW-6} ${h*.88} ${cx+lW-8} ${h*.97}`,
+  };
+  // Crime scene chalk outline: one arm up high, one arm out wide low, legs spread
+  if(name==='crime') return{...D,
+    aL:`M${cx-bHW} ${aY} Q${w*.05} ${aY-42} ${w*.12} ${hcy-hr*.9}`,
+    aR:`M${cx+bHW} ${aY} Q${w*.92} ${aY+22} ${w*.96} ${aY+48}`,
+    lL:`M${cx-lW} ${bB} Q${cx-lW-4} ${h*.88} ${cx-lW-6} ${h*.97}`,
+    lR:`M${cx+lW} ${bB} Q${cx+lW+24} ${h*.84} ${cx+lW+32} ${h*.97}`,
   };
   return D;
 }
@@ -2107,7 +2109,7 @@ function renderHome(){
           ${hvl?`<span style="display:inline-flex;align-items:center;gap:3px;font-size:clamp(9px,2.3vw,10px);padding:2px 8px;border-radius:10px;border:1px solid ${hvc};color:${hvc};font-weight:600;">${hvl.ico} ${hvl.txt}</span>`:''}
         </div>
         <div style="display:flex;justify-content:center;margin:0 0 10px;">
-          ${dollWithDraw(hero.doll_color,hero.castigo,hero.dibujo_trazos,true,hero?.pose||d?.pose||'idle',clamp(140,170))}
+          ${dollWithDraw(hero.doll_color,hero.castigo,hero.dibujo_trazos,true,hero?.pose||hd?.pose||'idle',clamp(140,170))}
         </div>
         <div style="font-size:clamp(13px,3.5vw,15px);color:var(--text2);font-style:italic;margin:0 clamp(12px,4vw,24px) 10px;line-height:1.6;">"${esc(hero.razon)}"</div>
         ${hero.visibility!=='private'?`<div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-bottom:10px;">${ICO.candle} ${hero.dep_count||0} DEPs</div>`:''}
@@ -2136,16 +2138,14 @@ function renderHome(){
 function clamp(a,b){return Math.min(b,Math.max(a,Math.round(window.innerWidth/480*b)));}
 
 const POSES=[
-  {id:'idle',     es:'Normal',      en:'Normal'},
-  {id:'scared',   es:'Asustado',    en:'Scared'},
-  {id:'cowering', es:'Encogido',    en:'Cowering'},
-  {id:'begging',  es:'Suplicando',  en:'Begging'},
-  {id:'dramatic', es:'Dramático',   en:'Dramatic'},
-  {id:'squish',   es:'Aplastado',   en:'Squished'},
-  {id:'ghost',    es:'Fantasmal',   en:'Ghostly'},
-  {id:'running',  es:'Corriendo',   en:'Running'},
-  {id:'exploded', es:'Destrozado',  en:'Exploded'},
-  {id:'egyptian', es:'Egipcio',     en:'Egyptian'},
+  {id:'idle'},
+  {id:'scared'},
+  {id:'cowering'},
+  {id:'begging'},
+  {id:'dramatic'},
+  {id:'exploded'},
+  {id:'egyptian'},
+  {id:'crime'},
 ];
 function renderMuerte(){
   const streak=profile?.streak||0;
@@ -2161,9 +2161,8 @@ function renderMuerte(){
   const posePicker=`<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-webkit-overflow-scrolling:touch;">
     ${POSES.map(p=>{
       const on=previewPose===p.id;
-      return `<button class="pose-pick-btn" data-pose="${p.id}" style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 8px;border-radius:8px;border:1px solid ${on?'var(--warm)':'var(--border2)'};background:${on?'rgba(176,120,48,.1)':'transparent'};cursor:pointer;min-width:52px;">
+      return `<button class="pose-pick-btn" data-pose="${p.id}" style="flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:8px;border:1px solid ${on?'var(--warm)':'var(--border2)'};background:${on?'rgba(176,120,48,.1)':'transparent'};cursor:pointer;">
         <div>${dollSVG(profile.doll_color,null,false,p.id,clamp(36,44))}</div>
-        <span style="font-size:clamp(8px,2vw,9px);color:${on?'var(--warm)':'var(--muted2)'};font-weight:${on?'700':'400'};white-space:nowrap;">${lang==='en'?p.en:p.es}</span>
       </button>`;
     }).join('')}
   </div>`;
