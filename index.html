@@ -1808,7 +1808,7 @@ function renderProfile(){
       <div class="profile-since">${t('profile_since')}${since}</div>
       ${!isSelf?(()=>{
         const incomingReq=pendingFriendReqs.find(r=>r.sender_id===prof.id);
-        return `<div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+        return `<div style="display:flex;gap:8px;justify-content:center;margin-top:12px;align-items:stretch;">
           <button class="follow-btn ${isFollowing?'following':''}" id="profileFollow" data-uid="${prof.id}" style="flex:1;text-align:center;justify-content:center;">${isFollowing?ICO.check+' '+t('btn_following'):ICO.plus+' '+t('btn_follow')}</button>
           ${myFriends.has(prof.id)
             ?`<button class="follow-btn following" id="profileUnfriend" data-uid="${prof.id}" style="flex:1;text-align:center;">${ICO.check} ${lang==='en'?'Amigos':'Amigos'}</button>`
