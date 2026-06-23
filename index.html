@@ -1132,8 +1132,9 @@ async function removeFriend(uid){
   }catch(e){alert('Error: '+e.message);}
 }
 async function loadFeed(){
-  const [{data:posts},{data:deps},{data:follows},{data:yPosts}]=await Promise.all([
+  const [{data:posts},{data:ownOld},{data:deps},{data:follows},{data:yPosts}]=await Promise.all([
     sb.from('posts').select('*').eq('post_date',todayS()).eq('is_primary',true).order('created_at',{ascending:false}),
+    sb.from('posts').select('*').eq('post_date',todayS()).eq('user_id',user.id).eq('is_primary',false).order('created_at',{ascending:false}),
     sb.from('deps').select('post_id').eq('user_id',user.id),
     sb.from('follows').select('following_id').eq('follower_id',user.id),
     sb.from('posts').select('*').lt('post_date',todayS()).gte('post_date',new Date(Date.now()-86400000*30).toISOString().slice(0,10)).eq('is_primary',true).order('post_date',{ascending:false}).order('created_at',{ascending:false}).limit(60),
@@ -1141,13 +1142,25 @@ async function loadFeed(){
   myDeps=new Set((deps||[]).map(d=>d.post_id));
   myFollowing=new Set((follows||[]).map(f=>f.following_id));
   const primary=posts||[];
-  const prevIds=primary.map(p=>p.previous_post_id).filter(Boolean);
-  let prevMap={};
-  if(prevIds.length){
-    const {data:prevPosts}=await sb.from('posts').select('*').in('id',prevIds);
-    (prevPosts||[]).forEach(p=>{prevMap[p.id]=p;});
+  // Build map of all today's known posts for chain building
+  const todayMap={};
+  [...primary,...(ownOld||[])].forEach(p=>{todayMap[p.id]=p;});
+  // Load prev posts for other users missing from map
+  const missingIds=primary.filter(p=>p.user_id!==user.id&&p.previous_post_id&&!todayMap[p.previous_post_id]).map(p=>p.previous_post_id);
+  if(missingIds.length){
+    const {data:prevPosts}=await sb.from('posts').select('*').in('id',missingIds);
+    (prevPosts||[]).forEach(p=>{todayMap[p.id]=p;});
   }
-  feedData=primary.map(p=>({...p,_prev:p.previous_post_id?prevMap[p.previous_post_id]||null:null}))
+  function buildChain(post){
+    const chain=[];let cur=post;
+    while(cur.previous_post_id&&todayMap[cur.previous_post_id]&&chain.length<10){cur=todayMap[cur.previous_post_id];chain.push(cur);}
+    return chain;
+  }
+  // Own posts: all today shown individually, no chain
+  const ownAll=[...primary.filter(p=>p.user_id===user.id),...(ownOld||[])].map(p=>({...p,_prevChain:[]}));
+  // Other users: primary only with full prev chain
+  const others=primary.filter(p=>p.user_id!==user.id).map(p=>({...p,_prevChain:buildChain(p)}));
+  feedData=[...ownAll,...others]
     .sort((a,b)=>{const af=myFollowing.has(a.user_id)?0:1,bf=myFollowing.has(b.user_id)?0:1;return af-bf||(new Date(b.created_at)-new Date(a.created_at));});
   feedYesterday=(yPosts||[]).sort((a,b)=>{const af=myFollowing.has(a.user_id)?0:1,bf=myFollowing.has(b.user_id)?0:1;return af-bf||(new Date(b.created_at)-new Date(a.created_at));});
   feedOlder=[];
@@ -2210,7 +2223,7 @@ function feedCardHTML(item,older=false){
   const given=myDeps.has(item.id),own=item.user_id===user.id;
   const friend=myFollowing.has(item.user_id);
   const d=DEATHS.find(x=>x.id===item.castigo);
-  const hasPrev=!!item.previous_post_id&&!!item._prev,isOpen=expandedPrev.has(item.id);
+  const hasPrev=item.user_id!==user.id&&!!item._prevChain&&item._prevChain.length>0,isOpen=expandedPrev.has(item.id);
   const depCount=item.dep_count||0;
   const dateStr=timeAgo(item.created_at);
   const dollPx=clamp(52,64);
@@ -2238,7 +2251,7 @@ function feedCardHTML(item,older=false){
         <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         ${t('prev_btn')}
       </button>
-      <div class="prev-panel ${isOpen?'open':''}">${prevPostHTML(item._prev,54)}</div>
+      <div class="prev-panel ${isOpen?'open':''}">${item._prevChain.map(p=>prevPostHTML(p,54)).join('')}</div>
     `:''}
   </div>`;
 }
@@ -2509,7 +2522,7 @@ function attachListeners(){
     document.querySelectorAll('.doll-expand-btn').forEach(b=>{b.onclick=(e)=>{
       e.stopPropagation();
       const pid=b.getAttribute('data-pid');
-      const item=[...feedData,...(feedData.flatMap(x=>x._prev?[x._prev]:[])||[])].find(x=>x.id===pid)||feedData.find(x=>x.id===pid);
+      const item=[...feedData,...feedData.flatMap(x=>x._prevChain||[])].find(x=>x.id===pid);
       if(!item)return;
       expandedDollItem=item;
       showDollModal(item);
