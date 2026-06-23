@@ -1885,8 +1885,8 @@ function renderSeñales(){
     const uname=`<strong style="color:var(--text);font-weight:700;">${esc(i.user)}</strong>`;
     if(i.type==='dep'){
       const castLabel=i.postCastigo==='dibujo'?(i.postDescDibujo?esc(i.postDescDibujo):'dibujo'):i.postCastigo?dl(i.postCastigo):'';
-      const postSnippet=i.postRazon?`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;padding:5px 8px;background:var(--bg2);border-radius:6px;border-left:2px solid var(--border2);line-height:1.4;font-style:italic;">"${esc(i.postRazon.slice(0,80))}${i.postRazon.length>80?'…':''}"${castLabel?` <span style="opacity:.5;font-style:normal;">· ${castLabel}</span>`:''}`;
-      return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.candle}</div><div class="señal-text" style="flex:1;">${uname} ${t('sig_dep')}${i.postRazon?postSnippet+'</div>':''}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
+      const postSnippet=i.postRazon?`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;padding:5px 8px;background:var(--bg2);border-radius:6px;border-left:2px solid var(--border2);line-height:1.4;font-style:italic;">"${esc(i.postRazon.slice(0,80))}${i.postRazon.length>80?'…':''}"${castLabel?` <span style="opacity:.5;font-style:normal;">· ${castLabel}</span>`:''}</div>`:'';
+      return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.candle}</div><div class="señal-text" style="flex:1;">${uname} ${t('sig_dep')}${postSnippet}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
     }
     return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.skull}</div><div class="señal-text">${uname} ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
   }).join('');
