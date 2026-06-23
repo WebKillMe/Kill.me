@@ -1835,12 +1835,9 @@ function renderSeñales(){
       :`<div class="señal-row"><div class="señal-icon">${ICO.skull}</div><div class="señal-text">${uname} ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
   }).join('');
   const friendReqRows=pendingFriendReqs.map(r=>`
-    <div class="señal-row" style="align-items:center;gap:10px;background:rgba(176,120,48,.06);border-radius:8px;padding:10px 12px;border:1px solid rgba(176,120,48,.2);">
-      <div style="flex-shrink:0;">${avatarDoll(r.sender?.doll_color||DOLL_COLORS[0],clamp(32,36))}</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:clamp(12px,3vw,13px);font-weight:600;color:var(--text);">@${esc(r.sender?.username||'?')}</div>
-        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);">${lang==='en'?'wants to be friends':'quiere ser tu amigo/a'}</div>
-      </div>
+    <div class="señal-row" style="background:rgba(176,120,48,.04);border-radius:8px;padding:clamp(10px,2.5vw,12px);border:1px solid rgba(176,120,48,.15);margin-bottom:8px;">
+      <div class="señal-icon" style="color:var(--warm);">${avatarDoll(r.sender?.doll_color||DOLL_COLORS[0],clamp(28,34))}</div>
+      <div class="señal-text"><button class="btn-link fr-req-user señal-user" data-uid="${r.sender_id}" style="font-weight:600;padding:0;font-size:inherit;">@${esc(r.sender?.username||'?')}</button> ${lang==='en'?'wants to be friends':'quiere ser tu amigo/a'}</div>
       <div style="display:flex;gap:6px;flex-shrink:0;">
         <button class="btn-warm-sm fr-accept" data-reqid="${r.id}" data-senderid="${r.sender_id}" style="padding:5px 10px;font-size:clamp(11px,2.8vw,12px);">${ICO.check}</button>
         <button class="btn-link fr-reject" data-reqid="${r.id}" style="font-size:18px;color:var(--muted2);padding:5px 8px;">✕</button>
@@ -1849,7 +1846,7 @@ function renderSeñales(){
   const emptyState=todayPost?t('senales_empty_post'):t('senales_empty_no_post');
   return `<div class="screen">
     ${hdr(t('senales_title'),'')}
-    ${pendingFriendReqs.length?`<div style="margin-bottom:16px;"><div style="font-size:clamp(9px,2.3vw,10px);text-transform:uppercase;letter-spacing:1.5px;color:var(--warm);margin-bottom:8px;">${lang==='en'?'Friend requests':'Solicitudes de amistad'} · ${pendingFriendReqs.length}</div>${friendReqRows}</div>`:''}
+    ${pendingFriendReqs.length?`<div style="margin-bottom:8px;">${friendReqRows}</div>`:''}
     ${items.length?rows:`<p class="señales-empty">${pendingFriendReqs.length?'':emptyState}</p>`}
     ${!todayPost?`<div style="text-align:center;margin-top:20px;"><button class="btn btn-red" onclick="draftRazon='';view='razon';paint()">${t('btn_publish_ruina')}</button></div>`:''}
   </div>`;
@@ -2736,6 +2733,13 @@ function setupCanvas(){
   };
   guide();
 }
+
+// Prevent pinch-zoom and double-tap zoom on iOS (viewport meta ignored by Safari)
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchstart',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
+let _lastTap=0;
+document.addEventListener('touchend',e=>{const now=Date.now();if(now-_lastTap<300)e.preventDefault();_lastTap=now;},{passive:false});
 
 // ── Init ──────────────────────────────────────────────
 async function init(){
