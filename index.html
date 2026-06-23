@@ -880,15 +880,15 @@ function dollSVG(color,death,dead,poseName,px){
         <animateTransform attributeName="transform" type="translate" values="${sx} ${sy};${-sx} ${sy*.4};${sx*.4} ${sy*.7};${sx} ${sy}" dur="${dur}" begin="${beg}" repeatCount="indefinite" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1;.42 0 .58 1"/>
       </path>`;
     };
-    fx+=fl(.22, h*.77, '#6B0C0C', '.82', '1.1s', '0s',  1.2, -1.5);
-    fx+=fl(.35, h*.60, '#A01818', '.91', '0.78s','0.15s',1.8, -2.5);
-    fx+=fl(.50, h*.48, '#C42222', '.96', '0.92s','0.05s',2.2, -3.5);
-    fx+=fl(.63, h*.58, '#A01818', '.90', '0.74s','0.22s',1.8, -2.5);
-    fx+=fl(.76, h*.74, '#6B0C0C', '.80', '1.05s','0.12s',1.2, -1.5);
-    // Bright orange tips layer — same flames slightly smaller, hotter color
-    fx+=fl(.35, h*.66, '#E05010', '.55', '0.78s','0.15s',1.5, -2);
-    fx+=fl(.50, h*.54, '#FF6020', '.60', '0.92s','0.05s',1.8, -3);
-    fx+=fl(.63, h*.64, '#E05010', '.52', '0.74s','0.22s',1.5, -2);
+    fx+=fl(.22, h*.84, '#6B0C0C', '.82', '1.1s', '0s',  1.2, -1.5);
+    fx+=fl(.35, h*.72, '#A01818', '.91', '0.78s','0.15s',1.8, -2.5);
+    fx+=fl(.50, h*.62, '#C42222', '.96', '0.92s','0.05s',2.2, -3.5);
+    fx+=fl(.63, h*.70, '#A01818', '.90', '0.74s','0.22s',1.8, -2.5);
+    fx+=fl(.76, h*.83, '#6B0C0C', '.80', '1.05s','0.12s',1.2, -1.5);
+    // Bright orange tips layer
+    fx+=fl(.35, h*.77, '#E05010', '.55', '0.78s','0.15s',1.5, -2);
+    fx+=fl(.50, h*.67, '#FF6020', '.60', '0.92s','0.05s',1.8, -3);
+    fx+=fl(.63, h*.75, '#E05010', '.52', '0.74s','0.22s',1.5, -2);
     // char marks on body (on top of flames)
     fx+=`<line x1="${w*.3}" y1="${h*.52}" x2="${w*.44}" y2="${h*.54}" stroke="#1E0606" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
     fx+=`<line x1="${w*.56}" y1="${h*.62}" x2="${w*.7}" y2="${h*.59}" stroke="#1E0606" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>`;
@@ -2158,7 +2158,7 @@ function renderMuerte(){
     ${previewDeath?`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">${dl(previewDeath)}</div>`:''}
   </div>`;
   // Pose picker
-  const posePicker=`<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px;-webkit-overflow-scrolling:touch;">
+  const posePicker=`<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;">
     ${POSES.map(p=>{
       const on=previewPose===p.id;
       return `<button class="pose-pick-btn" data-pose="${p.id}" style="flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:8px;border:1px solid ${on?'var(--warm)':'var(--border2)'};background:${on?'rgba(176,120,48,.1)':'transparent'};cursor:pointer;">
