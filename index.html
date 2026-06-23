@@ -2431,6 +2431,30 @@ function renderLogros(){
   </div>`;
 }
 
+function prevPostHTML(p,size,idx=0){
+  if(!p)return'';
+  const d=DEATHS.find(x=>x.id===p.castigo);
+  const lbl=p.castigo==='dibujo'?esc(p.dibujo_descripcion):dl(p.castigo);
+  const timeStr=new Date(p.created_at).toLocaleTimeString(lang==='en'?'en-US':'es-ES',{hour:'2-digit',minute:'2-digit'});
+  const label=idx===0?(lang==='en'?'BEFORE THIS':'LO DE ANTES'):(lang==='en'?'AND BEFORE...':'Y ANTES...');
+  const vl=visLabel(p.visibility);
+  const vc=VIS_COLOR[p.visibility]||'var(--border2)';
+  return `<div style="opacity:.65;margin:6px 0 2px;padding:10px 0 10px 12px;border-left:2px solid var(--border2);">
+    <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:8px;">${label}</div>
+    <div style="display:flex;gap:12px;align-items:flex-start;">
+      <div style="flex-shrink:0;">${dollWithDraw(p.doll_color||profile?.doll_color,p.castigo,p.dibujo_trazos,true,p?.pose||d?.pose||'idle',clamp(44,54))}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">${lbl} <span style="opacity:.5;font-weight:400;text-transform:none;">· ${timeStr}</span></div>
+        <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(p.razon)}"</div>
+        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          ${ICO.candle} ${p.dep_count||0}
+          ${vl?`<span style="display:inline-flex;align-items:center;gap:4px;font-size:clamp(9px,2.3vw,10px);padding:2px 7px;border-radius:10px;border:1px solid ${vc};color:${vc};">${vl.ico} ${vl.txt}</span>`:''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
 function tombstoneCardHTML(item){
   const d=DEATHS.find(x=>x.id===item.castigo);
   const lbl=item.castigo==='dibujo'?esc(item.dibujo_descripcion):dl(item.castigo);
