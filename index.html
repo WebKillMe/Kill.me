@@ -1442,7 +1442,7 @@ function maybeShowOnboarding(){if(!localStorage.getItem('sawOnboarding'))showOnb
 
 // ── Señales ────────────────────────────────────────────
 function señalesHistoryKey(){return`señalesHistory_${user?.id||'x'}`;}
-const SEÑALES_VER='2';
+const SEÑALES_VER='3';
 async function loadSeñales(){
   if(!user)return[];
   // Invalidate cache if format version changed
@@ -1469,7 +1469,7 @@ async function loadSeñales(){
   const deps=myPostIds.length?results[0].data||[]:[];
   const follows=results[myPostIds.length?1:0].data||[];
   const newItems=[
-    ...deps.map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien',uid:d.user_id,postRazon:d.posts?.razon||null,postCastigo:d.posts?.castigo||null,postDescDibujo:d.posts?.dibujo_descripcion||null})),
+    ...deps.map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien',uid:d.user_id,postId:d.post_id,postRazon:d.posts?.razon||null,postCastigo:d.posts?.castigo||null,postDescDibujo:d.posts?.dibujo_descripcion||null})),
     ...follows.map(f=>({type:'follow',time:f.created_at,user:f['profiles!follower_id']?.username||f.profiles?.username||'alguien',uid:f.follower_id})),
   ];
   // Merge with history — dedup by time+type+user
@@ -1939,16 +1939,35 @@ ${(()=>{const profState={totalDeps:td,streak:prof.streak||0,postCount:posts.leng
 
 function renderSeñales(){
   const items=window._señalesItems||[];
-  const rows=items.map(i=>{
-    const uidAttr=i.uid?` data-uid="${i.uid}"`:'';
-    const rowAttr=i.uid?` señal-user${uidAttr} style="cursor:pointer;"`:' style="cursor:default;"';
-    const uname=`<strong style="color:var(--text);font-weight:700;">${esc(i.user)}</strong>`;
-    if(i.type==='dep'){
+  // Group DEPs by postId, keep follows individual
+  const depGroups={};
+  const rowItems=[];
+  for(const i of items){
+    if(i.type==='dep'&&i.postId){
+      if(!depGroups[i.postId]){depGroups[i.postId]={type:'dep_group',postId:i.postId,users:[],time:i.time,postRazon:i.postRazon,postCastigo:i.postCastigo,postDescDibujo:i.postDescDibujo};}
+      const g=depGroups[i.postId];
+      g.users.push({user:i.user,uid:i.uid});
+      if(new Date(i.time)>new Date(g.time))g.time=i.time;
+    } else {
+      rowItems.push(i);
+    }
+  }
+  // Merge dep groups into rowItems, sort by time desc
+  const allRows=[...rowItems,...Object.values(depGroups)].sort((a,b)=>new Date(b.time)-new Date(a.time));
+  const expandedDeps=window._expandedDeps||(window._expandedDeps=new Set());
+  const rows=allRows.map(i=>{
+    if(i.type==='dep_group'){
+      const us=i.users;
+      const shown=us.slice(0,3).map(u=>`<button class="btn-link señal-user" data-uid="${u.uid}" style="display:inline;padding:0;width:auto;font-size:inherit;font-weight:700;color:var(--text);">${esc(u.user)}</button>`).join(', ');
+      const extra=us.length>3?` <span style="color:var(--muted2);">+ ${us.length-3} ${lang==='en'?'more':'más'}</span>`:'';
       const castLabel=i.postCastigo==='dibujo'?(i.postDescDibujo?esc(i.postDescDibujo):'dibujo'):i.postCastigo?dl(i.postCastigo):'';
       const postSnippet=i.postRazon?`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;padding:5px 8px;background:var(--bg2);border-radius:6px;border-left:2px solid var(--border2);line-height:1.4;font-style:italic;">"${esc(i.postRazon.slice(0,80))}${i.postRazon.length>80?'…':''}"${castLabel?` <span style="opacity:.5;font-style:normal;">· ${castLabel}</span>`:''}</div>`:'';
-      return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.candle}</div><div class="señal-text" style="flex:1;">${uname} ${t('sig_dep')}${postSnippet}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
+      const isOpen=expandedDeps.has(i.postId);
+      const fullList=isOpen?`<div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">${us.map(u=>`<button class="btn-link señal-user" data-uid="${u.uid}" style="display:block;padding:2px 0;width:auto;text-align:left;font-size:clamp(11px,2.8vw,12px);font-weight:600;color:var(--text2);">@${esc(u.user)}</button>`).join('')}</div>`:'';
+      return `<div class="señal-row"><div class="señal-icon">${ICO.candle}</div><div class="señal-text" style="flex:1;">${shown}${extra} ${t('sig_dep')}${postSnippet}${us.length>3?`<button class="btn-link dep-expand" data-pid="${i.postId}" style="display:inline;padding:0;width:auto;font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;">${isOpen?(lang==='en'?'▲ hide':'▲ ocultar'):(lang==='en'?'▼ see all':'▼ ver todos')}</button>`:''} ${fullList}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
     }
-    return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.skull}</div><div class="señal-text">${uname} ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
+    const uname=`<button class="btn-link señal-user" data-uid="${i.uid||''}" style="display:inline;padding:0;width:auto;font-size:inherit;font-weight:700;color:var(--text);">${esc(i.user)}</button>`;
+    return `<div class="señal-row"><div class="señal-icon">${ICO.skull}</div><div class="señal-text">${uname} ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
   }).join('');
   const friendReqRows=pendingFriendReqs.map(r=>`
     <div class="señal-row" style="background:rgba(176,120,48,.04);border-radius:8px;padding:clamp(10px,2.5vw,12px);border:1px solid rgba(176,120,48,.15);margin-bottom:8px;">
@@ -2778,12 +2797,22 @@ function attachListeners(){
     });
     document.querySelectorAll('.señal-user').forEach(el=>{
       el.onclick=async(e)=>{
+        e.stopPropagation();
         if(e.target.closest('.fr-accept,.fr-reject'))return;
         const uid=el.getAttribute('data-uid');
         if(!uid)return;
         profileReturnView='señales';
         viewingProfile=await loadProfileData(uid);
         view='profile';paint();
+      };
+    });
+    document.querySelectorAll('.dep-expand').forEach(btn=>{
+      btn.onclick=(e)=>{
+        e.stopPropagation();
+        const pid=btn.getAttribute('data-pid');
+        if(window._expandedDeps.has(pid))window._expandedDeps.delete(pid);
+        else window._expandedDeps.add(pid);
+        paint();
       };
     });
   }
