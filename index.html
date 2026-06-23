@@ -1411,14 +1411,21 @@ function maybeShowOnboarding(){if(!localStorage.getItem('sawOnboarding'))showOnb
 
 // ── Señales ────────────────────────────────────────────
 function señalesHistoryKey(){return`señalesHistory_${user?.id||'x'}`;}
+const SEÑALES_VER='2';
 async function loadSeñales(){
   if(!user)return[];
-  // Load persisted history first
+  // Invalidate cache if format version changed
   let history=[];
+  const vk=señalesHistoryKey()+'_ver';
+  if(localStorage.getItem(vk)!==SEÑALES_VER){
+    localStorage.removeItem(señalesHistoryKey());
+    localStorage.removeItem('señalesCheck');
+    localStorage.setItem(vk,SEÑALES_VER);
+  }
   try{history=JSON.parse(localStorage.getItem(señalesHistoryKey())||'[]');}catch(e){}
-  // Fetch new items since last check
+  // Fetch new items since last check (or last 30 days if no check)
   const lastCheck=parseInt(localStorage.getItem('señalesCheck')||'0');
-  const since=new Date(lastCheck||Date.now()-86400000*7).toISOString();
+  const since=new Date(lastCheck||Date.now()-86400000*30).toISOString();
   let myPosts;try{({data:myPosts}=await sb.from('posts').select('id').eq('user_id',user.id).gte('post_date',new Date(Date.now()-86400000*30).toISOString().slice(0,10)));}catch(e){myPosts=[];}
   const myPostIds=(myPosts||[]).map(p=>p.id);
   const queries=[
