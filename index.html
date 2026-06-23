@@ -1975,9 +1975,8 @@ function renderHome(){
     })();
   }
   const pastPosts=(cemeteryPosts||[]).filter(p=>(p.post_date||p.created_at?.slice(0,10))!==todayS());
-  const cemSub=cemeteryPosts===null?'':t('cemetery_sub').replace('$n',pastPosts.length);
   const cemSection=`
-    <div style="margin-top:clamp(20px,5vw,28px);">${hdr('🪦 '+t('cemetery_title'),cemSub)}</div>
+    <div class="feed-older-hdr" style="margin-top:clamp(20px,5vw,28px);">${ICO.tombstone} ${t('cemetery_title')}</div>
     ${cemeteryPosts===null
       ?`<p style="text-align:center;color:var(--muted2);font-size:clamp(12px,3vw,13px);">${t('amigos_loading')}</p>`
       :pastPosts.length
