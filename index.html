@@ -1425,13 +1425,13 @@ async function loadSeñales(){
     sb.from('follows').select('created_at,follower_id,profiles!follower_id(username)').eq('following_id',user.id).gt('created_at',since).order('created_at',{ascending:false}),
   ];
   if(myPostIds.length)queries.unshift(
-    sb.from('deps').select('created_at,user_id,profiles(username)').in('post_id',myPostIds).gt('created_at',since).neq('user_id',user.id).order('created_at',{ascending:false}).limit(50)
+    sb.from('deps').select('created_at,user_id,post_id,profiles(username),posts(razon,castigo,dibujo_descripcion)').in('post_id',myPostIds).gt('created_at',since).neq('user_id',user.id).order('created_at',{ascending:false}).limit(50)
   );
   const results=await Promise.all(queries).catch(()=>queries.map(()=>({data:[]})));
   const deps=myPostIds.length?results[0].data||[]:[];
   const follows=results[myPostIds.length?1:0].data||[];
   const newItems=[
-    ...deps.map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien',uid:d.user_id})),
+    ...deps.map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien',uid:d.user_id,postRazon:d.posts?.razon||null,postCastigo:d.posts?.castigo||null,postDescDibujo:d.posts?.dibujo_descripcion||null})),
     ...follows.map(f=>({type:'follow',time:f.created_at,user:f['profiles!follower_id']?.username||f.profiles?.username||'alguien',uid:f.follower_id})),
   ];
   // Merge with history — dedup by time+type+user
@@ -1881,10 +1881,14 @@ function renderSeñales(){
   const items=window._señalesItems||[];
   const rows=items.map(i=>{
     const uidAttr=i.uid?` data-uid="${i.uid}"`:'';
-    const uname=i.uid?`<button class="btn-link señal-user" style="font-weight:600;padding:0;font-size:inherit;"${uidAttr}>${esc(i.user)}</button>`:`<strong>${esc(i.user)}</strong>`;
-    return i.type==='dep'
-      ?`<div class="señal-row"><div class="señal-icon">${ICO.candle}</div><div class="señal-text">${uname} ${t('sig_dep')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`
-      :`<div class="señal-row"><div class="señal-icon">${ICO.skull}</div><div class="señal-text">${uname} ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
+    const rowAttr=i.uid?` señal-user${uidAttr} style="cursor:pointer;"`:' style="cursor:default;"';
+    const uname=`<strong style="color:var(--text);font-weight:700;">${esc(i.user)}</strong>`;
+    if(i.type==='dep'){
+      const castLabel=i.postCastigo==='dibujo'?(i.postDescDibujo?esc(i.postDescDibujo):'dibujo'):i.postCastigo?dl(i.postCastigo):'';
+      const postSnippet=i.postRazon?`<div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;padding:5px 8px;background:var(--bg2);border-radius:6px;border-left:2px solid var(--border2);line-height:1.4;font-style:italic;">"${esc(i.postRazon.slice(0,80))}${i.postRazon.length>80?'…':''}"${castLabel?` <span style="opacity:.5;font-style:normal;">· ${castLabel}</span>`:''}`;
+      return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.candle}</div><div class="señal-text" style="flex:1;">${uname} ${t('sig_dep')}${i.postRazon?postSnippet+'</div>':''}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
+    }
+    return `<div class="señal-row"${rowAttr}><div class="señal-icon">${ICO.skull}</div><div class="señal-text">${uname} ${t('sig_follow')}</div><div class="señal-time">${timeAgo(i.time)}</div></div>`;
   }).join('');
   const friendReqRows=pendingFriendReqs.map(r=>`
     <div class="señal-row" style="background:rgba(176,120,48,.04);border-radius:8px;padding:clamp(10px,2.5vw,12px);border:1px solid rgba(176,120,48,.15);margin-bottom:8px;">
@@ -2701,9 +2705,10 @@ function attachListeners(){
     document.querySelectorAll('.fr-reject').forEach(btn=>{
       btn.onclick=async()=>await rejectFriendRequest(btn.getAttribute('data-reqid'));
     });
-    document.querySelectorAll('.señal-user').forEach(btn=>{
-      btn.onclick=async()=>{
-        const uid=btn.getAttribute('data-uid');
+    document.querySelectorAll('.señal-user').forEach(el=>{
+      el.onclick=async(e)=>{
+        if(e.target.closest('.fr-accept,.fr-reject'))return;
+        const uid=el.getAttribute('data-uid');
         if(!uid)return;
         profileReturnView='señales';
         viewingProfile=await loadProfileData(uid);
