@@ -892,8 +892,9 @@ function dollSVG(color,death,dead,poseName,px){
     </g>`;
   }
   if(death==="hielo"){
+    const hcx=w/2;
     // Blue frost atmosphere on body area
-    fx=`<ellipse cx="${cx}" cy="${h*.5}" rx="${w*.45}" ry="${h*.4}" fill="#061830" opacity=".28"/>`;
+    fx=`<ellipse cx="${hcx}" cy="${h*.5}" rx="${w*.45}" ry="${h*.4}" fill="#061830" opacity=".28"/>`;
     // Large visible icicles — ice-blue, rendered in front of doll
     [[w*.18,h*.52,w*.026],[w*.32,h*.62,w*.021],[w*.48,h*.70,w*.025],[w*.63,h*.56,w*.021],[w*.78,h*.44,w*.019]].forEach(([x,bot,hw])=>{
       fx+=`<polygon points="${x-hw},0 ${x+hw},0 ${x},${bot}" fill="#AADDFF" opacity=".9" style="animation:icicleShimmer 3s ease-in-out infinite"/>
@@ -1679,22 +1680,27 @@ function paint(){
   if(view==='auth'){renderAuth();return;}
   if(view==='verify'){renderVerify();return;}
   if(view==='recovery'){renderRecovery();return;}
-  let c='';
-  if(view==='home')c=renderHome();
-  else if(view==='razon')c=renderRazon();
-  else if(view==='muerte')c=renderMuerte();
-  else if(view==='dibujo')c=renderDibujo();
-  else if(view==='posted')c=renderPosted();
-  else if(view==='feed')c=renderFeed();
-  else if(view==='muertes')c=renderMuertes();
-  else if(view==='ajustes')c=renderAjustes();
-  else if(view==='señales')c=renderSeñales();
-  else if(view==='amigos')c=renderAmigos();
-  else if(view==='profile')c=renderProfile();
-  else if(view==='cementerio')c=renderCemetery();
-  else if(view==='logros')c=renderLogros();
-  else if(view==='buscar')c=renderSearch();
-  shell(c);
+  try{
+    let c='';
+    if(view==='home')c=renderHome();
+    else if(view==='razon')c=renderRazon();
+    else if(view==='muerte')c=renderMuerte();
+    else if(view==='dibujo')c=renderDibujo();
+    else if(view==='posted')c=renderPosted();
+    else if(view==='feed')c=renderFeed();
+    else if(view==='muertes')c=renderMuertes();
+    else if(view==='ajustes')c=renderAjustes();
+    else if(view==='señales')c=renderSeñales();
+    else if(view==='amigos')c=renderAmigos();
+    else if(view==='profile')c=renderProfile();
+    else if(view==='cementerio')c=renderCemetery();
+    else if(view==='logros')c=renderLogros();
+    else if(view==='buscar')c=renderSearch();
+    shell(c);
+  }catch(err){
+    console.error('[paint] view='+view,err);
+    ge('root').innerHTML=`<div class="screen"><p style="color:var(--red);text-align:center;margin-top:40px;">Error al cargar: ${err.message}</p><button class="btn-link" onclick="view='home';paint()">← Volver</button></div>`;
+  }
 }
 
 async function loadProfileData(uid){
