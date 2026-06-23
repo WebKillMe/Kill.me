@@ -880,15 +880,15 @@ function dollSVG(color,death,dead,poseName,px){
         <animateTransform attributeName="transform" type="translate" values="${sx} ${sy};${-sx} ${sy*.4};${sx*.4} ${sy*.7};${sx} ${sy}" dur="${dur}" begin="${beg}" repeatCount="indefinite" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1;.42 0 .58 1"/>
       </path>`;
     };
-    fx+=fl(.22, h*.84, '#6B0C0C', '.82', '1.1s', '0s',  1.2, -1.5);
-    fx+=fl(.35, h*.72, '#A01818', '.91', '0.78s','0.15s',1.8, -2.5);
-    fx+=fl(.50, h*.62, '#C42222', '.96', '0.92s','0.05s',2.2, -3.5);
-    fx+=fl(.63, h*.70, '#A01818', '.90', '0.74s','0.22s',1.8, -2.5);
-    fx+=fl(.76, h*.83, '#6B0C0C', '.80', '1.05s','0.12s',1.2, -1.5);
+    fx+=fl(.22, h*.91, '#6B0C0C', '.82', '1.1s', '0s',  1.2, -1.5);
+    fx+=fl(.35, h*.82, '#A01818', '.91', '0.78s','0.15s',1.8, -2.5);
+    fx+=fl(.50, h*.74, '#C42222', '.96', '0.92s','0.05s',2.2, -3.5);
+    fx+=fl(.63, h*.81, '#A01818', '.90', '0.74s','0.22s',1.8, -2.5);
+    fx+=fl(.76, h*.91, '#6B0C0C', '.80', '1.05s','0.12s',1.2, -1.5);
     // Bright orange tips layer
-    fx+=fl(.35, h*.77, '#E05010', '.55', '0.78s','0.15s',1.5, -2);
-    fx+=fl(.50, h*.67, '#FF6020', '.60', '0.92s','0.05s',1.8, -3);
-    fx+=fl(.63, h*.75, '#E05010', '.52', '0.74s','0.22s',1.5, -2);
+    fx+=fl(.35, h*.86, '#E05010', '.55', '0.78s','0.15s',1.5, -2);
+    fx+=fl(.50, h*.79, '#FF6020', '.60', '0.92s','0.05s',1.8, -3);
+    fx+=fl(.63, h*.85, '#E05010', '.52', '0.74s','0.22s',1.5, -2);
     // char marks on body (on top of flames)
     fx+=`<line x1="${w*.3}" y1="${h*.52}" x2="${w*.44}" y2="${h*.54}" stroke="#1E0606" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
     fx+=`<line x1="${w*.56}" y1="${h*.62}" x2="${w*.7}" y2="${h*.59}" stroke="#1E0606" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>`;
@@ -1101,6 +1101,13 @@ async function loadProfile(){
 async function loadTodayPost(){
   const {data}=await sb.from('posts').select('*').eq('user_id',user.id).eq('post_date',todayS()).order('created_at',{ascending:false});
   const all=data||[];
+  if(all.length){
+    const ids=all.map(p=>p.id);
+    const {data:depRows}=await sb.from('deps').select('post_id').in('post_id',ids);
+    const depMap={};
+    (depRows||[]).forEach(r=>{depMap[r.post_id]=(depMap[r.post_id]||0)+1;});
+    all.forEach(p=>{p.dep_count=depMap[p.id]||0;});
+  }
   todayAllPosts=all;
   todayPost=all.find(p=>p.is_primary)||all[0]||null;
   todayPrevPost=todayPost?.previous_post_id ? all.find(p=>p.id===todayPost.previous_post_id)||null : null;
@@ -2112,8 +2119,10 @@ function renderHome(){
           ${dollWithDraw(hero.doll_color,hero.castigo,hero.dibujo_trazos,true,hero?.pose||hd?.pose||'idle',clamp(140,170))}
         </div>
         <div style="font-size:clamp(13px,3.5vw,15px);color:var(--text2);font-style:italic;margin:0 clamp(12px,4vw,24px) 10px;line-height:1.6;">"${esc(hero.razon)}"</div>
-        ${hero.visibility!=='private'?`<div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin-bottom:10px;">${ICO.candle} ${hero.dep_count||0} DEPs</div>`:''}
-        <button class="btn-link cem-delete-btn" data-delid="${hero.id}" data-isprimary="1" style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);opacity:.4;margin-bottom:4px;"><svg width="11" height="13" viewBox="0 0 14 16" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M1 4h12M5 4V2h4v2M3 4l1 10h6l1-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${t('btn_delete')}</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding:0 4px;">
+          ${hero.visibility!=='private'?`<div style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${hero.dep_count||0} DEPs</div>`:`<div></div>`}
+          <button class="btn-link cem-delete-btn" data-delid="${hero.id}" data-isprimary="1" style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);opacity:.4;"><svg width="11" height="13" viewBox="0 0 14 16" fill="none" style="vertical-align:middle;margin-right:2px;"><path d="M1 4h12M5 4V2h4v2M3 4l1 10h6l1-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>${t('btn_delete')}</button>
+        </div>
       </div>
       <div class="action-row" style="margin-top:12px;">
         <button class="action-btn" id="goFeed" style="flex:1.2;">${ICO.skull} ${t('btn_feed')}</button>
