@@ -1212,44 +1212,49 @@ function showShareMenu(p){
   const el=document.createElement('div');
   el.id='share-menu';
   el.style.cssText='position:fixed;inset:0;z-index:9998;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.6);';
+  const btnStyle='flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:1px solid var(--border2);border-radius:12px;padding:14px 6px;cursor:pointer;color:var(--text2);font-family:inherit;';
   el.innerHTML=`<div style="background:var(--surface2);border-radius:18px 18px 0 0;padding:20px 20px 32px;width:100%;max-width:480px;border-top:1px solid var(--border2);">
     <div style="text-align:center;color:var(--muted2);font-size:12px;margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;">Compartir en</div>
-    <div style="display:flex;gap:12px;">
-      <button id="shareX" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:1px solid var(--border2);border-radius:12px;padding:16px 8px;cursor:pointer;color:var(--text2);">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.836L2 2.25h6.957l4.264 5.626 5.023-5.626zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        <span style="font-size:12px;">X / Twitter</span>
+    <div style="display:flex;gap:10px;margin-bottom:10px;">
+      <button id="shareX" style="${btnStyle}">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.836L2 2.25h6.957l4.264 5.626 5.023-5.626zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <span style="font-size:11px;">X / Twitter</span>
       </button>
-      <button id="shareImg" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:1px solid var(--border2);border-radius:12px;padding:16px 8px;cursor:pointer;color:var(--text2);">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        <span style="font-size:12px;">Imagen</span>
+      <button id="shareBsky" style="${btnStyle}">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.204-.659-.299-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z"/></svg>
+        <span style="font-size:11px;">Bluesky</span>
+      </button>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button id="shareStory" style="${btnStyle}">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="1" width="14" height="22" rx="3"/><circle cx="12" cy="12" r="3.5"/></svg>
+        <span style="font-size:11px;">Story (9:16)</span>
+      </button>
+      <button id="shareImg" style="${btnStyle}">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <span style="font-size:11px;">Imagen (4:5)</span>
       </button>
     </div>
   </div>`;
   el.onclick=(e)=>{if(e.target===el)el.remove();};
   document.body.appendChild(el);
-  el.querySelector('#shareX').onclick=()=>{el.remove();shareToX(p,lbl);};
-  el.querySelector('#shareImg').onclick=async()=>{el.remove();await shareImage(p);};
+  el.querySelector('#shareX').onclick=async()=>{el.remove();await shareToXWithImage(p,lbl);};
+  el.querySelector('#shareBsky').onclick=async()=>{el.remove();await shareToBskyWithImage(p,lbl);};
+  el.querySelector('#shareStory').onclick=async()=>{el.remove();await shareImage(p,'story');};
+  el.querySelector('#shareImg').onclick=async()=>{el.remove();await shareImage(p,'feed');};
 }
 
-function shareToX(p,lbl){
-  const intro=lang==='en'?'The reason I can\'t today:':'La razón por la que no puedo más hoy:';
-  const txt=`${intro} "${p.razon}" — ${lbl||dl(p.castigo)} 🖤`;
-  const url=`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}&url=${encodeURIComponent(KILLME_URL)}`;
-  window.open(url,'_blank','noopener');
-}
-
-async function shareImage(p){
+async function _buildShareBlob(p,format){
   const d=DEATHS.find(x=>x.id===p.castigo);
   const lbl=p.castigo==='dibujo'?(p.dibujo_descripcion||'Dibujo'):dl(p.castigo);
-  const W=1080,H=1350,DOLL_PX=400;
+  const W=1080,H=format==='story'?1920:1350,DOLL_PX=format==='story'?480:400;
+  const dollY=format==='story'?280:190;
   const cv=document.createElement('canvas');
   cv.width=W;cv.height=H;
   const ctx=cv.getContext('2d');
-
   ctx.fillStyle='#0A0A0A';ctx.fillRect(0,0,W,H);
   ctx.fillStyle='#C0392B';ctx.fillRect(0,0,W,12);
   ctx.strokeStyle='rgba(192,57,43,.12)';ctx.lineWidth=3;ctx.strokeRect(24,24,W-48,H-48);
-
   ctx.textAlign='left';
   ctx.font='900 80px Georgia,"Times New Roman",serif';
   const killW=ctx.measureText('kill').width;
@@ -1257,10 +1262,8 @@ async function shareImage(p){
   const brandX=(W-killW-meW)/2;
   ctx.fillStyle='#DEDEDE';ctx.fillText('kill',brandX,118);
   ctx.fillStyle='#C0392B';ctx.fillText('.me',brandX+killW,118);
-
   ctx.strokeStyle='rgba(192,57,43,.22)';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(180,160);ctx.lineTo(W-180,160);ctx.stroke();
-
   try{
     const svgW=220,svgH=280,scale=DOLL_PX/svgW;
     const svgStr=dollPureSVG(p.doll_color,p.castigo,p.dibujo_trazos,true,d?.pose||'idle',svgW,svgH);
@@ -1268,51 +1271,77 @@ async function shareImage(p){
     const svgUrl=URL.createObjectURL(svgBlob);
     await new Promise(res=>{
       const img=new Image();
-      img.onload=()=>{const dh=Math.round(svgH*scale);ctx.drawImage(img,W/2-DOLL_PX/2,190,DOLL_PX,dh);URL.revokeObjectURL(svgUrl);res();};
+      img.onload=()=>{const dh=Math.round(svgH*scale);ctx.drawImage(img,W/2-DOLL_PX/2,dollY,DOLL_PX,dh);URL.revokeObjectURL(svgUrl);res();};
       img.onerror=()=>{URL.revokeObjectURL(svgUrl);res();};
       img.src=svgUrl;
     });
   }catch(e){}
-
+  const textY=format==='story'?1200:730;
   ctx.textAlign='center';
   const intro=lang==='en'?'The reason I can\'t today:':'La razón por la que no puedo más hoy:';
   ctx.fillStyle='rgba(150,135,120,.65)';ctx.font='italic 32px Georgia,serif';
-  ctx.fillText(intro,W/2,730);
-
+  ctx.fillText(intro,W/2,textY);
   ctx.fillStyle='#B0A898';ctx.font='italic 50px Georgia,serif';
   const maxW=W-160,lineH=72;
   const words=(`"${p.razon}"`).split(' ');
-  let line='',y=810;
+  let line='',y=textY+80;
   for(const word of words){
     const test=line+word+' ';
     if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line.trim(),W/2,y);line=word+' ';y+=lineH;}
     else line=test;
   }
   ctx.fillText(line.trim(),W/2,y);
-
   y+=100;
   ctx.fillStyle='#B07830';ctx.font='700 40px system-ui,sans-serif';ctx.letterSpacing='3px';
   ctx.fillText(lbl.toUpperCase(),W/2,y);ctx.letterSpacing='0px';
-
   ctx.strokeStyle='rgba(192,57,43,.15)';ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(180,H-120);ctx.lineTo(W-180,H-120);ctx.stroke();
-
   ctx.fillStyle='rgba(180,160,140,.5)';ctx.font='italic 28px Georgia,serif';
   ctx.fillText('kill.me — publica tu ruina diaria',W/2,H-74);
   ctx.fillStyle='rgba(100,90,80,.4)';ctx.font='22px system-ui,sans-serif';
   ctx.fillText(KILLME_URL,W/2,H-38);
+  return new Promise(res=>cv.toBlob(res,'image/png'));
+}
 
-  cv.toBlob(async blob=>{
+async function shareToXWithImage(p,lbl){
+  const intro=lang==='en'?'The reason I can\'t today:':'La razón por la que no puedo más hoy:';
+  const txt=`${intro} "${p.razon}" — ${lbl||dl(p.castigo)} 🖤\n${KILLME_URL}`;
+  try{
+    const blob=await _buildShareBlob(p,'feed');
     const file=new File([blob],'kill-me-ruina.png',{type:'image/png'});
     if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-      try{await navigator.share({files:[file],title:'kill.me — mi ruina',text:`"${p.razon}" — ${lbl}`});}catch(e){}
-    }else{
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download='kill-me-ruina.png';a.click();
-      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      await navigator.share({files:[file],text:txt});return;
     }
-  },'image/png');
+  }catch(e){}
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt)}`,'_blank','noopener');
 }
+
+async function shareToBskyWithImage(p,lbl){
+  const intro=lang==='en'?'The reason I can\'t today:':'La razón por la que no puedo más hoy:';
+  const txt=`${intro} "${p.razon}" — ${lbl||dl(p.castigo)} 🖤\n${KILLME_URL}`;
+  try{
+    const blob=await _buildShareBlob(p,'feed');
+    const file=new File([blob],'kill-me-ruina.png',{type:'image/png'});
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],text:txt});return;
+    }
+  }catch(e){}
+  window.open(`https://bsky.app/intent/compose?text=${encodeURIComponent(txt)}`,'_blank','noopener');
+}
+
+async function shareImage(p,format='feed'){
+  const lbl=p.castigo==='dibujo'?(p.dibujo_descripcion||'Dibujo'):dl(p.castigo);
+  const blob=await _buildShareBlob(p,format);
+  const file=new File([blob],'kill-me-ruina.png',{type:'image/png'});
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],title:'kill.me — mi ruina',text:`"${p.razon}" — ${lbl}`});}catch(e){}
+  }else{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='kill-me-ruina.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+}
+
 
 // ── Onboarding ────────────────────────────────────────
 const DEAD_FACE_ICO=`<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.2"/><line x1="15" y1="17" x2="21" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><line x1="21" y1="17" x2="15" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><line x1="27" y1="17" x2="33" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><line x1="33" y1="17" x2="27" y2="23" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M16 33 Q24 28 32 33" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`;
@@ -2278,9 +2307,10 @@ function renderAjustes(){
   return `<div class="screen">
     ${hdr(t('ajustes_title'),`@${esc(profile.username)}`)}
     <div style="text-align:center;color:var(--muted);font-size:clamp(10px,2.6vw,11px);margin-bottom:16px;">${esc(user?.email||'')}</div>
-    <div style="display:flex;justify-content:center;margin:8px 0 18px;">
+    <button id="btnViewOwnProfile" style="display:flex;flex-direction:column;align-items:center;background:none;border:none;cursor:pointer;margin:8px auto 18px;gap:4px;">
       ${dollSVG(profile.doll_color,null,false,'idle',110)}
-    </div>
+      <span style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);">Ver mi perfil →</span>
+    </button>
     <div style="text-align:center;color:var(--muted2);font-size:clamp(9px,2.5vw,10px);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">${t('ajustes_color')}</div>
     <div class="colorpick">
       ${DOLL_COLORS.map(c=>`<button class="ccircle ${c===profile.doll_color?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}
@@ -2300,7 +2330,7 @@ function renderAjustes(){
       <div style="font-size:clamp(9px,2.5vw,10px);color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">${t('lbl_birthday')}</div>
       ${profile.birth_date
         ?`<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;font-size:clamp(13px,3.5vw,14px);">
-            <span style="flex:1;color:var(--text);">${new Date(profile.birth_date+'T12:00:00').toLocaleDateString(lang==='en'?'en-US':'es-ES',{day:'numeric',month:'long',year:'numeric'})}</span>
+            <span style="flex:1;color:var(--muted2);">${new Date(profile.birth_date+'T12:00:00').toLocaleDateString(lang==='en'?'en-US':'es-ES',{day:'numeric',month:'long',year:'numeric'})}</span>
             <span style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${getZodiacSign(new Date(profile.birth_date+'T12:00:00'))}</span>
           </div>`
         :`<div style="display:flex;flex-direction:column;gap:8px;">
@@ -2477,6 +2507,7 @@ function attachListeners(){
       };
     });
     if(ge('volverAjustes'))ge('volverAjustes').onclick=()=>{view=todayPost?'feed':'home';paint();};
+    if(ge('btnViewOwnProfile'))ge('btnViewOwnProfile').onclick=async()=>{profileReturnView='ajustes';viewingProfile=await loadProfileData(user.id);view='profile';paint();};
     if(ge('btnInstructions'))ge('btnInstructions').onclick=()=>showOnboarding();
     if(ge('btnChangePass'))ge('btnChangePass').onclick=async()=>{
       const btn=ge('btnChangePass');
