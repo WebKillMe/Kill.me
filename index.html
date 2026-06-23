@@ -1057,16 +1057,23 @@ async function loadFollows(){
 }
 async function loadFriendRequests(){
   try{
-    const [{data:recv},{data:sent}]=await Promise.all([
-      sb.from('friend_requests').select('*,sender:profiles!friend_requests_sender_id_fkey(id,username,doll_color)').eq('receiver_id',user.id).eq('status','pending'),
-      sb.from('friend_requests').select('receiver_id,status').eq('sender_id',user.id),
+    const [{data:recv},{data:sent},{data:accepted}]=await Promise.all([
+      sb.from('friend_requests').select('*').eq('receiver_id',user.id).eq('status','pending'),
+      sb.from('friend_requests').select('receiver_id').eq('sender_id',user.id).eq('status','pending'),
+      sb.from('friend_requests').select('sender_id,receiver_id').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`).eq('status','accepted'),
     ]);
-    pendingFriendReqs=recv||[];
+    // Load sender profiles separately to avoid FK name dependency
+    const senderIds=(recv||[]).map(r=>r.sender_id).filter(Boolean);
+    let senderProfiles=[];
+    if(senderIds.length){
+      const {data:sp}=await sb.from('profiles').select('id,username,doll_color').in('id',senderIds);
+      senderProfiles=sp||[];
+    }
+    pendingFriendReqs=(recv||[]).map(r=>({...r,sender:senderProfiles.find(p=>p.id===r.sender_id)||null}));
     sentFriendReqs=new Set((sent||[]).map(r=>r.receiver_id));
-    const {data:accepted}=await sb.from('friend_requests').select('sender_id,receiver_id').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`).eq('status','accepted');
     myFriends=new Set((accepted||[]).map(r=>r.sender_id===user.id?r.receiver_id:r.sender_id));
     señalesBadge=pendingFriendReqs.length>0;
-  }catch(e){pendingFriendReqs=[];sentFriendReqs=new Set();myFriends=new Set();}
+  }catch(e){console.error('loadFriendRequests',e);pendingFriendReqs=[];sentFriendReqs=new Set();myFriends=new Set();}
 }
 async function sendFriendRequest(uid){
   try{
@@ -1716,37 +1723,52 @@ async function loadProfileData(uid){
 
 function renderAmigos(){
   const friendIds=[...myFollowing];
+  const pendingSection=pendingFriendReqs.length?`<div style="margin-bottom:clamp(14px,3.5vw,18px);border:1px solid var(--warm);border-radius:10px;overflow:hidden;">
+    <div style="padding:8px 12px;background:rgba(176,120,48,.08);font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Solicitudes de amistad · ${pendingFriendReqs.length}</div>
+    ${pendingFriendReqs.map(r=>`<div class="amigo-row fr-row" data-uid="${r.sender_id}" style="border-top:1px solid var(--border);border-radius:0;">
+      <div style="flex-shrink:0">${avatarDoll(r.sender?.doll_color||DOLL_COLORS[0],clamp(36,44))}</div>
+      <div class="amigo-info" style="flex:1;">
+        <div class="amigo-name">@${esc(r.sender?.username||'?')}</div>
+        <div class="amigo-meta" style="font-size:clamp(10px,2.5vw,11px);">quiere ser tu amigo/a</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="fr-accept-inline" data-reqid="${r.id}" data-senderid="${r.sender_id}" style="padding:5px 10px;border-radius:8px;border:none;background:var(--warm);color:#fff;font-size:clamp(11px,2.8vw,12px);cursor:pointer;font-weight:700;">✓</button>
+        <button class="fr-reject-inline" data-reqid="${r.id}" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--muted2);font-size:clamp(11px,2.8vw,12px);cursor:pointer;">✕</button>
+      </div>
+    </div>`).join('')}
+  </div>`:'';
   const tabBar=`<div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:clamp(16px,4vw,20px);">
     <button id="tabFollowing" style="flex:1;padding:10px;background:none;border:none;border-bottom:2px solid ${amigosTab==='following'?'var(--red)':'transparent'};color:${amigosTab==='following'?'var(--text)':'var(--muted2)'};font-weight:${amigosTab==='following'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;">${t('following_tab')} <span style="opacity:.6">${friendIds.length}</span></button>
     <button id="tabFollowers" style="flex:1;padding:10px;background:none;border:none;border-bottom:2px solid ${amigosTab==='followers'?'var(--red)':'transparent'};color:${amigosTab==='followers'?'var(--text)':'var(--muted2)'};font-weight:${amigosTab==='followers'?700:400};font-size:clamp(12px,3vw,13px);cursor:pointer;">${t('followers_tab')} ${followersList?`<span style="opacity:.6">${followersList.length}</span>`:''}</button>
   </div>`;
+  const friendBadge='<span style="font-size:clamp(9px,2.2vw,10px);padding:2px 6px;border-radius:8px;background:rgba(176,120,48,.15);color:var(--warm);font-weight:700;margin-left:6px;">Amigo</span>';
 
   if(amigosTab==='following'){
-    if(!friendIds.length) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,14px);">${t('amigos_empty')}<br><span style="font-size:clamp(11px,3vw,12px);opacity:.5;display:block;margin-top:6px;">${t('amigos_find')}</span></p></div>`;
-    if(friendsList===null) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;">${t('amigos_loading')}</p></div>`;
+    if(!friendIds.length&&!pendingFriendReqs.length) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${pendingSection}${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,14px);">${t('amigos_empty')}<br><span style="font-size:clamp(11px,3vw,12px);opacity:.5;display:block;margin-top:6px;">${t('amigos_find')}</span></p></div>`;
+    if(friendsList===null) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${pendingSection}${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;">${t('amigos_loading')}</p></div>`;
     const rows=friendsList.map(f=>`
       <div class="amigo-row" data-uid="${f.id}">
         <div style="flex-shrink:0">${avatarDoll(f.doll_color||DOLL_COLORS[0],clamp(40,48))}</div>
         <div class="amigo-info">
-          <div class="amigo-name">@${esc(f.username)}</div>
+          <div class="amigo-name">@${esc(f.username)}${myFriends.has(f.id)?friendBadge:''}</div>
           <div class="amigo-meta">${f.streak||0} ${t('amigos_streak')}${f.created_at?new Date(f.created_at).toLocaleDateString(lang==='en'?'en-US':'es-ES',{month:'short',year:'numeric'}):'—'}</div>
         </div>
         <div class="amigo-arrow">›</div>
       </div>`).join('');
-    return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${tabBar}<div>${rows}</div></div>`;
+    return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${pendingSection}${tabBar}<div>${rows}</div></div>`;
   } else {
-    if(followersList===null) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;">${t('amigos_loading')}</p></div>`;
-    if(!followersList.length) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;">${t('no_followers')}</p></div>`;
+    if(followersList===null) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${pendingSection}${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;">${t('amigos_loading')}</p></div>`;
+    if(!followersList.length) return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${pendingSection}${tabBar}<p style="text-align:center;color:var(--muted2);margin-top:40px;">${t('no_followers')}</p></div>`;
     const rows=followersList.map(f=>`
       <div class="amigo-row" data-uid="${f.id}">
         <div style="flex-shrink:0">${avatarDoll(f.doll_color||DOLL_COLORS[0],clamp(40,48))}</div>
         <div class="amigo-info">
-          <div class="amigo-name">@${esc(f.username)}</div>
+          <div class="amigo-name">@${esc(f.username)}${myFriends.has(f.id)?friendBadge:''}</div>
           <div class="amigo-meta">${f.streak||0} ${t('amigos_streak')}${f.created_at?new Date(f.created_at).toLocaleDateString(lang==='en'?'en-US':'es-ES',{month:'short',year:'numeric'}):'—'}</div>
         </div>
         <div class="amigo-arrow">›</div>
       </div>`).join('');
-    return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${tabBar}<div>${rows}</div></div>`;
+    return `<div class="screen">${hdr(t('amigos_title'),'')}<button class="btn-link" id="volverAmigos" style="margin-bottom:0;">${t('btn_back')}</button>${pendingSection}${tabBar}<div>${rows}</div></div>`;
   }
 }
 
@@ -2492,9 +2514,11 @@ function attachListeners(){
       amigosTab='followers';
       if(followersList===null){
         (async()=>{
-          let data;try{({data}=await sb.from('follows').select('follower_id,profiles!follower_id(*)').eq('following_id',user.id));}catch(e){data=[];}
-          followersList=(data||[]).map(r=>r['profiles!follower_id']||r.profiles||{}).filter(Boolean);
-          paint();
+          let fids=[];
+          try{const {data:rows}=await sb.from('follows').select('follower_id').eq('following_id',user.id);fids=(rows||[]).map(r=>r.follower_id);}catch(e){}
+          if(!fids.length){followersList=[];paint();return;}
+          let data;try{({data}=await sb.from('profiles').select('*').in('id',fids));}catch(e){data=[];}
+          followersList=data||[];paint();
         })();
       }
       paint();
@@ -2508,10 +2532,24 @@ function attachListeners(){
         paint();
       })();
     }
-    document.querySelectorAll('.amigo-row').forEach(row=>{
+    document.querySelectorAll('.fr-accept-inline').forEach(btn=>{
+      btn.onclick=async(e)=>{e.stopPropagation();await acceptFriendRequest(btn.getAttribute('data-reqid'),btn.getAttribute('data-senderid'));};
+    });
+    document.querySelectorAll('.fr-reject-inline').forEach(btn=>{
+      btn.onclick=async(e)=>{e.stopPropagation();await rejectFriendRequest(btn.getAttribute('data-reqid'));};
+    });
+    document.querySelectorAll('.amigo-row:not(.fr-row)').forEach(row=>{
       row.onclick=async()=>{
         profileReturnView='amigos';
         viewingProfile=await loadProfileData(row.getAttribute('data-uid'));
+        view='profile';paint();
+      };
+    });
+    document.querySelectorAll('.fr-row').forEach(row=>{
+      row.onclick=async()=>{
+        const uid=row.getAttribute('data-uid');if(!uid)return;
+        profileReturnView='amigos';
+        viewingProfile=await loadProfileData(uid);
         view='profile';paint();
       };
     });
