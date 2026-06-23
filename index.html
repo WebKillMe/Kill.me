@@ -1808,15 +1808,15 @@ function renderProfile(){
       <div class="profile-since">${t('profile_since')}${since}</div>
       ${!isSelf?(()=>{
         const incomingReq=pendingFriendReqs.find(r=>r.sender_id===prof.id);
-        return `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
-          <button class="follow-btn ${isFollowing?'following':''}" id="profileFollow" data-uid="${prof.id}">${isFollowing?ICO.check+t('btn_following'):ICO.plus+t('btn_follow')}</button>
+        return `<div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+          <button class="follow-btn ${isFollowing?'following':''}" id="profileFollow" data-uid="${prof.id}" style="flex:1;text-align:center;justify-content:center;">${isFollowing?ICO.check+' '+t('btn_following'):ICO.plus+' '+t('btn_follow')}</button>
           ${myFriends.has(prof.id)
-            ?`<button class="follow-btn following" id="profileUnfriend" data-uid="${prof.id}">${ICO.check} ${lang==='en'?'Friends':'Amigos'}</button>`
+            ?`<button class="follow-btn following" id="profileUnfriend" data-uid="${prof.id}" style="flex:1;text-align:center;">${ICO.check} ${lang==='en'?'Amigos':'Amigos'}</button>`
             :incomingReq
-              ?`<button class="follow-btn" id="profileAcceptFriend" data-reqid="${incomingReq.id}" data-senderid="${incomingReq.sender_id}" style="background:var(--warm);color:#120a02;border-color:var(--warm);">${ICO.check} ${lang==='en'?'Accept friendship':'Aceptar amistad'}</button>`
+              ?`<button class="follow-btn" id="profileAcceptFriend" data-reqid="${incomingReq.id}" data-senderid="${incomingReq.sender_id}" style="flex:1;text-align:center;background:var(--warm);color:#120a02;border-color:var(--warm);">${ICO.check} ${lang==='en'?'Aceptar':'Aceptar'}</button>`
               :sentFriendReqs.has(prof.id)
-                ?`<button class="follow-btn" id="profileCancelReq" data-uid="${prof.id}" style="opacity:.7;">${ICO.people} ${lang==='en'?'Request sent · cancel':'Solicitud enviada · cancelar'}</button>`
-                :`<button class="follow-btn" id="profileFriendReq" data-uid="${prof.id}">${ICO.people} ${lang==='en'?'Add friend':'Añadir amigo'}</button>`}
+                ?`<button class="follow-btn" id="profileCancelReq" data-uid="${prof.id}" style="flex:1;text-align:center;opacity:.7;">${ICO.people} ${lang==='en'?'Solicitado':'Solicitado'} ✕</button>`
+                :`<button class="follow-btn" id="profileFriendReq" data-uid="${prof.id}" style="flex:1;text-align:center;">${ICO.people} ${lang==='en'?'Añadir':'Añadir'}</button>`}
         </div>`;
       })():''}
     </div>
