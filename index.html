@@ -1137,8 +1137,7 @@ async function submitPost(pd){
     dibujo_trazos:pd.dibujo?.trazos||null,dibujo_descripcion:pd.dibujo?.descripcion||null,
     doll_color:profile.doll_color,  // always use current profile color for new posts
     post_date:t,is_primary:true,previous_post_id:prevId,
-    // visibility column: add to DB with: ALTER TABLE posts ADD COLUMN visibility TEXT DEFAULT 'public';
-    // visibility:window._postVisibility||'friends',
+    visibility:window._postVisibility||'friends',
   }).select().single();
   if(error){alert('Error: '+error.message);return;}
   if(!profile.last_post_date||profile.last_post_date!==t){
@@ -1212,9 +1211,9 @@ function showShareMenu(p){
     </div>
   </div>`;
   el.onclick=(e)=>{if(e.target===el)el.remove();};
-  document.getElementById('shareX').onclick=()=>{el.remove();shareToX(p,lbl);};
-  document.getElementById('shareImg').onclick=async()=>{el.remove();await shareImage(p);};
   document.body.appendChild(el);
+  el.querySelector('#shareX').onclick=()=>{el.remove();shareToX(p,lbl);};
+  el.querySelector('#shareImg').onclick=async()=>{el.remove();await shareImage(p);};
 }
 
 function shareToX(p,lbl){
@@ -2174,7 +2173,7 @@ function renderCemetery(){
       <div style="flex:1;min-width:0;">
         <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">${lbl} <span style="opacity:.5;font-weight:400;text-transform:none;">· ${dateStr}</span></div>
         <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(p.razon)}"</div>
-        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;">${ICO.candle} ${p.dep_count||0} DEPs</div>
+        <div style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);margin-top:4px;display:flex;align-items:center;gap:8px;">${ICO.candle} ${p.dep_count||0} DEPs <span style="opacity:.5;">·</span> <span style="font-size:clamp(9px,2.3vw,10px);padding:1px 6px;border-radius:10px;border:1px solid var(--border2);color:var(--muted2);">${p.visibility==='public'?'🌍 Público':p.visibility==='private'?'🔒 Privado':'👥 Amigos'}</span></div>
       </div>
     </div>`;
   }).join('');
@@ -2339,7 +2338,7 @@ function attachListeners(){
       const prevId=todayPost.previous_post_id||null;
       const {error}=await sb.from('posts').delete().eq('id',deletingId).eq('user_id',user.id);
       if(error){alert('Error al borrar: '+(error.message||'inténtalo de nuevo'));return;}
-      cemeteryPosts=null;
+      cemeteryPosts=null;feedData=null;
       if(prevId){
         // Restore previous post as the primary for today
         try{await sb.from('posts').update({is_primary:true}).eq('id',prevId);}catch(e){}
