@@ -1844,6 +1844,24 @@ async function loadProfileData(uid){
     sb.from('profiles').select('*').eq('id',uid).single(),
     sb.from('posts').select('*').eq('user_id',uid).order('created_at',{ascending:false}).limit(100),
   ]).catch(()=>[{data:null},{data:[]}]);
+  // Compute real streak from post dates (don't rely on cached profiles.streak)
+  let realStreak=0;
+  try{
+    const {data:pDates}=await sb.from('posts').select('post_date').eq('user_id',uid).order('post_date',{ascending:false}).limit(500);
+    const days=[...new Set((pDates||[]).map(p=>p.post_date||''))].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+    if(days.length){
+      let expected=todayS();
+      if(!days.includes(expected))expected=yesterS();
+      for(const d of days){if(d===expected){realStreak++;expected=prevDayS(expected);}else if(d<expected)break;}
+    }
+  }catch(e){}
+  if(prof){
+    if(prof.streak!==realStreak){
+      prof.streak=realStreak;
+      // If own profile, persist corrected value
+      if(user&&prof.id===user.id)try{await sb.from('profiles').update({streak:realStreak}).eq('id',uid);}catch(e){}
+    }
+  }
   let depSum;try{({data:depSum}=await sb.from('posts').select('dep_count').eq('user_id',uid));}catch(e){depSum=[];}
   const totalD=(depSum||[]).reduce((s,p)=>s+(p.dep_count||0),0);
   return {prof:prof||{}, posts:posts||[], totalDeps:totalD};
