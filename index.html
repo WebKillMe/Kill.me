@@ -276,10 +276,10 @@ textarea:focus,input:focus{border-color:var(--red);}
 .profile-name{font-family:'Playfair Display',serif;font-size:clamp(20px,5vw,24px);font-weight:900;margin-top:12px;color:var(--text);}
 .profile-since{font-size:clamp(10px,2.5vw,11px);color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
 .profile-stats{display:flex;gap:0;margin:clamp(18px,4vw,24px) 0;width:100%;}
-.profile-stat{flex:1;text-align:center;padding:clamp(12px,3vw,16px) 0;border-right:1px solid var(--border);}
+.profile-stat{flex:1;text-align:center;padding:clamp(12px,3vw,16px) 0;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
 .profile-stat:last-child{border-right:none;}
 .profile-stat-num{font-family:system-ui,sans-serif;font-variant-numeric:lining-nums tabular-nums;font-size:clamp(20px,5vw,26px);font-weight:700;color:var(--text);line-height:1;}
-.profile-stat-lbl{font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;}
+.profile-stat-lbl{font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;display:flex;align-items:center;gap:3px;}
 .profile-posts-hdr{font-size:clamp(9px,2.5vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;}
 
 /* ── Mis amigos ── */
@@ -1042,6 +1042,10 @@ async function loadProfile(){
   if(profile&&user.email&&!profile.email){
     try{await sb.from('profiles').update({email:user.email}).eq('id',user.id);}catch(e){}
     profile.email=user.email;
+  }
+  if(profile&&!profile.birth_date){
+    const cached=localStorage.getItem('killme_birth_'+user.id);
+    if(cached)profile.birth_date=cached;
   }
 }
 async function loadTodayPost(){
@@ -2546,11 +2550,13 @@ function attachListeners(){
       try{
         const {error}=await sb.from('profiles').update({birth_date:val}).eq('id',user.id);
         if(error&&error.message&&error.message.includes('birth_date')){
-          // Column doesn't exist yet — save locally only
-          profile.birth_date=val;paint();return;
+          profile.birth_date=val;
+          localStorage.setItem('killme_birth_'+user.id,val);
+          paint();return;
         }
         if(error)throw error;
         profile.birth_date=val;
+        localStorage.setItem('killme_birth_'+user.id,val);
         paint();
       }catch(e){
         btn.disabled=false;btn.textContent=t('btn_save_birthday');
