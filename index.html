@@ -717,6 +717,21 @@ let myFriends=new Set(),pendingFriendReqs=[],sentFriendReqs=new Set();
 
 const todayS=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
 const yesterS=()=>{const d=new Date();d.setDate(d.getDate()-1);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const prevDayS=s=>{const d=new Date(s+'T12:00:00');d.setDate(d.getDate()-1);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+async function recalcStreak(){
+  const {data}=await sb.from('posts').select('post_date').eq('user_id',user.id).order('post_date',{ascending:false}).limit(500);
+  if(!data||!data.length){
+    try{await sb.from('profiles').update({streak:0,last_post_date:null}).eq('id',user.id);}catch(e){}
+    profile.streak=0;profile.last_post_date=null;return;
+  }
+  const days=[...new Set(data.map(p=>p.post_date||''))].filter(Boolean).sort((a,b)=>b.localeCompare(a));
+  let streak=0,expected=todayS();
+  if(!days.includes(expected))expected=yesterS();
+  for(const d of days){if(d===expected){streak++;expected=prevDayS(expected);}else if(d<expected)break;}
+  const lastDate=days[0];
+  try{await sb.from('profiles').update({streak,last_post_date:lastDate}).eq('id',user.id);}catch(e){}
+  profile.streak=streak;profile.last_post_date=lastDate;
+}
 
 const ge=id=>document.getElementById(id);
 const initials=n=>(n||'?').slice(0,2).toUpperCase();
@@ -1187,9 +1202,7 @@ async function submitPost(pd){
   }
   if(error){alert('Error: '+error.message);return;}
   if(!profile.last_post_date||profile.last_post_date!==t){
-    const newStreak=(profile.last_post_date===y)?(profile.streak||0)+1:1;
-    await sb.from('profiles').update({streak:newStreak,last_post_date:t}).eq('id',user.id);
-    profile.streak=newStreak;profile.last_post_date=t;
+    await recalcStreak();
   }
   todayPrevPost=todayPost;todayPost=data;view='posted';paint();
 }
@@ -2507,22 +2520,13 @@ function attachListeners(){
       const {error}=await sb.from('posts').delete().eq('id',delId).eq('user_id',user.id);
       if(error){alert('Error al borrar: '+(error.message||'inténtalo de nuevo'));return;}
       cemeteryPosts=null;feedData=null;
-      if(isPrimary){
-        const prevId=todayPost.previous_post_id||null;
-        if(prevId){
-          try{await sb.from('posts').update({is_primary:true}).eq('id',prevId);}catch(e){}
-        } else if(isLast){
-          const prevStreak=Math.max(0,(profile.streak||1)-1);
-          const prevDate=prevStreak>0?yesterS():null;
-          try{await sb.from('profiles').update({streak:prevStreak,last_post_date:prevDate}).eq('id',user.id);}catch(e){}
-          profile.streak=prevStreak;
-        }
-      }
       // Reload today's posts fresh
       const {data:fresh}=await sb.from('posts').select('*').eq('user_id',user.id).eq('post_date',todayS()).order('created_at',{ascending:false});
       todayAllPosts=fresh||[];
       todayPost=todayAllPosts.find(p=>p.is_primary)||todayAllPosts[0]||null;
       todayPrevPost=todayPost?.previous_post_id?todayAllPosts.find(p=>p.id===todayPost.previous_post_id)||null:null;
+      // Recalculate streak from real post history
+      await recalcStreak();
       view='home';paint();
     };});
   }
