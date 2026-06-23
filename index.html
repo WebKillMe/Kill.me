@@ -1975,9 +1975,9 @@ function renderHome(){
     })();
   }
   const pastPosts=(cemeteryPosts||[]).filter(p=>(p.post_date||p.created_at?.slice(0,10))!==todayS());
+  const cemSub=cemeteryPosts===null?'':t('cemetery_sub').replace('$n',pastPosts.length);
   const cemSection=`
-    <div style="height:1px;background:var(--border);margin:clamp(16px,4vw,22px) 0;"></div>
-    <div style="font-size:clamp(10px,2.5vw,11px);text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:12px;">🪦 ${lang==='en'?'My cemetery':'Mi cementerio'}</div>
+    <div style="margin-top:clamp(20px,5vw,28px);">${hdr('🪦 '+t('cemetery_title'),cemSub)}</div>
     ${cemeteryPosts===null
       ?`<p style="text-align:center;color:var(--muted2);font-size:clamp(12px,3vw,13px);">${t('amigos_loading')}</p>`
       :pastPosts.length
