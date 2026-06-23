@@ -6,7 +6,9 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(gh repo *)",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(which gh *)",
+      "Bash(find /c/Users/Usuario/AppData -name \"gh.exe\" 2>/dev/null | head -3; find \"/c/Program Files/GitHub CLI\" -name \"gh.exe\" 2>/dev/null | head -3)"
     ]
   }
 }
