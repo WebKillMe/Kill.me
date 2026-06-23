@@ -1136,7 +1136,8 @@ async function loadFriendRequests(){
 }
 async function sendFriendRequest(uid){
   try{
-    await sb.from('friend_requests').upsert({sender_id:user.id,receiver_id:uid,status:'pending'},{onConflict:'sender_id,receiver_id'});
+    const {error}=await sb.from('friend_requests').upsert({sender_id:user.id,receiver_id:uid,status:'pending'},{onConflict:'sender_id,receiver_id'});
+    if(error)throw error;
     sentFriendReqs.add(uid);
     if(!myFollowing.has(uid)){
       await sb.from('follows').insert({follower_id:user.id,following_id:uid}).catch(()=>{});
@@ -1216,21 +1217,25 @@ async function loadFeed(){
 }
 async function submitPost(pd){
   const t=todayS();
-  // Replace today's tragedy if one exists
-  await sb.from('posts').delete().eq('user_id',user.id).eq('post_date',t);
-  const postPayload={
+  const payload={
     user_id:user.id,username:profile.username,razon:pd.razon,castigo:pd.castigo,
     dibujo_trazos:pd.dibujo?.trazos||null,dibujo_descripcion:pd.dibujo?.descripcion||null,
     doll_color:profile.doll_color,
     post_date:t,
     pose:draftPose||'idle',
   };
-  const {data,error}=await sb.from('posts').insert(postPayload).select().single();
-  if(error){alert('Error: '+error.message);return;}
-  if(!profile.last_post_date||profile.last_post_date!==t){
-    await recalcStreak();
+  let data,error;
+  if(todayPost){
+    // UPDATE: preserve DEPs on the same post_id
+    ({data,error}=await sb.from('posts').update(payload).eq('id',todayPost.id).select().single());
+  }else{
+    ({data,error}=await sb.from('posts').insert(payload).select().single());
   }
-  todayPost=data;todayPost.dep_count=0;cemeteryPosts=null;feedData=[];view='posted';paint();
+  if(error){alert('Error: '+error.message);return;}
+  if(!profile.last_post_date||profile.last_post_date!==t){await recalcStreak();}
+  const prevDepCount=todayPost?.dep_count||0;
+  todayPost=data;todayPost.dep_count=prevDepCount;
+  cemeteryPosts=null;feedData=[];view='posted';paint();
 }
 async function toggleDep(pid){
   if(myDeps.has(pid)){
@@ -2447,9 +2452,17 @@ function renderFeed(){
   const hasMore=feedYesterday.length>feedPreviousShown;
   const loadMoreBtn=hasMore?`<button class="btn-load-more" id="btnLoadMorePrev">${t('btn_load_more')}</button>`:'';
   const yesterHTML=feedYesterday.length?`<div class="feed-older-hdr" style="display:flex;align-items:center;gap:6px;">${ICO.tombstone} ${t('feed_yesterday')}</div><div class="feed-list">${visible.map(tombstoneCardHTML).join('')}</div>${loadMoreBtn}`:'';
-  if(!feedData.length)return`<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,15px);">${t('feed_empty')}<br><span style="font-size:clamp(11px,3vw,12px);opacity:.45;display:block;margin-top:6px;">${t('feed_empty_sub')}</span></div>${yesterHTML}</div>`;
+  // Group feedOlder by date
+  const olderByDate={};
+  for(const p of feedOlder){const d=p.post_date||p.created_at?.slice(0,10);if(!olderByDate[d])olderByDate[d]=[];olderByDate[d].push(p);}
+  const olderDates=Object.keys(olderByDate).sort((a,b)=>b.localeCompare(a));
+  const olderHTML=olderDates.length?olderDates.map(date=>{
+    const label=new Date(date+'T12:00:00').toLocaleDateString(lang==='en'?'en-US':'es-ES',{day:'numeric',month:'long'});
+    return `<div class="feed-older-hdr" style="display:flex;align-items:center;gap:6px;">${ICO.tombstone} ${label}</div><div class="feed-list">${olderByDate[date].map(p=>tombstoneCardHTML(p)).join('')}</div>`;
+  }).join(''):'';
+  if(!feedData.length)return`<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div style="text-align:center;color:var(--muted2);margin-top:40px;font-size:clamp(13px,3.5vw,15px);">${t('feed_empty')}<br><span style="font-size:clamp(11px,3vw,12px);opacity:.45;display:block;margin-top:6px;">${t('feed_empty_sub')}</span></div>${yesterHTML}${olderHTML}</div>`;
   const cards=feedData.map(item=>feedCardHTML(item,false)).join('');
-  return `<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div class="feed-list">${cards}</div>${yesterHTML}</div>`;
+  return `<div class="screen">${hdr(t('nav_feed'),t('feed_sub'))}<div class="feed-list">${cards}</div>${yesterHTML}${olderHTML}</div>`;
 }
 
 function renderAjustes(){
