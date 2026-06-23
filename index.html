@@ -25,7 +25,8 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
 html{height:100%;background:var(--bg);}
-body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:520px;margin:0 auto;font-size:clamp(14px,3.5vw,16px);}
+body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:520px;margin:0 auto;font-size:clamp(14px,3.5vw,16px);touch-action:pan-x pan-y;}
+button,a,input,label,select,textarea{touch-action:manipulation;}
 .cinzel{font-family:'Playfair Display',Georgia,serif;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -2744,12 +2745,10 @@ function setupCanvas(){
   guide();
 }
 
-// Prevent pinch-zoom and double-tap zoom on iOS (viewport meta ignored by Safari)
+// Prevent pinch-zoom on iOS (viewport meta ignored by Safari)
 document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
 document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
 document.addEventListener('touchstart',e=>{if(e.touches.length>1)e.preventDefault();},{passive:false});
-let _lastTap=0;
-document.addEventListener('touchend',e=>{const now=Date.now();if(now-_lastTap<300)e.preventDefault();_lastTap=now;},{passive:false});
 
 // ── Init ──────────────────────────────────────────────
 async function init(){
