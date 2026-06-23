@@ -715,8 +715,9 @@ let pinnedLogros=JSON.parse(localStorage.getItem('pinnedLogros')||'[]');
 let followersList=null,amigosTab='following';
 let myFriends=new Set(),pendingFriendReqs=[],sentFriendReqs=new Set();
 
-const todayS=()=>new Date().toISOString().split('T')[0];
-const yesterS=()=>new Date(Date.now()-86400000).toISOString().split('T')[0];
+const todayS=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const yesterS=()=>{const d=new Date();d.setDate(d.getDate()-1);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+
 const ge=id=>document.getElementById(id);
 const initials=n=>(n||'?').slice(0,2).toUpperCase();
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -2446,9 +2447,11 @@ function attachListeners(){
         todayPrevPost=null;
         view='home';paint();
       }else{
-        // No previous post — reset streak, go back to empty home
-        try{await sb.from('profiles').update({streak:Math.max(0,(profile.streak||1)-1),last_post_date:null}).eq('id',user.id);}catch(e){}
-        profile.streak=Math.max(0,(profile.streak||1)-1);
+        // No previous post — roll back streak but keep last_post_date=yesterday so tomorrow still continues
+        const prevStreak=Math.max(0,(profile.streak||1)-1);
+        const prevDate=prevStreak>0?yesterS():null;
+        try{await sb.from('profiles').update({streak:prevStreak,last_post_date:prevDate}).eq('id',user.id);}catch(e){}
+        profile.streak=prevStreak;
         todayPost=null;todayPrevPost=null;view='home';paint();
       }
     };
