@@ -895,13 +895,13 @@ function dollSVG(color,death,dead,poseName,px){
     fx+=`<path d="M${w*.673} ${h} C${w*.682} ${h*.854} ${w*.673} ${h*.806} ${w*.691} ${h*.757} C${w*.727} ${h*.806} ${w*.755} ${h*.832} ${w*.773} ${h}Z" fill="#6B0C0C" opacity=".86" style="animation:flameDance 1.05s .1s ease-in-out infinite"/>`;
     // Troncos en X — más inclinados, sin rect negro
     const lsw=`${h*.086}`;
-    fx+=`<line x1="${w*.04}" y1="${h}" x2="${w*.96}" y2="${h*.9}" stroke="#6B3318" stroke-width="${lsw}" stroke-linecap="round"/>`;
-    fx+=`<line x1="${w*.04}" y1="${h*.9}" x2="${w*.96}" y2="${h}" stroke="#5A2810" stroke-width="${h*.078}" stroke-linecap="round"/>`;
+    fx+=`<line x1="${w*.15}" y1="${h}" x2="${w*.85}" y2="${h*.91}" stroke="#6B3318" stroke-width="${lsw}" stroke-linecap="round"/>`;
+    fx+=`<line x1="${w*.15}" y1="${h*.91}" x2="${w*.85}" y2="${h}" stroke="#5A2810" stroke-width="${h*.078}" stroke-linecap="round"/>`;
     // vetas siguiendo la dirección de cada tronco
-    fx+=`<line x1="${w*.1}" y1="${h*.982}" x2="${w*.38}" y2="${h*.957}" stroke="#3A1A08" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>`;
-    fx+=`<line x1="${w*.58}" y1="${h*.928}" x2="${w*.88}" y2="${h*.906}" stroke="#3A1A08" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>`;
-    fx+=`<line x1="${w*.1}" y1="${h*.918}" x2="${w*.38}" y2="${h*.943}" stroke="#321408" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>`;
-    fx+=`<line x1="${w*.58}" y1="${h*.972}" x2="${w*.88}" y2="${h*.994}" stroke="#321408" stroke-width="1.5" stroke-linecap="round" opacity=".45"/>`;
+    fx+=`<line x1="${w*.19}" y1="${h*.982}" x2="${w*.42}" y2="${h*.96}" stroke="#3A1A08" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>`;
+    fx+=`<line x1="${w*.56}" y1="${h*.929}" x2="${w*.80}" y2="${h*.911}" stroke="#3A1A08" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>`;
+    fx+=`<line x1="${w*.19}" y1="${h*.921}" x2="${w*.42}" y2="${h*.943}" stroke="#321408" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>`;
+    fx+=`<line x1="${w*.56}" y1="${h*.971}" x2="${w*.80}" y2="${h*.991}" stroke="#321408" stroke-width="1.5" stroke-linecap="round" opacity=".45"/>`;
     // ascuas — tronco 1 (izq→der arriba)
     [[.18,h*.975],[.35,h*.962],[.52,h*.948],[.68,h*.934],[.84,h*.921]].forEach(([ex,ey],i)=>{
       fx+=`<circle cx="${w*ex}" cy="${ey}" r="${2.5+i%2*.6}" fill="${['#E05010','#FF6020','#C03010','#FF5010','#E04010'][i]}" style="animation:brasaGlow ${['.6s','.9s','.7s','1.1s','.8s'][i]} ${['0s','.2s','.35s','.1s','.45s'][i]} ease-in-out infinite"/>`;
@@ -989,7 +989,7 @@ function dollSVG(color,death,dead,poseName,px){
       fx+=`<polygon points="${x-hw*.35},${h*.052} ${x+hw*.35},${h*.052} ${x},${bot}" fill="white" opacity=".38"/>`;
       if(bot>h*.5)fx+=`<ellipse cx="${x}" cy="${bot+h*.012}" rx="${w*.013}" ry="${h*.012}" fill="#AADDFF" opacity=".55"/>`;
     });
-    fx+=`<clipPath id="iceClip${w}"><rect x="${w*.05}" y="${h*.03}" width="${w*.9}" height="${h*.98}" rx="5"/></clipPath><rect clip-path="url(#iceClip${w})" x="${w*.02}" y="${h*.03}" width="${w*.1}" height="${h*.98}" fill="white" opacity="0" style="animation:iceGlimmer 4.5s 1.2s ease-in-out infinite"/>`;
+    fx+=`<clipPath id="iceClip${w}"><rect x="${w*.05}" y="${h*.03}" width="${w*.9}" height="${h*.98}" rx="5"/></clipPath><g clip-path="url(#iceClip${w})"><rect x="${w*.02}" y="${h*.03}" width="${w*.1}" height="${h*.98}" fill="white" opacity="0" style="animation:iceGlimmer 4.5s 1.2s ease-in-out infinite"/></g>`;
   }
   if(death==="guillotina"){
     // Very dark wood + muted grey blade, structural and clean
@@ -2978,7 +2978,7 @@ function promptConfirmDeath(death){
   const d=DEATHS.find(x=>x.id===death);
   const lbl=dl(death);
   const isPeor=!!todayPost;
-  const privLbl=profile.is_private?(lang==='en'?'🔒 Friends only':'🔒 Solo amigos'):(lang==='en'?'🌐 Public':'🌐 Público');
+  const privLbl=profile.is_private?(lang==='en'?'Friends only':'Solo amigos'):(lang==='en'?'Public':'Público');
   const warnText=isPeor?(lang==='en'?'This new ruina will replace the current one as your active ruina for today.':'Esta nueva ruina enterrará la anterior como tu desgracia activa de hoy.'):'';
   ge('app').innerHTML=`<div class="screen" style="text-align:center;">
     <div style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:12px;">${t('confirm_title')}</div>
