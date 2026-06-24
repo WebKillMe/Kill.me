@@ -1768,7 +1768,7 @@ function renderAuth(){
       </div>`}
     </div>
     <div id="dayCounterMsg" style="text-align:center;font-size:clamp(11px,2.8vw,12px);color:var(--muted2);margin:4px 0 8px;min-height:18px;"></div>
-    <div class="auth-doll-preview">${dollSVG(DOLL_COLORS[0],null,false,'idle',120)}</div>
+    <div class="auth-doll-preview"><div id="authWalkOuter" style="display:inline-block;will-change:transform;transform:translateX(-260px);opacity:0;">${homeWalkDollSVG(DOLL_COLORS[0],120)}</div></div>
     <div class="auth-card">
       <div class="auth-tabs">
         <button class="auth-tab ${login?'on':''}" id="tLogin">${t('login_tab')}</button>
@@ -1796,6 +1796,8 @@ function renderAuth(){
   </div>`;
   ge('tLogin').onclick=()=>{authTab='login';renderAuth();};
   ge('tReg').onclick=()=>{authTab='register';renderAuth();};
+  // Walk-in animation for login doll
+  (()=>{const o=ge('authWalkOuter');if(!o)return;requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.transition='transform 1.4s cubic-bezier(0.25,0.46,0.45,0.94),opacity 0.3s ease';o.style.transform='translateX(0)';o.style.opacity='1';setTimeout(()=>{o.style.transition='';o.style.animation='breathe 3.5s ease-in-out infinite';},1500);}));})();
   (async()=>{try{const {data:cnt}=await sb.rpc('get_today_post_count',{today_date:todayS()});const el=ge('dayCounterMsg');if(el&&cnt>0)el.textContent=(lang==='en'?`${cnt} people have also had a shit day today`:`${cnt} personas también han tenido un día de mierda hoy`);}catch(e){}})();
   if(ge('authLangEs'))ge('authLangEs').onclick=()=>{if(lang!=='es'){lang='es';localStorage.setItem('kill_lang','es');renderAuth();}};
   if(ge('authLangEn'))ge('authLangEn').onclick=()=>{if(lang!=='en'){lang='en';localStorage.setItem('kill_lang','en');renderAuth();}};
