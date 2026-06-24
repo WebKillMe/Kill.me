@@ -2168,9 +2168,9 @@ function cemRowHTML(p,showTime=false,showDelete=false){
         </div>
         <div style="font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${lbl}</div>
         <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(p.razon)}"</div>
-        <div style="margin-top:7px;display:flex;align-items:center;gap:6px;width:100%;">
-          <span style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${p.dep_count||0}</span>
-          ${showDelete?`<button class="btn-link cem-delete-btn" data-delid="${p.id}" style="margin-left:auto;flex-shrink:0;font-size:clamp(9px,2.2vw,10px);color:var(--muted);opacity:.65;padding:2px 0;">${lang==='en'?'Delete':'Borrar'}</button>`:''}
+        <div style="margin-top:7px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="display:inline-flex;align-items:center;gap:3px;font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle}${p.dep_count||0}</span>
+          ${showDelete?`<button class="btn-link cem-delete-btn" data-delid="${p.id}" style="font-size:clamp(9px,2.2vw,10px);color:var(--muted);opacity:.65;padding:2px 0;">${lang==='en'?'Delete':'Borrar'}</button>`:'<span></span>'}
         </div>
       </div>
     </div>
