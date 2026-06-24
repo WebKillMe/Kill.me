@@ -1902,6 +1902,7 @@ function renderRecovery(){
 }
 
 function paint(){
+  if(view!=='home')window.__homeAnimDone=false;
   if(view==='loading'){ge('root').innerHTML='<div class="pg-load"><div class="brand cinzel">kill<em>.me</em></div><div class="spin"></div></div>';return;}
   if(view==='auth'){renderAuth();return;}
   if(view==='verify'){renderVerify();return;}
@@ -2654,6 +2655,9 @@ function calendarHTML(){
 }
 
 function renderAjustes(){
+  if(cemeteryPosts===null){
+    (async()=>{let data;try{({data}=await sb.from('posts').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(60));}catch(e){data=[];}cemeteryPosts=data||[];paint();})();
+  }
   const streak=profile?.streak||0;
   return `<div class="screen">
     ${hdr(t('ajustes_title'),'')}
@@ -2800,6 +2804,12 @@ function setupHomeAnim(){
   // Swap static doll for walking-animated SVG
   inner.innerHTML=homeWalkDollSVG(profile.doll_color,clamp(150,180));
 
+  // If animation already played (re-render from async paint), skip straight to idle
+  if(window.__homeAnimDone){
+    outer.style.cssText='display:inline-block;will-change:transform;transform:translateX(0);opacity:1;animation:breathe 3.5s ease-in-out infinite;';
+    startEyes();return;
+  }
+
   const cx=110,hr=84,hcy=98,er=Math.max(5,hr*0.115);
   const lx=cx-hr*0.28,rx=cx+hr*0.28,ey=hcy-hr*0.21;
 
@@ -2874,6 +2884,7 @@ function setupHomeAnim(){
 
     // Phase 8: idle breathe + eye tracking (5.75s)
     setTimeout(()=>{
+      window.__homeAnimDone=true;
       outer.style.transition='';
       outer.style.transformOrigin='';
       outer.style.animation='breathe 3.5s ease-in-out infinite';
