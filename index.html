@@ -1042,9 +1042,9 @@ function dollSVG(color,death,dead,poseName,px){
     // Relleno semitransparente — muñeco visible dentro
     // x/height extendidos en sw/2 en cada lado para cubrir las puntas redondeadas (stroke-linecap round) de brazos y piernas
     // bounds: cubren manos/pies de todas las poses no-exploded
-    const ibx=-sw, ibright=w+sw, ibw=ibright-ibx; // -22, 242, 264
+    const ibx=-(sw+16), ibright=w+sw+16, ibw=ibright-ibx; // -38, 258, 296 — igual que ahogado
     const ibtop=Math.round(-h*.18); // ≈ -50, cubre cabeza en todas las poses
-    const ibh=h+sw; // 302 — cubre pies incluso en pose exploded
+    const ibh=h+sw+5; // 307 — igual que ahogado
     const oc=30; // oblique corner cut
     const ibbot=ibh;
     fx=`<polygon points="${ibx+oc},${ibtop} ${ibright-oc},${ibtop} ${ibright},${ibtop+oc} ${ibright},${ibbot-oc} ${ibright-oc},${ibbot} ${ibx+oc},${ibbot} ${ibx},${ibbot-oc} ${ibx},${ibtop+oc}" fill="#A8D8F0" opacity=".20"/>`;
@@ -2320,9 +2320,9 @@ function renderDibujo(){
     <div class="charcount" id="razonCount">${draftRazon.length}/280</div>
     ${posePicker}
     <div style="display:flex;justify-content:center;margin-top:10px;">
-      <div style="position:relative;width:264px;height:324px;border-radius:10px;border:1px solid var(--border2);">
-        <div id="drawDollWrap" style="position:absolute;left:22px;top:22px;overflow:visible;">${dollSVG(profile.doll_color,null,false,curPose,220)}</div>
-        <canvas id="drawCanvas" width="220" height="280" style="position:absolute;left:22px;top:22px;background:transparent;border:none;border-radius:0;"></canvas>
+      <div style="position:relative;width:296px;height:345px;border-radius:10px;border:1px solid var(--border2);">
+        <div id="drawDollWrap" style="position:absolute;left:38px;top:22px;overflow:visible;">${dollSVG(profile.doll_color,null,false,curPose,220)}</div>
+        <canvas id="drawCanvas" width="220" height="280" style="position:absolute;left:38px;top:22px;background:transparent;border:none;border-radius:0;"></canvas>
       </div>
     </div>
     <div class="swatches">${LINE_COLORS.map((c,i)=>`<button class="swatch ${i===0?'on':''}" data-color="${c}" style="background:${c};"></button>`).join('')}${(()=>{const uc=unlockedExtraColors();const tips=['1 dibujo','5 dibujos','10 dibujos','25 dibujos','50 dibujos'];return LINE_COLORS_EXTRA.map((c,i)=>i<uc?`<button class="swatch" data-color="${c}" style="background:${c};"></button>`:`<button class="swatch swatch-locked" title="${tips[i]}" style="background:${c};opacity:.22;cursor:not-allowed;" disabled></button>`).join('');})()}</div>
