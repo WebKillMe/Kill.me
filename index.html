@@ -55,6 +55,11 @@ button,a,input,label,select,textarea{touch-action:manipulation;}
 @keyframes flicker{0%,100%{opacity:.9;transform:scaleY(1)}45%{opacity:1;transform:scaleY(1.1) scaleX(.95)}70%{opacity:.85;transform:scaleY(.95)}}
 @keyframes shockPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5) saturate(1.3)}}
 @keyframes glow{0%,100%{opacity:.18}50%{opacity:.32}}
+@keyframes wfA{0%,100%{d:path("M-11 20 C25 -2 60 38 110 14 C160 -8 198 32 231 10 L231 291 L-11 291 Z")}50%{d:path("M-11 26 C25 48 60 4 110 32 C160 56 198 8 231 38 L231 291 L-11 291 Z")}}
+@keyframes wfB{0%,100%{d:path("M-11 32 C38 8 72 52 110 24 C148 0 188 44 231 20 L231 291 L-11 291 Z")}50%{d:path("M-11 38 C38 62 72 14 110 44 C148 72 188 18 231 52 L231 291 L-11 291 Z")}}
+@keyframes wfC{0%,100%{d:path("M-11 14 C22 -6 52 30 110 8 C166 -10 200 26 231 4 L231 291 L-11 291 Z")}50%{d:path("M-11 20 C22 44 52 0 110 26 C166 50 200 4 231 32 L231 291 L-11 291 Z")}}
+@keyframes wfD{0%,100%{d:path("M-11 42 C48 18 85 58 110 36 C135 16 178 54 231 28 L231 291 L-11 291 Z")}50%{d:path("M-11 34 C48 58 85 22 110 48 C135 72 178 28 231 56 L231 291 L-11 291 Z")}}
+@keyframes caustic{0%,100%{opacity:.08}50%{opacity:.18}}
 /* Loading */
 .pg-load{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
 .pg-load .brand{font-family:'Playfair Display',serif;font-size:clamp(20px,6vw,28px);font-weight:900;letter-spacing:4px;color:var(--text);opacity:0;animation:fadeUp .4s .15s forwards;}
@@ -920,17 +925,38 @@ function dollSVG(color,death,dead,poseName,px){
     });
   }
   if(death==="ahogo"){
-    // Dark water filling from bottom — covers legs and waist, dramatic depth
-    fx=`<rect x="0" y="${h*.28}" width="${w}" height="${h*.72}" fill="#06101C" opacity=".75"/>`;
-    // Wave surface — double wavy line for water line
-    fx+=`<path d="M0 ${h*.28} Q${w*.12} ${h*.24} ${w*.25} ${h*.28} Q${w*.38} ${h*.32} ${w*.5} ${h*.28} Q${w*.63} ${h*.24} ${w*.75} ${h*.28} Q${w*.88} ${h*.32} ${w} ${h*.28}" stroke="#C4BDB2" stroke-width="1.4" fill="none" opacity=".38"/>`;
-    fx+=`<path d="M0 ${h*.31} Q${w*.12} ${h*.27} ${w*.25} ${h*.31} Q${w*.38} ${h*.35} ${w*.5} ${h*.31} Q${w*.63} ${h*.27} ${w*.75} ${h*.31} Q${w*.88} ${h*.35} ${w} ${h*.31}" stroke="#C4BDB2" stroke-width=".7" fill="none" opacity=".16"/>`;
-    // Depth bands — horizontal stripes suggesting deep water
-    fx+=`<line x1="0" y1="${h*.48}" x2="${w}" y2="${h*.48}" stroke="#C4BDB2" stroke-width=".6" opacity=".08"/>`;
-    fx+=`<line x1="0" y1="${h*.66}" x2="${w}" y2="${h*.66}" stroke="#C4BDB2" stroke-width=".6" opacity=".05"/>`;
-    // Bubbles rising from body
-    [[w*.27,h*.52,3.2],[w*.62,h*.62,2.4],[w*.44,h*.75,1.9],[w*.72,h*.45,1.6],[w*.33,h*.68,1.3]].forEach(([x,y,r])=>{
-      fx+=`<circle cx="${x}" cy="${y}" r="${r}" stroke="#C4BDB2" stroke-width=".8" fill="none" opacity=".25"/>`;
+    // 4 capas de agua superpuestas animadas — sin borde duro, degradado natural por solapamiento
+    // x/width extendidos en sw/2 para cubrir puntas redondeadas de brazos y piernas
+    const bx=-sw/2,br=w+sw/2,bb=h+sw/2; // -11, 231, 291
+    fx=`<path fill="#04111E" opacity=".30" style="animation:wfD 4.0s .7s ease-in-out infinite" d="M${bx} 42 C48 18 85 58 110 36 C135 16 178 54 ${br} 28 L${br} ${bb} L${bx} ${bb} Z"/>`;
+    fx+=`<path fill="#061828" opacity=".28" style="animation:wfC 2.8s 1.0s ease-in-out infinite" d="M${bx} 14 C22 -6 52 30 110 8 C166 -10 200 26 ${br} 4 L${br} ${bb} L${bx} ${bb} Z"/>`;
+    fx+=`<path fill="#081C30" opacity=".30" style="animation:wfB 3.4s .2s ease-in-out infinite" d="M${bx} 32 C38 8 72 52 110 24 C148 0 188 44 ${br} 20 L${br} ${bb} L${bx} ${bb} Z"/>`;
+    fx+=`<path fill="#0D2A42" opacity=".28" style="animation:wfA 2.2s 0s ease-in-out infinite" d="M${bx} 20 C25 -2 60 38 110 14 C160 -8 198 32 ${br} 10 L${br} ${bb} L${bx} ${bb} Z"/>`;
+    // Caustics — luz filtrándose desde la superficie
+    fx+=`<ellipse cx="${w*.34}" cy="${h*.17}" rx="${w*.17}" ry="${h*.043}" fill="#2070A8" style="animation:caustic 3.4s 0s ease-in-out infinite"/>`;
+    fx+=`<ellipse cx="${w*.70}" cy="${h*.13}" rx="${w*.13}" ry="${h*.032}" fill="#2070A8" style="animation:caustic 2.8s .7s ease-in-out infinite"/>`;
+    fx+=`<ellipse cx="${w*.19}" cy="${h*.22}" rx="${w*.09}" ry="${h*.021}" fill="#2070A8" style="animation:caustic 3.8s 1.3s ease-in-out infinite"/>`;
+    fx+=`<ellipse cx="${w*.82}" cy="${h*.20}" rx="${w*.145}" ry="${h*.032}" fill="#2070A8" style="animation:caustic 2.5s .4s ease-in-out infinite"/>`;
+    // Burbujas — animateTransform en unidades SVG para que escale bien con el tamaño del muñeco
+    [[91,278,5,'5AB0E0','.25','6 -289','2.2s','0s'],
+     [129,278,3.8,'5AB0E0','.2','-8 -289','2.8s','.7s'],
+     [55,248,5.5,'4AA0D0','.25','7 -259','2.5s','.3s'],
+     [165,240,4.2,'4AA0D0','.2','-5 -251','3.1s','1.1s'],
+     [110,265,3.2,'5AB0E0','.2','9 -276','2.0s','1.6s'],
+     [78,210,4.5,'4AA0D0','.22','-6 -221','2.6s','.5s'],
+     [142,220,4,'5AB0E0','.22','8 -231','3.3s','2.1s'],
+     [9,222,3,'4AA0D0','.18','-4 -233','2.9s','1.9s'],
+     [211,220,3.2,'4AA0D0','.18','5 -231','2.7s','.9s'],
+     [35,190,2.5,'5AB0E0','0','6 -201','3.5s','2.4s'],
+     [185,175,2.2,'5AB0E0','0','-5 -186','3.8s','1.3s'],
+     [100,195,2.8,'4AA0D0','0','7 -206','3.2s','2.8s'],
+    ].forEach(([cx,cy,r,sc,fo,to,dur,beg])=>{
+      const sw2=r>3?1.8:1.4;
+      const fill=fo!=='0'?`fill="#1A4A70" fill-opacity="${fo}"`:'fill="none"';
+      fx+=`<circle cx="${cx}" cy="${cy}" r="${r}" stroke="#${sc}" stroke-width="${sw2}" ${fill}>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="${to}" dur="${dur}" begin="${beg}" repeatCount="indefinite" additive="sum"/>
+        <animate attributeName="opacity" values=".85;.55;0" keyTimes="0;.8;1" dur="${dur}" begin="${beg}" repeatCount="indefinite"/>
+      </circle>`;
     });
   }
   if(death==="rayo"){
