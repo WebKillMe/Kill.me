@@ -2178,8 +2178,8 @@ function cemRowHTML(p,showTime=false,showDelete=false){
         </div>
         <div style="font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${lbl}</div>
         <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(p.razon)}"</div>
-        <div style="margin-top:7px;display:flex;align-items:center;gap:6px;">
-          <span style="font-size:clamp(11px,2.8vw,12px);color:var(--warm);">${icoStat(ICO.candle,14)} ${p.dep_count||0}</span>
+        <div style="margin-top:7px;display:flex;align-items:center;gap:6px;width:100%;">
+          <span style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${p.dep_count||0}</span>
           ${showDelete?`<button class="btn-link cem-delete-btn" data-delid="${p.id}" style="margin-left:auto;flex-shrink:0;font-size:clamp(9px,2.2vw,10px);color:var(--muted);opacity:.65;padding:2px 0;">${lang==='en'?'Delete':'Borrar'}</button>`:''}
         </div>
       </div>
@@ -2517,10 +2517,10 @@ function feedCardHTML(item,older=false){
         </div>
         <div style="font-size:clamp(10px,2.5vw,11px);color:var(--warm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">${lbl}</div>
         <div style="font-size:clamp(13px,3.5vw,14px);color:var(--text2);font-style:italic;line-height:1.5;">"${esc(item.razon)}"</div>
-        ${older?'':`<div style="margin-top:7px;display:flex;align-items:center;gap:6px;">${own
+        <div style="margin-top:7px;display:flex;align-items:center;gap:6px;">${older||own
           ?`<span style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);">${ICO.candle} ${depCount}</span>`
           :`<button class="dep-btn ${given?'given':''}" data-pid="${item.id}">${ICO.candle} <span class="dep-count">${depCount}</span></button>`}
-        </div>`}
+        </div>
       </div>
     </div>
   </div>`;
@@ -2598,14 +2598,18 @@ function attachCalListeners(){
   function rebind(){
     const prev=ge('calPrev'),next=ge('calNext');
     if(prev)prev.onclick=()=>{
-      const[y,m]=_calMonth.split('-').map(Number);
-      _calMonth=new Date(y,m-2,1).toISOString().slice(0,7);
+      let[y,m]=_calMonth.split('-').map(Number);
+      m--;if(m<1){m=12;y--;}
+      _calMonth=`${y}-${String(m).padStart(2,'0')}`;
       const cal=ge('ajustesCal');if(cal){cal.innerHTML=calendarHTML();rebind();}
     };
     if(next)next.onclick=()=>{
-      const[y,m]=_calMonth.split('-').map(Number);
-      const nxt=new Date(y,m,1).toISOString().slice(0,7);
-      if(nxt>new Date().toISOString().slice(0,7))return;
+      let[y,m]=_calMonth.split('-').map(Number);
+      m++;if(m>12){m=1;y++;}
+      const nxt=`${y}-${String(m).padStart(2,'0')}`;
+      const now=new Date();
+      const nowKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+      if(nxt>nowKey)return;
       _calMonth=nxt;
       const cal=ge('ajustesCal');if(cal){cal.innerHTML=calendarHTML();rebind();}
     };
@@ -2640,9 +2644,9 @@ function calendarHTML(){
     const ds=`${cy}-${String(cm).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const col=postMap[ds];
     const isToday=ds===todayS();
-    cells+=`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-      <span style="font-size:clamp(8px,2vw,10px);color:${isToday?'var(--warm)':col?'var(--text2)':'var(--muted)'};font-weight:${isToday?700:400};">${d}</span>
-      ${col?`<div style="width:10px;height:10px;border-radius:50%;background:${col};${isToday?'box-shadow:0 0 0 2px var(--warm)':''}"></div>`:`<div style="width:10px;height:10px;border-radius:50%;background:var(--border);opacity:.35;"></div>`}
+    cells+=`<div class="cal-day">
+      <span class="cal-num">${d}</span>
+      ${col?`<div class="cal-dot" style="width:10px;height:10px;border-radius:50%;background:${col};${isToday?'box-shadow:0 0 0 2px var(--warm)':''}"></div>`:`<div class="cal-dot" style="width:10px;height:10px;border-radius:50%;background:var(--border);opacity:.35;"></div>`}
     </div>`;
   }
 
@@ -2694,20 +2698,17 @@ function renderAjustes(){
         <span style="font-size:clamp(10px,2.5vw,11px);color:var(--muted2);">${profile.is_private?(lang==='en'?'only friends see your posts':'solo amigos ven tus tragedias'):(lang==='en'?'everyone can see your posts':'todos ven tus tragedias')}</span>
       </button>
     </div>
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:12px;">
       <div style="font-size:clamp(9px,2.5vw,10px);color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Bio</div>
       <textarea id="ajustesBioInput" maxlength="160" placeholder="${lang==='en'?'A short description about you...':'Una breve descripción tuya...'}" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:10px 12px;font-size:clamp(13px,3.5vw,14px);font-family:inherit;outline:none;box-sizing:border-box;resize:none;min-height:70px;">${esc(profile.bio||'')}</textarea>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-        <span id="bioCount" style="font-size:clamp(10px,2.5vw,11px);color:var(--muted);">${(profile.bio||'').length}/160</span>
-        <button class="btn-warm-sm" id="btnSaveBio" style="font-size:clamp(11px,2.8vw,12px);padding:6px 14px;">${lang==='en'?'Save':'Guardar'}</button>
-      </div>
+      <div style="display:flex;margin-top:4px;"><span id="bioCount" style="font-size:clamp(10px,2.5vw,11px);color:var(--muted);">${(profile.bio||'').length}/160</span></div>
     </div>
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:10px;">
       <div style="font-size:clamp(9px,2.5vw,10px);color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">${lang==='en'?'Social link':'Link social'}</div>
-      <div style="display:flex;gap:8px;">
-        <input type="url" id="ajustesSocialInput" value="${esc(profile.social_link||'')}" placeholder="${lang==='en'?'Your instagram, bluesky...':'Tu instagram, bluesky...'}" style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:10px 12px;font-size:clamp(13px,3.5vw,14px);font-family:inherit;outline:none;box-sizing:border-box;"/>
-        <button class="btn-warm-sm" id="btnSaveSocial" style="font-size:clamp(11px,2.8vw,12px);padding:6px 14px;flex-shrink:0;">${lang==='en'?'Save':'Guardar'}</button>
-      </div>
+      <input type="url" id="ajustesSocialInput" value="${esc(profile.social_link||'')}" placeholder="${lang==='en'?'Your instagram, bluesky...':'Tu instagram, bluesky...'}" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:10px 12px;font-size:clamp(13px,3.5vw,14px);font-family:inherit;outline:none;box-sizing:border-box;"/>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+      <button class="btn-link" id="btnSaveProfile" style="font-size:clamp(11px,2.8vw,12px);color:var(--muted2);padding:4px 0;">${lang==='en'?'Save changes':'Guardar cambios'}</button>
     </div>
     <div style="height:1px;background:var(--border);margin:clamp(14px,3.5vw,18px) 0;"></div>
     <div style="margin-bottom:16px;">
@@ -2766,46 +2767,71 @@ function renderSearch(){
   </div>`;
 }
 
+function homeWalkDollSVG(color,px){
+  px=px||clamp(150,180);
+  const w=220,h=280,sw=22,ht=Math.round(px*h/w);
+  const cx=110,hr=84,hcy=98,bHW=33,bT=174,bB=224,aY=195;
+  const er=Math.max(5,hr*0.115);
+  const lx=cx-hr*0.28,rx=cx+hr*0.28,ey=hcy-hr*0.21;
+  // Walking SMIL path values (left leg in phase with right arm; right leg with left arm)
+  const lLv='M96 224 Q104 245 110 271; M96 224 Q86 246 82 272; M96 224 Q104 245 110 271';
+  const lRv='M124 224 Q134 246 138 272; M124 224 Q118 245 110 271; M124 224 Q134 246 138 272';
+  const aLv='M77 195 Q25 213 5 233; M77 195 Q41 213 21 233; M77 195 Q25 213 5 233';
+  const aRv='M143 195 Q179 213 199 233; M143 195 Q195 213 215 233; M143 195 Q179 213 199 233';
+  const an='dur="0.68s" repeatCount="indefinite" calcMode="linear"';
+  const mech=`M${cx-hr*.36} ${hcy-hr*.78} C${cx-hr*.58} ${hcy-hr*.80} ${cx-hr*.60} ${hcy-hr*1.08} ${cx-hr*.26} ${hcy-hr*1.10} C${cx-hr*.08} ${hcy-hr*1.10} ${cx-hr*.06} ${hcy-hr*.84} ${cx-hr*.20} ${hcy-hr*.78} Z`;
+  return `<div class="doll-wrap" style="width:${px}px;height:${ht}px;">
+<svg id="homeWalkSVG" viewBox="0 0 220 280" width="${px}" height="${ht}" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M96 224 Q104 245 110 271"><animate attributeName="d" values="${lLv}" ${an}/></path>
+    <path d="M124 224 Q134 246 138 272"><animate attributeName="d" values="${lRv}" ${an}/></path>
+  </g>
+  <rect x="${cx-bHW}" y="${bT}" width="${bHW*2}" height="${bB-bT}" rx="9" fill="${color}"/>
+  <g stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M77 195 Q25 213 5 233"><animate attributeName="d" values="${aLv}" ${an}/></path>
+    <path d="M143 195 Q179 213 199 233"><animate attributeName="d" values="${aRv}" ${an}/></path>
+  </g>
+  <circle cx="${cx}" cy="${hcy}" r="${hr}" fill="${color}" stroke="none"/>
+  <path d="${mech}" fill="${color}"/>
+  <circle cx="${lx}" cy="${ey}" r="${er*0.88}" fill="rgba(0,0,0,0.5)"/>
+  <circle cx="${rx}" cy="${ey}" r="${er*0.88}" fill="rgba(0,0,0,0.5)"/>
+  <circle cx="${lx}" cy="${ey}" r="${er*0.46}" fill="rgba(255,255,255,0.82)" id="homeEyePL"/>
+  <circle cx="${rx}" cy="${ey}" r="${er*0.46}" fill="rgba(255,255,255,0.82)" id="homeEyePR"/>
+</svg></div>`;
+}
+
 function setupHomeAnim(){
   if(window.__eyeCleanup){window.__eyeCleanup();window.__eyeCleanup=null;}
   const outer=ge('homeWalkOuter');
   const inner=ge('homeWalkInner');
   const stone=ge('homeStone');
   if(!outer||!inner)return;
-  const svg=inner.querySelector('svg');if(!svg)return;
 
-  // Eye geometry (w=220 h=280 idle)
-  const w=220,h=280,hr=Math.round(h*.30),hcy=Math.round(h*.35),cx=w/2;
-  const lx=cx-hr*.28,rx=cx+hr*.28,ey=hcy-hr*.21;
-  const er=Math.max(5,hr*.115);
-  const maxOff=er*.7;
-  const ns='http://www.w3.org/2000/svg';
+  // Swap static doll for walking-animated SVG
+  inner.innerHTML=homeWalkDollSVG(profile.doll_color,clamp(150,180));
 
-  // Replace solid black eyes with iris+pupil so movement is visible
-  const allC=[...svg.querySelectorAll('circle')];
-  allC.forEach(c=>{
-    const cy2=+c.getAttribute('cy'),r2=+c.getAttribute('r');
-    if(Math.abs(cy2-ey)<er*1.5&&r2>er*.5){
-      c.setAttribute('r',er*.85);
-      c.setAttribute('fill','rgba(0,0,0,0.55)');
-    }
-  });
-  function mkPupil(ex){
-    const p=document.createElementNS(ns,'circle');
-    p.setAttribute('r',er*.5);p.setAttribute('cx',ex);p.setAttribute('cy',ey);
-    p.setAttribute('fill','rgba(255,255,255,0.7)');p.setAttribute('pointer-events','none');
-    svg.appendChild(p);return p;
-  }
-  const pL=mkPupil(lx),pR=mkPupil(rx);
-  const vb=svg.viewBox.baseVal;
+  const cx=110,hr=84,hcy=98,er=Math.max(5,hr*0.115);
+  const lx=cx-hr*0.28,rx=cx+hr*0.28,ey=hcy-hr*0.21;
+
+  // Rotate around feet
+  outer.style.transformOrigin='center 94%';
+  outer.style.transition='none';
+  outer.style.transform='translateX(-280px)';
+  outer.style.opacity='0';
 
   function startEyes(){
+    const svgEl=ge('homeWalkSVG');
+    const pL=ge('homeEyePL'),pR=ge('homeEyePR');
+    if(!pL||!pR||!svgEl)return;
+    const maxOff=er*0.68;
+    const vb=svgEl.viewBox.baseVal;
     const onMove=e=>{
-      const r=svg.getBoundingClientRect();
+      const r=svgEl.getBoundingClientRect();
+      if(!r.width)return;
       const mx=(e.clientX-r.left)*(vb.width/r.width)+vb.x;
       const my=(e.clientY-r.top)*(vb.height/r.height)+vb.y;
-      const dx=Math.max(-maxOff,Math.min(maxOff,(mx-cx)*.18));
-      const dy=Math.max(-maxOff,Math.min(maxOff,(my-ey)*.14));
+      const dx=Math.max(-maxOff,Math.min(maxOff,(mx-cx)*0.22));
+      const dy=Math.max(-maxOff,Math.min(maxOff,(my-ey)*0.16));
       pL.setAttribute('cx',lx+dx);pL.setAttribute('cy',ey+dy);
       pR.setAttribute('cx',rx+dx);pR.setAttribute('cy',ey+dy);
     };
@@ -2813,52 +2839,56 @@ function setupHomeAnim(){
     window.__eyeCleanup=()=>document.removeEventListener('mousemove',onMove);
   }
 
-  // --- Animation sequence ---
-  function tr(el,props,ms){Object.assign(el.style,{transition:`transform ${ms}ms cubic-bezier(0.25,0.1,0.25,1), opacity ${ms}ms ease`,...props});}
-
-  // Phase 0: appear off-screen
-  outer.style.cssText+='transition:none;transform:translateX(-200px);opacity:0;';
-
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    // Phase 1: walk in (1.7s)
+    // Phase 1: walk in — outer translates, inner bobs
     inner.classList.add('home-walking');
-    tr(outer,{transform:'translateX(0)',opacity:'1','transition':'transform 1.7s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.25s ease'},1700);
+    outer.style.transition='transform 1.9s cubic-bezier(0.25,0.46,0.45,0.94),opacity 0.3s ease';
+    outer.style.transform='translateX(0)';
+    outer.style.opacity='1';
 
-    // Phase 2: trip (1.75s)
+    // Phase 2: trip (1.95s — stone appears + doll tilts)
     setTimeout(()=>{
-      if(stone){stone.style.transition='opacity 0.2s ease';stone.style.opacity='1';}
+      const svgEl=ge('homeWalkSVG');
+      if(svgEl&&svgEl.pauseAnimations)svgEl.pauseAnimations();
       inner.classList.remove('home-walking');
-      outer.style.transition='transform 0.25s cubic-bezier(0.6,0,1,0.6)';
-      outer.style.transform='translateX(8px) rotate(22deg)';
-    },1750);
+      if(stone){stone.style.transition='opacity 0.15s ease';stone.style.opacity='1';}
+      outer.style.transition='transform 0.22s cubic-bezier(0.6,0,1,0.45)';
+      outer.style.transform='translateX(14px) rotate(22deg)';
+    },1950);
 
-    // Phase 3: fall flat (2.05s)
+    // Phase 3: fall flat (2.2s)
     setTimeout(()=>{
-      outer.style.transition='transform 0.4s cubic-bezier(0.55,0,0.75,-0.1)';
-      outer.style.transform='translateX(22px) translateY(18px) rotate(85deg)';
-    },2050);
+      outer.style.transition='transform 0.48s cubic-bezier(0.45,0,0.65,-0.15)';
+      outer.style.transform='translateX(22px) rotate(88deg)';
+    },2200);
 
-    // Phase 4: on ground — pause until 3.3s
+    // Phase 4: on the ground (2.68s–3.6s)
 
-    // Phase 5: push up (3.3s)
+    // Phase 5: push up — arms plant, torso lifts (3.6s)
     setTimeout(()=>{
-      outer.style.transition='transform 0.55s cubic-bezier(0.2,0,0.5,1)';
-      outer.style.transform='translateX(14px) translateY(9px) rotate(40deg)';
-    },3300);
+      outer.style.transition='transform 0.6s cubic-bezier(0.2,0,0.45,1)';
+      outer.style.transform='translateX(16px) rotate(50deg)';
+    },3600);
 
-    // Phase 6: stand (3.85s)
+    // Phase 6: to knees (4.25s)
     setTimeout(()=>{
-      outer.style.transition='transform 0.65s cubic-bezier(0.18,1.2,0.4,1)';
-      outer.style.transform='translateX(0) translateY(0) rotate(0deg)';
-    },3850);
+      outer.style.transition='transform 0.65s cubic-bezier(0.25,0.1,0.4,1)';
+      outer.style.transform='translateX(8px) rotate(16deg)';
+    },4250);
 
-    // Phase 7: breathe + eye tracking (4.55s)
+    // Phase 7: fully upright with slight overshoot (4.95s)
+    setTimeout(()=>{
+      outer.style.transition='transform 0.72s cubic-bezier(0.18,1.28,0.4,1)';
+      outer.style.transform='translateX(0) rotate(0deg)';
+    },4950);
+
+    // Phase 8: idle breathe + eye tracking (5.75s)
     setTimeout(()=>{
       outer.style.transition='';
-      outer.style.transform='';
+      outer.style.transformOrigin='';
       outer.style.animation='breathe 3.5s ease-in-out infinite';
       startEyes();
-    },4550);
+    },5750);
   }));
 }
 
@@ -3025,21 +3055,15 @@ function attachListeners(){
       paint();
     };
     const bioInp=ge('ajustesBioInput');
-    if(bioInp){
-      const bioCountEl=ge('bioCount');
-      if(bioCountEl)bioInp.oninput=()=>{bioCountEl.textContent=`${bioInp.value.length}/160`;};
-      if(ge('btnSaveBio'))ge('btnSaveBio').onclick=async()=>{
-        const val=bioInp.value.trim();
-        const btn=ge('btnSaveBio');btn.disabled=true;btn.textContent='...';
-        try{await sb.from('profiles').update({bio:val}).eq('id',user.id);profile.bio=val;paint();}
-        catch(e){btn.disabled=false;btn.textContent=lang==='en'?'Save':'Guardar';alert('Error: '+(e.message||e));}
-      };
-    }
-    if(ge('btnSaveSocial'))ge('btnSaveSocial').onclick=async()=>{
-      const val=(ge('ajustesSocialInput').value||'').trim();
-      const btn=ge('btnSaveSocial');btn.disabled=true;btn.textContent='...';
-      try{await sb.from('profiles').update({social_link:val}).eq('id',user.id);profile.social_link=val;paint();}
-      catch(e){btn.disabled=false;btn.textContent=lang==='en'?'Save':'Guardar';alert('Error: '+(e.message||e));}
+    if(bioInp){const bioCountEl=ge('bioCount');if(bioCountEl)bioInp.oninput=()=>{bioCountEl.textContent=`${bioInp.value.length}/160`;};}
+    if(ge('btnSaveProfile'))ge('btnSaveProfile').onclick=async()=>{
+      const btn=ge('btnSaveProfile');btn.disabled=true;btn.textContent='...';
+      const bioVal=(ge('ajustesBioInput')?.value||'').trim();
+      const linkVal=(ge('ajustesSocialInput')?.value||'').trim();
+      try{
+        await sb.from('profiles').update({bio:bioVal,social_link:linkVal}).eq('id',user.id);
+        profile.bio=bioVal;profile.social_link=linkVal;paint();
+      }catch(e){btn.disabled=false;btn.textContent=lang==='en'?'Save changes':'Guardar cambios';alert('Error: '+(e.message||e));}
     };
   }
   if(view==='amigos'){
