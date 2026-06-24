@@ -2060,7 +2060,7 @@ function renderProfile(){
       <div class="profile-stat"><div class="profile-stat-num">${prof.streak||0}</div><div class="profile-stat-lbl">${ICO.flame} ${lang==='en'?'streak':'racha'}</div></div>
       <div class="profile-stat"><div class="profile-stat-num" style="color:#5A8FD4">${td}</div><div class="profile-stat-lbl">${ICO.candle} DEPs</div></div>
     </div>
-${(()=>{const profState={totalDeps:td,streak:prof.streak||0,postCount:posts.length,posts,birthDate:prof.birth_date||null,drawCount:posts.filter(p=>p.castigo==='dibujo').length};const toShow=isSelf?pinnedLogros.map(aid=>ACHIEVEMENTS.find(x=>x.id===aid)).filter(a=>a&&a.check(profState)):ACHIEVEMENTS.filter(a=>!a.secret&&a.check(profState));if(!toShow.length)return'';return`<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:clamp(14px,3.5vw,18px);">${toShow.map(a=>`<div class="logro-badge ${logroClass(a)}" data-desc="${esc(lang==='en'?a.desc_en:a.desc_es)}" style="padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:clamp(10px,2.5vw,11px);"><span class="badge-body">${a.icon} <span style="color:var(--text2);">${lang==='en'?a.title_en:a.title_es}</span><span class="badge-shine"></span></span></div>`).join('')}</div>`;})()}
+${(()=>{const profState={totalDeps:td,streak:prof.streak||0,postCount:posts.length,posts,birthDate:prof.birth_date||null,drawCount:posts.filter(p=>p.castigo==='dibujo').length};const toShow=isSelf?pinnedLogros.map(aid=>ACHIEVEMENTS.find(x=>x.id===aid)).filter(a=>a&&a.check(profState)):ACHIEVEMENTS.filter(a=>!a.secret&&a.check(profState));if(!toShow.length)return'';return`<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:clamp(14px,3.5vw,18px);">${toShow.map(a=>`<div class="logro-badge ${logroClass(a)}" data-desc="${esc(lang==='en'?a.desc_en:a.desc_es)}" style="padding:5px 10px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:clamp(10px,2.5vw,11px);"><span class="badge-body">${a.icon} <span>${lang==='en'?a.title_en:a.title_es}</span><span class="badge-shine"></span></span></div>`).join('')}</div>`;})()}
     <div style="height:1px;background:var(--border);margin-bottom:clamp(16px,4vw,20px);"></div>
     ${isPrivateLocked
       ?`<div style="text-align:center;padding:clamp(30px,8vw,50px) 20px;color:var(--muted2);">
@@ -2636,8 +2636,7 @@ function calendarHTML(){
     const col=postMap[ds];
     const isToday=ds===todayS();
     cells+=`<div class="cal-day">
-      <span class="cal-num">${d}</span>
-      ${col?`<div class="cal-dot" style="width:10px;height:10px;border-radius:50%;background:${col};${isToday?'box-shadow:0 0 0 2px var(--warm)':''}"></div>`:`<div class="cal-dot" style="width:10px;height:10px;border-radius:50%;background:var(--border);opacity:.35;"></div>`}
+      ${col?`<div class="cal-dot" style="width:14px;height:14px;border-radius:50%;background:${col};${isToday?'box-shadow:0 0 0 2px var(--warm)':''}"></div>`:`<div class="cal-dot" style="width:14px;height:14px;border-radius:50%;background:var(--border);opacity:.3;"></div>`}
     </div>`;
   }
 
