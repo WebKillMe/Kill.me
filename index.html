@@ -207,6 +207,7 @@ button,a,input,label,select,textarea{touch-action:manipulation;}
 .dep-btn:not(.given):hover{background:rgba(192,57,43,.05);border-color:rgba(192,57,43,.2);color:var(--text2);}
 .dep-count{color:var(--warm);font-weight:800;}
 .follow-btn{background:transparent;border:1px solid var(--border2);border-radius:6px;padding:4px 10px;color:var(--muted2);font-size:clamp(10px,2.5vw,11px);font-weight:600;cursor:pointer;transition:all .16s;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+.feed-add-friend-btn{padding:2px 7px;font-size:clamp(9px,2vw,10px);font-weight:400;}
 .follow-btn.following{background:var(--surface2);border-color:var(--border2);color:var(--warm);}
 .own-dep{text-align:center;color:var(--muted2);font-size:clamp(11px,3vw,12px);padding:7px;display:flex;align-items:center;justify-content:center;gap:5px;}
 /* Canvas */
@@ -504,8 +505,8 @@ const STRINGS={
     dibujo_title:'Modo libre',dibujo_sub:'Escribe qué pasó y dibuja qué le haces',
     ph_razon_draw:'¿qué te ha pasado hoy?',ph_desc_draw:'¿qué le has hecho?',btn_clear:'limpiar',btn_back_draw:'← volver a los castigos',
     feed_sub:'Las tragedias de hoy',feed_empty:'Nadie ha publicado hoy',feed_empty_sub:'sé el primero',feed_older:'Días anteriores',
-    btn_follow:' seguir',btn_following:' siguiendo',prev_label:'Lo de antes',
-    senales_title:'Actividad',sig_dep:'te ha mandado un DEP',sig_follow:'ha empezado a seguirte',
+    btn_follow:' añadir amigo',btn_following:' amigos',prev_label:'Lo de antes',
+    senales_title:'Actividad',sig_dep:'te ha mandado un DEP',sig_follow:'te ha enviado una solicitud de amistad',
     senales_empty_post:'No hay señales nuevas desde tu última visita',senales_empty_no_post:'Publica tu tragedia de hoy para recibir señales',
     btn_publish_ruina:'Publicar tragedia',
     muertes_unlocked:'desbloqueadas',muertes_free:'Siempre disponibles',muertes_streak:'Por racha diaria',muertes_deps:'Por DEPs recibidos',
@@ -517,7 +518,7 @@ const STRINGS={
     profile_since:'Miembro desde ',profile_ruinas_last:'Últimas tragedias',profile_no_ruinas:'Sin tragedias todavía.',
     profile_streak:'racha',profile_deps:'DEPs',profile_ruinas_lbl:'tragedias',
     amigos_title:'Amigos',amigos_empty:'No tienes amigos aún.',amigos_find:'Encuéntralos en el feed.',
-    amigos_loading:'Cargando...',amigos_streak:'días de racha · miembro desde ',amigos_following:' siguiendo',
+    amigos_loading:'Cargando...',amigos_streak:'días de racha · miembro desde ',amigos_following:' amigos mutuos',
     time_now:'ahora',time_m:'hace $mm',time_h:'hace $hh',time_d:'hace $dd',
     err_load:'No se pudo iniciar sesión. Inténtalo de nuevo.',err_load2:'Error al cargar. Recarga la página.',
     pass_req:'6+ caracteres',
@@ -532,7 +533,7 @@ const STRINGS={
     btn_delete:'Borrar tragedia',confirm_delete:'¿Seguro? Perderás los DEPs de hoy y no contará para la racha.',
     vis_label:'Visibilidad',vis_public:'Público — aparece en el funeral global',vis_friends:'Amigos — solo tus seguidores',vis_private:'Privado — solo tú',
     cemetery_title:'Mi cementerio',cemetery_sub:'$n tragedias enterradas',cemetery_empty:'Aún no tienes ninguna tragedia enterrada.',cemetery_loading:'Cargando...',btn_cemetery:'Ver mi cementerio',
-    following_tab:'Siguiendo',followers_tab:'Seguidores',no_followers:'Todavía nadie te sigue.',
+    following_tab:'Amigos',followers_tab:'Seguidores',no_followers:'Todavía no tienes amigos.',
     logros_title:'Logros',castigos_tab:'Castigos',logros_tab:'Logros',
     lbl_birthday:'Fecha de nacimiento',btn_save_birthday:'Guardar',
     btn_share:'Compartir tragedia',
@@ -572,8 +573,8 @@ const STRINGS={
     dibujo_title:'Free mode',dibujo_sub:'Write what happened and draw what you do',
     ph_razon_draw:'what happened today?',ph_desc_draw:'what did you do to it?',btn_clear:'clear',btn_back_draw:'← back to punishments',
     feed_sub:"Today's ruinas",feed_empty:'Nobody has posted today',feed_empty_sub:'be the first',feed_older:'Previous days',
-    btn_follow:' follow',btn_following:' following',prev_label:'Before that',
-    senales_title:'Activity',sig_dep:'sent you a DEP',sig_follow:'started following you',
+    btn_follow:' add friend',btn_following:' friends',prev_label:'Before that',
+    senales_title:'Activity',sig_dep:'sent you a DEP',sig_follow:'sent you a friend request',
     senales_empty_post:'No new signals since your last visit',senales_empty_no_post:"Post your ruina today to receive signals",
     btn_publish_ruina:'Post ruina',
     muertes_unlocked:'unlocked',muertes_free:'Always available',muertes_streak:'By daily streak',muertes_deps:'By DEPs received',
@@ -585,7 +586,7 @@ const STRINGS={
     profile_since:'Member since ',profile_ruinas_last:'Latest ruinas',profile_no_ruinas:'No ruinas yet.',
     profile_streak:'streak',profile_deps:'DEPs',profile_ruinas_lbl:'tragedias',
     amigos_title:'Friends',amigos_empty:"You have no friends yet.",amigos_find:'Find them in the feed.',
-    amigos_loading:'Loading...',amigos_streak:'day streak · member since ',amigos_following:' following',
+    amigos_loading:'Loading...',amigos_streak:'day streak · member since ',amigos_following:' mutual friends',
     time_now:'now',time_m:'$mm ago',time_h:'$hh ago',time_d:'$dd ago',
     err_load:'Could not sign in. Please try again.',err_load2:'Error loading. Reload the page.',
     pass_req:'6+ characters',
@@ -600,7 +601,7 @@ const STRINGS={
     btn_delete:'Delete ruina',confirm_delete:"Are you sure? You'll lose today's DEPs and streak.",
     vis_label:'Visibility',vis_public:'Public — appears in the global funeral',vis_friends:'Friends — only your followers',vis_private:'Private — only you',
     cemetery_title:'My cemetery',cemetery_sub:'$n ruinas buried',cemetery_empty:"You don't have any buried ruinas yet.",cemetery_loading:'Loading...',btn_cemetery:'My cemetery',
-    following_tab:'Following',followers_tab:'Followers',no_followers:"Nobody is following you yet.",
+    following_tab:'Friends',followers_tab:'Followers',no_followers:"You don't have any friends yet.",
     logros_title:'Achievements',castigos_tab:'Punishments',logros_tab:'Achievements',
     lbl_birthday:'Date of birth',btn_save_birthday:'Save',
     btn_share:'Share ruina',
@@ -1353,7 +1354,7 @@ async function toggleDep(pid){
 async function toggleFollow(uid){
   if(myFollowing.has(uid)){
     if(myFriends.has(uid)){
-      const msg=lang==='en'?'Unfollowing will remove your friendship. You\'ll need to send a new request to be friends again. Continue?':'Al dejar de seguir perderás la amistad y tendrás que volver a solicitar. ¿Continuar?';
+      const msg=lang==='en'?'Removing this friend will end the friendship. You\'ll need to send a new request to be friends again. Continue?':'Esto eliminará la amistad. Tendrás que volver a enviar una solicitud para ser amigos. ¿Continuar?';
       if(!confirm(msg))return;
       await removeFriend(uid);
     }
@@ -1590,18 +1591,14 @@ async function loadSeñales(){
   const since=new Date(lastCheck||Date.now()-86400000*30).toISOString();
   let myPosts;try{({data:myPosts}=await sb.from('posts').select('id').eq('user_id',user.id).gte('post_date',new Date(Date.now()-86400000*30).toISOString().slice(0,10)));}catch(e){myPosts=[];}
   const myPostIds=(myPosts||[]).map(p=>p.id);
-  const queries=[
-    sb.from('follows').select('created_at,follower_id,profiles!follower_id(username)').eq('following_id',user.id).gt('created_at',since).order('created_at',{ascending:false}),
-  ];
-  if(myPostIds.length)queries.unshift(
+  const queries=[];
+  if(myPostIds.length)queries.push(
     sb.from('deps').select('created_at,user_id,post_id,profiles(username),posts(razon,castigo,dibujo_descripcion)').in('post_id',myPostIds).gt('created_at',since).neq('user_id',user.id).order('created_at',{ascending:false}).limit(50)
   );
   const results=await Promise.all(queries).catch(()=>queries.map(()=>({data:[]})));
   const deps=myPostIds.length?results[0].data||[]:[];
-  const follows=results[myPostIds.length?1:0].data||[];
   const newItems=[
     ...deps.map(d=>({type:'dep',time:d.created_at,user:d.profiles?.username||'alguien',uid:d.user_id,postId:d.post_id,postRazon:d.posts?.razon||null,postCastigo:d.posts?.castigo||null,postDescDibujo:d.posts?.dibujo_descripcion||null})),
-    ...follows.map(f=>({type:'follow',time:f.created_at,user:f['profiles!follower_id']?.username||f.profiles?.username||'alguien',uid:f.follower_id})),
   ];
   // Merge with history — dedup by time+type+user
   const seen=new Set(history.map(i=>`${i.type}|${i.time}|${i.user}`));
@@ -1618,11 +1615,10 @@ async function checkSeñalesBadge(){
   const lastCheck=parseInt(localStorage.getItem('señalesCheck')||'0');
   if(!lastCheck)return;
   const since=new Date(lastCheck).toISOString();
-  const [{count:c1},{count:c2}]=await Promise.all([
+  const [{count:c1}]=await Promise.all([
     sb.from('deps').select('*',{count:'exact',head:true}).eq('post_id',todayPost.id).gt('created_at',since),
-    sb.from('follows').select('*',{count:'exact',head:true}).eq('following_id',user.id).gt('created_at',since),
-  ]).catch(()=>[{count:0},{count:0}]);
-  señalesBadge=!!((c1||0)+(c2||0)+pendingFriendReqs.length);
+  ]).catch(()=>[{count:0}]);
+  señalesBadge=!!((c1||0)+pendingFriendReqs.length);
 }
 
 // ── Auth ──────────────────────────────────────────────
@@ -2905,20 +2901,9 @@ function setupHomeAnim(){
   if(window.__eyeCleanup){window.__eyeCleanup();window.__eyeCleanup=null;}
   const outer=ge('homeWalkOuter');
   const inner=ge('homeWalkInner');
-  const stone=ge('homeStone');
   if(!outer||!inner)return;
 
-  // If animation is done: restore idle state (inner needs new SVG for eye tracking)
-  if(window.__homeAnimDone){
-    inner.innerHTML=homeWalkDollSVG(profile.doll_color,clamp(150,180));
-    outer.style.cssText='display:inline-block;will-change:transform;transform:translateX(0);opacity:1;animation:breathe 3.5s ease-in-out infinite;';
-    startEyes();return;
-  }
-  // If animation is already running, don't restart — leave DOM untouched
-  if(window.__homeAnimPlaying)return;
-  window.__homeAnimPlaying=true;
-
-  // Only now swap in the walking SVG
+  // Always show idle breathe — no walk/trip animation on this screen
   inner.innerHTML=homeWalkDollSVG(profile.doll_color,clamp(150,180));
 
   const cx=110,hr=84,hcy=98,er=Math.max(5,hr*0.115);
@@ -2930,10 +2915,11 @@ function setupHomeAnim(){
   outer.style.transform='translateX(-280px)';
   outer.style.opacity='0';
 
-  function startEyes(){
-    const svgEl=ge('homeWalkSVG');
-    const pL=ge('homeEyePL'),pR=ge('homeEyePR');
-    if(!pL||!pR||!svgEl)return;
+  outer.style.cssText='display:inline-block;will-change:transform;transform:translateX(0);opacity:1;animation:breathe 3.5s ease-in-out infinite;';
+
+  const svgEl=ge('homeWalkSVG');
+  const pL=ge('homeEyePL'),pR=ge('homeEyePR');
+  if(pL&&pR&&svgEl){
     const maxOff=er*0.68;
     const vb=svgEl.viewBox.baseVal;
     const onMove=e=>{
@@ -2949,60 +2935,6 @@ function setupHomeAnim(){
     document.addEventListener('mousemove',onMove);
     window.__eyeCleanup=()=>document.removeEventListener('mousemove',onMove);
   }
-
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    // Phase 1: walk in — outer translates, inner bobs
-    inner.classList.add('home-walking');
-    outer.style.transition='transform 1.9s cubic-bezier(0.25,0.46,0.45,0.94),opacity 0.3s ease';
-    outer.style.transform='translateX(0)';
-    outer.style.opacity='1';
-
-    // Phase 2: trip (1.95s — stone appears + doll tilts)
-    setTimeout(()=>{
-      const svgEl=ge('homeWalkSVG');
-      if(svgEl&&svgEl.pauseAnimations)svgEl.pauseAnimations();
-      inner.classList.remove('home-walking');
-      if(stone){stone.style.transition='opacity 0.15s ease';stone.style.opacity='1';}
-      outer.style.transition='transform 0.22s cubic-bezier(0.6,0,1,0.45)';
-      outer.style.transform='translateX(14px) rotate(22deg)';
-    },1950);
-
-    // Phase 3: fall flat (2.2s)
-    setTimeout(()=>{
-      outer.style.transition='transform 0.48s cubic-bezier(0.45,0,0.65,-0.15)';
-      outer.style.transform='translateX(22px) rotate(88deg)';
-    },2200);
-
-    // Phase 4: on the ground (2.68s–3.6s)
-
-    // Phase 5: push up — arms plant, torso lifts (3.6s)
-    setTimeout(()=>{
-      outer.style.transition='transform 0.6s cubic-bezier(0.2,0,0.45,1)';
-      outer.style.transform='translateX(16px) rotate(50deg)';
-    },3600);
-
-    // Phase 6: to knees (4.25s)
-    setTimeout(()=>{
-      outer.style.transition='transform 0.65s cubic-bezier(0.25,0.1,0.4,1)';
-      outer.style.transform='translateX(8px) rotate(16deg)';
-    },4250);
-
-    // Phase 7: fully upright with slight overshoot (4.95s)
-    setTimeout(()=>{
-      outer.style.transition='transform 0.72s cubic-bezier(0.18,1.28,0.4,1)';
-      outer.style.transform='translateX(0) rotate(0deg)';
-    },4950);
-
-    // Phase 8: idle breathe + eye tracking (5.75s)
-    setTimeout(()=>{
-      window.__homeAnimDone=true;
-      window.__homeAnimPlaying=false;
-      outer.style.transition='';
-      outer.style.transformOrigin='';
-      outer.style.animation='breathe 3.5s ease-in-out infinite';
-      startEyes();
-    },5750);
-  }));
 }
 
 function setupHomeEyes(){setupHomeAnim();}
