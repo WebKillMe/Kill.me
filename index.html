@@ -1144,11 +1144,27 @@ function dollSVG(color,death,dead,poseName,px){
   </svg></div>`;
 }
 
+function strokesToSVG(strokes){
+  return (strokes||[]).map(s=>{
+    const op=s.alpha||1;
+    const sw=`stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" opacity="${op}"`;
+    if(s.type==='ellipse'){
+      const fill=s.filled?`fill="${s.color}" fill-opacity="0.22"`:'fill="none"';
+      return `<ellipse cx="${s.cx}" cy="${s.cy}" rx="${s.rx}" ry="${s.ry}" ${sw} ${fill}/>`;
+    }
+    const pts=s.puntos||[];
+    if(!pts.length)return'';
+    const fill=s.filled?`fill="${s.color}" fill-opacity="0.22"`:'fill="none"';
+    const d='M'+pts.map(p=>`${p.x},${p.y}`).join(' L')+(s.filled?' Z':'');
+    return `<path d="${d}" ${sw} ${fill}/>`;
+  }).join('');
+}
+
 function dollWithDraw(color,death,strokes,dead,poseName,px){
   if(death!=="dibujo")return dollSVG(color,death,dead,poseName,px);
   px=px||110;
   const ht=Math.round(px*280/220);
-  const polys=(strokes||[]).map(s=>`<polyline points="${s.puntos.map(p=>`${p.x},${p.y}`).join(" ")}" stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join("");
+  const polys=strokesToSVG(strokes);
   return `<div class="doll-wrap" style="width:${px}px;height:${ht}px;position:relative;">
     ${dollSVG(color,null,dead,'idle',px)}
     <svg viewBox="0 0 220 280" width="${px}" height="${ht}" style="position:absolute;top:0;left:0;">${polys}</svg>
@@ -1376,7 +1392,7 @@ function dollPureSVG(color,death,strokes,dead,poseName,svgW,svgH){
   const tmp=dollSVG(color,death,dead,poseName,w);
   const match=tmp.match(/<svg[^>]*>([\s\S]*?)<\/svg>/);
   const inner=match?match[1]:'';
-  const drawLayer=strokes&&death==='dibujo'?strokes.map(s=>`<polyline points="${s.puntos.map(pt=>`${pt.x},${pt.y}`).join(' ')}" stroke="${s.color}" stroke-width="${s.grosor}" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`).join(''):'';
+  const drawLayer=strokes&&death==='dibujo'?strokesToSVG(strokes):'';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${inner}${drawLayer}</svg>`;
 }
 
